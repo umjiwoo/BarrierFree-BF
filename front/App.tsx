@@ -2,7 +2,8 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import TextScreen from './src/screens/TextScreen'; // TextScreen 경로
+import TextScreen from './src/screens/threebtn'; // TextScreen 경로
+import SendInputPage from './src/screens/sendInputpage'; // SendInputPage 추가
 // import TextScreen from './src/screens/{테스트 해보고 싶은 tsx 경로}'; // TextScreen 경로
 
 const Stack = createStackNavigator();
@@ -34,6 +35,11 @@ export default function App() {
           name="TextScreen"
           component={TextScreen}
           options={{title: '텍스트 화면'}}
+        />
+        <Stack.Screen
+          name="SendInputPage"
+          component={SendInputPage}
+          options={{title: '입력 화면'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
