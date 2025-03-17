@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   backButtonText: {
-    color: 'white',  // 텍스트 색상을 흰색으로 지정
+    color: 'white',
     fontWeight: 'bold',
   },
 });
