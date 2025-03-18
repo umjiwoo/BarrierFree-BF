@@ -1,4 +1,4 @@
-package com.blindfintech.blind_fintech;
+package com.blindfintech;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

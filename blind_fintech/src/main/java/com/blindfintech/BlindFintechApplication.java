@@ -1,4 +1,4 @@
-package com.blindfintech.blind_fintech;
+package com.blindfintech;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
