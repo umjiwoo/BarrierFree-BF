@@ -3,36 +3,34 @@ import {View, Text, StyleSheet} from 'react-native';
 import BackButton from '../../components/BackButton'; // 재사용 버튼 컴포넌트
 import SendAccountBox from './SendAccountBox';
 
-const accountData = [
-  {
-    name: '박수연',
-    date: '2025년 03월 11일',
-    accountBank: '신한',
-    accountNumber: '110-262-000720',
-  },
-  {
-    name: '김민수',
-    date: '2025년 02월 05일',
-    accountBank: '국민',
-    accountNumber: '123-456-789012',
-  },
-  {
-    name: '이영희',
-    date: '2025년 01월 20일',
-    accountBank: '우리',
-    accountNumber: '987-654-321098',
-  },
-];
+const SendToWho = ({navigation}: {navigation: any}) => {
+  const accountData = [
+    {
+      name: '홍길동',
+      date: '2023-04-01',
+      accountBank: '신한은행',
+      accountNumber: '110-123-456789',
+    },
+    {
+      name: '김철수',
+      date: '2023-04-02',
+      accountBank: '국민은행',
+      accountNumber: '123-45-678910',
+    },
+    {
+      name: '이영희',
+      date: '2023-04-03',
+      accountBank: '우리은행',
+      accountNumber: '111-222-333444',
+    },
+    // 필요에 따라 더 많은 계정을 추가할 수 있습니다
+  ];
 
-const SendScreen = ({navigation}: {navigation: any}) => {
-  // const renderItem = ({item}: {item: any}) => (
-  //   <SendAccountBox
-  //     name={item.name}
-  //     date={item.date}
-  //     accountBank={item.accountBank}
-  //     accountNumber={item.accountNumber}
-  //   />
-  // );
+  const handleSelectAccount = (account: any) => {
+    console.log('선택된 계정:', account);
+    // 선택된 계정으로 필요한 작업 수행
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>누구에게 보낼까요?</Text>
@@ -55,10 +53,8 @@ const SendScreen = ({navigation}: {navigation: any}) => {
         </View>
       </View> */}
       <SendAccountBox
-        name={accountData[0].name}
-        date={accountData[0].date}
-        accountBank={accountData[0].accountBank}
-        accountNumber={accountData[0].accountNumber}
+        accountData={accountData}
+        onSelectAccount={handleSelectAccount}
       />
 
       {/* 버튼 */}
@@ -127,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SendScreen;
+export default SendToWho;

@@ -1,74 +1,58 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import Carousel from './SendAccountCarousel';
 
-interface AccountProps {
+interface AccountItemProps {
   name: string;
   date: string;
   accountBank: string;
   accountNumber: string;
 }
 
-const SendAccountBox: React.FC<AccountProps> = ({
-  name,
-  date,
-  accountBank,
-  accountNumber,
+interface SendAccountBoxProps {
+  accountData: AccountItemProps[];
+  onSelectAccount?: (account: AccountItemProps) => void;
+}
+
+const SendAccountBox: React.FC<SendAccountBoxProps> = ({
+  accountData,
+  onSelectAccount,
 }) => {
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const handleLayout = (event: any) => {
+    const {width} = event.nativeEvent.layout;
+    if (width > 0) {
+      setContainerWidth(width);
+    }
+  };
+
   return (
-    <View style={styles.accountBox}>
-      <Text style={styles.accountName}>{name}</Text>
-      <Text style={styles.accountDate}>{date}</Text>
-      <View style={styles.account}>
-        <Text style={styles.accountBank}>{accountBank}</Text>
-        <Text style={styles.accountNumber}>{accountNumber}</Text>
+    <View style={styles.accountBoxContainer}>
+      <View style={styles.accountBox} onLayout={handleLayout}>
+        <Carousel accountData={accountData} onSelectAccount={onSelectAccount} />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  accountBoxContainer: {
+    marginVertical: 10,
+    flex: 1,
+  },
   accountBox: {
     width: '100%',
-    flex: 1,
-    display: 'flex',
+    height: '100%',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    gap: 10,
-    marginBottom: 10,
+    alignItems: 'center',
+    paddingVertical: 0,
     borderWidth: 2,
     borderColor: '#373DCC',
-    padding: 15,
-    borderRadius: 8,
+    borderRadius: 12,
     backgroundColor: 'white',
-    // shadowColor: '#000',
-    // shadowOffset: {width: 0, height: 2},
-    // shadowOpacity: 0.2,
-    // shadowRadius: 4,
     elevation: 3,
-  },
-  accountName: {
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  accountDate: {
-    fontSize: 20,
-    // color: 'gray',
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  account: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 5,
-  },
-  accountBank: {
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  accountNumber: {
-    fontSize: 25,
-    fontWeight: 'bold',
   },
 });
 
