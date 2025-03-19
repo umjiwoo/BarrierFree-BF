@@ -3,10 +3,14 @@ package com.blindfintech.domain.users.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -18,7 +22,7 @@ public class User {
     @Size(max = 50)
     @NotNull
     @Column(name = "id", nullable = false, length = 50)
-    private String id1;
+    private String loginId;
 
     @Size(max = 255)
     @NotNull
@@ -42,61 +46,5 @@ public class User {
     @NotNull
     @Column(name = "joined_date", nullable = false)
     private Instant joinedDate;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getId1() {
-        return id1;
-    }
-
-    public void setId1(String id1) {
-        this.id1 = id1;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Instant getJoinedDate() {
-        return joinedDate;
-    }
-
-    public void setJoinedDate(Instant joinedDate) {
-        this.joinedDate = joinedDate;
-    }
 
 }
