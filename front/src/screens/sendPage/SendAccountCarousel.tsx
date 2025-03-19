@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 
 interface AccountItemProps {
-  name: string;
-  date: string;
+  name?: string;
+  date?: string;
   accountBank: string;
   accountNumber: string;
+  balance?: string;
 }
 
 interface CarouselProps {
@@ -52,6 +53,7 @@ const SendAccountCarousel: React.FC<CarouselProps> = ({
         <View style={styles.account}>
           <Text style={styles.accountBank}>{item.accountBank}</Text>
           <Text style={styles.accountNumber}>{item.accountNumber}</Text>
+          <Text style={styles.accountBalance}>잔액 {item.balance} 원</Text>
         </View>
       </TouchableOpacity>
     );
@@ -91,15 +93,15 @@ const SendAccountCarousel: React.FC<CarouselProps> = ({
   };
 
   // 특정 인덱스로 스크롤하는 함수
-  const scrollToIndex = (index: number) => {
-    if (flatListRef.current && index >= 0 && index < accountData.length) {
-      flatListRef.current.scrollToIndex({
-        index,
-        animated: true,
-      });
-      setActiveIndex(index);
-    }
-  };
+  // const scrollToIndex = (index: number) => {
+  //   if (flatListRef.current && index >= 0 && index < accountData.length) {
+  //     flatListRef.current.scrollToIndex({
+  //       index,
+  //       animated: true,
+  //     });
+  //     setActiveIndex(index);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -145,8 +147,8 @@ const styles = StyleSheet.create({
     padding: 30,
     borderRadius: 12,
     backgroundColor: '#f8f8f8',
-    borderWidth: 1,
-    borderColor: '#24282B',
+    // borderWidth: 1,
+    // borderColor: '#24282B',
   },
   accountName: {
     fontSize: 25,
@@ -170,6 +172,11 @@ const styles = StyleSheet.create({
   },
   accountNumber: {
     fontSize: 25,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  accountBalance: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#24282B',
   },
