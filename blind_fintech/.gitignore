@@ -36,3 +36,6 @@ vcs.xml
 
 ### VS Code ###
 .vscode/
+
+### env ###
+database.properties
