@@ -1,4 +1,4 @@
-package com.blindfintech.common.entity;
+package com.blindfintech.common.bank.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
