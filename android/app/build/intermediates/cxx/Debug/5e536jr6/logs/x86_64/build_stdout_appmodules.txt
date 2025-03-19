@@ -1,0 +1,3 @@
+ninja: Entering directory `C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\x86_64'
+[0/2] Re-checking globbed directories...
+ninja: no work to do.

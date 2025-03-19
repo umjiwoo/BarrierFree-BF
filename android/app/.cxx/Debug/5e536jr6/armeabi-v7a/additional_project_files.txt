@@ -1,0 +1,7 @@
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\react\renderer\components\rnskia\ComponentDescriptors.cpp.o
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\react\renderer\components\rnskia\EventEmitters.cpp.o
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\react\renderer\components\rnskia\Props.cpp.o
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\react\renderer\components\rnskia\ShadowNodes.cpp.o
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\react\renderer\components\rnskia\States.cpp.o
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\react\renderer\components\rnskia\rnskiaJSI-generated.cpp.o
+C:\Users\SSAFY\Desktop\secondpjt\drawing\android\app\.cxx\Debug\5e536jr6\armeabi-v7a\rnskia_autolinked_build\CMakeFiles\react_codegen_rnskia.dir\rnskia-generated.cpp.o
