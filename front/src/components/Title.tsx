@@ -12,6 +12,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     alignSelf: 'flex-start',
-    marginBottom: 20,
+    marginVertical: 10,
   },
 });
