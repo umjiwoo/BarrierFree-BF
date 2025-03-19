@@ -8,7 +8,7 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
         <TouchableOpacity
           style={styles.button}
           // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
-          onPress={() => navigation.navigate('SendSuccess')}>
+          onPress={() => navigation.navigate('RemittanceConfirm')}>
           <Text style={styles.text}>test</Text>
         </TouchableOpacity>
       </View>

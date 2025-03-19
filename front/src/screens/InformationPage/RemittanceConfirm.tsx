@@ -1,16 +1,21 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import Title from "../../components/information/Title";
-import DetailBox from "../../components/information/DetailBoxConfirm";
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import Title from '../../components/information/Title';
+import DetailBox from '../../components/information/DetailBoxConfirm';
 import BackButton from '../../components/BackButton';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../../navigation/types';
 
 const ReceivingConfirmScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const handleSend = () => {
-    console.log("송금하기 버튼 클릭");
+    console.log('송금하기 버튼 클릭');
+    navigation.navigate('SendSuccess');
   };
 
   const handleBack = () => {
-    console.log("이전으로 버튼 클릭");
+    console.log('이전으로 버튼 클릭');
   };
 
   return (
@@ -40,9 +45,9 @@ const ReceivingConfirmScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "white",
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
@@ -51,22 +56,22 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   sendButton: {
-    backgroundColor: "#373DCC",
-    width: "100%",
+    backgroundColor: '#373DCC',
+    width: '100%',
     height: 70,
     marginTop: 10,
     marginBottom: 5,
   },
   backButton: {
-    backgroundColor: "#B6010E",
-    width: "100%",
+    backgroundColor: '#B6010E',
+    width: '100%',
     height: 70,
     marginTop: 10,
     marginBottom: 5,
   },
   buttonText: {
-    color: "#ffffff",
-    fontWeight: "800",
+    color: '#ffffff',
+    fontWeight: '800',
     fontSize: 20,
   },
 });

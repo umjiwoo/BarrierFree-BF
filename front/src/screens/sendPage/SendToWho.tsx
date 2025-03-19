@@ -28,8 +28,10 @@ const SendToWho = ({navigation}: {navigation: any}) => {
   ];
 
   const handleSelectAccount = (account: any) => {
-    console.log('선택된 계정:', account);
-    // 선택된 계정으로 필요한 작업 수행
+    // 계좌 선택 시 처리할 로직
+    // 계좌 선택 시 계좌 정보를 전달하고 저장하는 로직
+    navigation.navigate('ReceivingAccountScreen', {selectedAccount: account});
+    console.log('Selected account:', account);
   };
 
   return (

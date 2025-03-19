@@ -6,6 +6,8 @@ import SendFromWhere from '../screens/sendPage/SendFromWhere';
 import HomeScreen from '../screens/HomeScreen';
 import SendToWho from '../screens/sendPage/SendToWho';
 import SendSuccess from '../screens/sendPage/SendSuccess';
+import ReceivingAccountScreen from '../screens/InformationPage/ReceivingAccount';
+import RemittanceConfirm from '../screens/InformationPage/RemittanceConfirm';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -47,11 +49,26 @@ const RootStack = () => {
         }}
       />
       <Stack.Screen
+        name="ReceivingAccountScreen"
+        component={ReceivingAccountScreen}
+        options={{
+          title: '받는 사람 정보를 확인하세요.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="SendSuccess"
         component={SendSuccess}
         options={{
           title: '이체가 완료되었습니다.',
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="RemittanceConfirm"
+        component={RemittanceConfirm}
+        options={{
+          title: '이체 재확인.',
         }}
       />
     </Stack.Navigator>

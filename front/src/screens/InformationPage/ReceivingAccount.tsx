@@ -1,21 +1,22 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Title from "../../components/information/Title";
-import DetailBox from "../../components/information/DetailBoxAccount";
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import Title from '../../components/information/Title';
+import DetailBox from '../../components/information/DetailBoxAccount';
 import BackButton from '../../components/BackButton';
 
 const ReceivingAccountScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const handleSend = () => {
-    console.log("송금하기 버튼 클릭");
-    alert("송금하기 버튼 클릭됨!");
+    console.log('송금하기 버튼 클릭');
+    // navigation.navigate('');  // 금액 입력 페이지로 이동
+    alert('송금하기 버튼 클릭됨!');
   };
 
   const handleBack = () => {
-    console.log("이전으로 버튼 클릭");
-    navigation.goBack()
+    console.log('이전으로 버튼 클릭');
+    navigation.goBack();
   };
 
   return (
@@ -23,8 +24,8 @@ const ReceivingAccountScreen: React.FC = () => {
       <Title text="받는 사람 정보를 확인하세요." />
       <DetailBox name="엄지우" bank="신한" account="123-456-789000" />
 
-       {/* 버튼 */}
-       <View style={styles.buttonContainer}>
+      {/* 버튼 */}
+      <View style={styles.buttonContainer}>
         <BackButton
           text="송금하기"
           onPress={handleSend}
@@ -38,7 +39,6 @@ const ReceivingAccountScreen: React.FC = () => {
           textStyle={styles.buttonText}
         />
       </View>
-
     </View>
   );
 };
@@ -46,9 +46,9 @@ const ReceivingAccountScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "white",
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
@@ -57,22 +57,22 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   sendButton: {
-    backgroundColor: "#373DCC",
-    width: "100%",
+    backgroundColor: '#373DCC',
+    width: '100%',
     height: 70,
     marginTop: 10,
     marginBottom: 5,
   },
   backButton: {
-    backgroundColor: "#B6010E",
-    width: "100%",
+    backgroundColor: '#B6010E',
+    width: '100%',
     height: 70,
     marginTop: 10,
     marginBottom: 5,
   },
   buttonText: {
-    color: "#ffffff",
-    fontWeight: "800",
+    color: '#ffffff',
+    fontWeight: '800',
     fontSize: 20,
   },
 });

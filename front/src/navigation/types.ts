@@ -4,4 +4,6 @@ export type RootStackParamList = {
   SendFromWhere: undefined;
   SendToWho: undefined;
   SendSuccess: undefined;
+  ReceivingAccountScreen: undefined;
+  RemittanceConfirm: undefined;
 };
