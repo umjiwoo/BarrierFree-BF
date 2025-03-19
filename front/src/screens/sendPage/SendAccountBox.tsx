@@ -3,10 +3,11 @@ import {View, StyleSheet} from 'react-native';
 import Carousel from './SendAccountCarousel';
 
 interface AccountItemProps {
-  name: string;
-  date: string;
+  name?: string;
+  date?: string;
   accountBank: string;
   accountNumber: string;
+  balance?: string;
 }
 
 interface SendAccountBoxProps {
