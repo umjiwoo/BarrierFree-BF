@@ -48,12 +48,14 @@ const SendAccountCarousel: React.FC<CarouselProps> = ({
         style={[styles.item]}
         onPress={() => onSelectAccount && onSelectAccount(item)}
         activeOpacity={0.9}>
-        <Text style={styles.accountName}>{item.name}</Text>
-        <Text style={styles.accountDate}>{item.date}</Text>
+        {item.name && <Text style={styles.accountName}>{item.name}</Text>}
+        {item.date && <Text style={styles.accountDate}>{item.date}</Text>}
         <View style={styles.account}>
           <Text style={styles.accountBank}>{item.accountBank}</Text>
           <Text style={styles.accountNumber}>{item.accountNumber}</Text>
-          <Text style={styles.accountBalance}>잔액 {item.balance} 원</Text>
+          {item.balance && (
+            <Text style={styles.accountBalance}>잔액 : {item.balance} 원</Text>
+          )}
         </View>
       </TouchableOpacity>
     );

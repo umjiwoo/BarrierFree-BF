@@ -1,4 +1,5 @@
 import {View, StyleSheet} from 'react-native';
+// import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import Title from '../../components/Title';
 import SendAccountBox from './SendAccountBox';
@@ -20,6 +21,8 @@ const SendFromWhere = ({navigation}: {navigation: any}) => {
 
   const handleSelectAccount = (account: any) => {
     // 계좌 선택 시 처리할 로직
+    // 계좌 선택 시 계좌 정보를 전달하고 저장하는 로직
+    navigation.navigate('SendToWho', {selectedAccount: account});
     console.log('Selected account:', account);
   };
 
@@ -68,7 +71,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    marginTop: 50,
     alignItems: 'center',
   },
   buttonContainer: {

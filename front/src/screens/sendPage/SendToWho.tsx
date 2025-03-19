@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import BackButton from '../../components/BackButton'; // 재사용 버튼 컴포넌트
 import SendAccountBox from './SendAccountBox';
+import Title from '../../components/Title';
 
 const SendToWho = ({navigation}: {navigation: any}) => {
   const accountData = [
@@ -33,7 +34,8 @@ const SendToWho = ({navigation}: {navigation: any}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>누구에게 보낼까요?</Text>
+      {/* <Text style={styles.title}>누구에게 보낼까요?</Text> */}
+      <Title title="누구에게 보낼까요?" />
 
       {/* 자주 보내는 계좌 */}
       <View style={styles.favoriteContainer}>
@@ -92,7 +94,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    marginTop: 50,
     alignItems: 'center',
   },
   buttonContainer: {
