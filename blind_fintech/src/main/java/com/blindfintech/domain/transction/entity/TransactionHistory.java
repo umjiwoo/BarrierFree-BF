@@ -1,6 +1,6 @@
 package com.blindfintech.domain.transction.entity;
 
-import com.blindfintech.common.bank.entity.Bank;
+import com.blindfintech.domain.bank.entity.Bank;
 import com.blindfintech.domain.users.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
