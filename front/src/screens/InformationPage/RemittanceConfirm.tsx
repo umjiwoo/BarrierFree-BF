@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import Title from '../../components/information/Title';
+// import Title from '../../components/information/Title';
+import Title from '../../components/Title';
 import DetailBox from '../../components/information/DetailBoxConfirm';
 import BackButton from '../../components/BackButton';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -16,11 +17,12 @@ const ReceivingConfirmScreen: React.FC = () => {
 
   const handleBack = () => {
     console.log('이전으로 버튼 클릭');
+    navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
-      <Title text="이체 재확인." />
+      <Title title="이체 재확인." />
       <DetailBox name="엄지우" amount={50000} />
 
       {/* 버튼 */}
@@ -45,11 +47,12 @@ const ReceivingConfirmScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 20,
+    marginTop: 50,
   },
   buttonContainer: {
     width: '100%',

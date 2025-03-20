@@ -34,6 +34,11 @@ const SendToWho = ({navigation}: {navigation: any}) => {
     console.log('Selected account:', account);
   };
 
+  const handleDirectInput = () => {
+    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    console.log('직접 입력 버튼 클릭');
+  };
+
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>누구에게 보낼까요?</Text> */}
@@ -65,7 +70,7 @@ const SendToWho = ({navigation}: {navigation: any}) => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="직접 입력"
-          onPress={() => console.log('직접 입력')}
+          onPress={handleDirectInput}
           style={{
             backgroundColor: '#373DCC',
             width: '100%',

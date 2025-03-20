@@ -8,6 +8,9 @@ import SendToWho from '../screens/sendPage/SendToWho';
 import SendSuccess from '../screens/sendPage/SendSuccess';
 import ReceivingAccountScreen from '../screens/InformationPage/ReceivingAccount';
 import RemittanceConfirm from '../screens/InformationPage/RemittanceConfirm';
+import SendInputPage from '../screens/sendInputpage';
+import ThreeBtn from '../screens/threebtn';
+import RemittanceInformation from '../screens/InformationPage/RemittanceInformation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -69,6 +72,31 @@ const RootStack = () => {
         component={RemittanceConfirm}
         options={{
           title: '이체 재확인.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="RemittanceInformation"
+        component={RemittanceInformation}
+        options={{
+          title: '이체 정보를 확인하세요.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SendInputPage"
+        component={SendInputPage}
+        options={{
+          title: '금액을 입력하세요.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ThreeBtn"
+        component={ThreeBtn}
+        options={{
+          title: '금액을 입력하세요.',
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

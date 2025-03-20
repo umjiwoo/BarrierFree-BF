@@ -29,7 +29,7 @@ const SendSuccess = () => {
         style={{
           backgroundColor: '#B6010E',
           width: '100%',
-          height: 70,
+          height: 150,
           marginTop: 10,
           marginBottom: 5,
           bottom: 0,

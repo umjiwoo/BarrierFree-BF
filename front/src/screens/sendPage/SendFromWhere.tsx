@@ -26,6 +26,11 @@ const SendFromWhere = ({navigation}: {navigation: any}) => {
     console.log('Selected account:', account);
   };
 
+  const handleDirectInput = () => {
+    navigation.navigate('SendInputPage', {type: 'directMyAccount'});
+    console.log('직접 입력 버튼 클릭');
+  };
+
   return (
     <View style={styles.container}>
       <Title title="어느 계좌에서 보낼까요?" />
@@ -38,7 +43,7 @@ const SendFromWhere = ({navigation}: {navigation: any}) => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="직접 입력"
-          onPress={() => console.log('직접 입력')}
+          onPress={handleDirectInput}
           style={{
             backgroundColor: '#373DCC',
             width: '100%',

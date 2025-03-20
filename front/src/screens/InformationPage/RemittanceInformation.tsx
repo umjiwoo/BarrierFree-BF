@@ -1,22 +1,38 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import Title from "../../components/information/Title";
-import DetailBox from "../../components/information/DetailBoxInformation";
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+// import Title from '../../components/information/Title';
+import Title from '../../components/Title';
+import DetailBox from '../../components/information/DetailBoxInformation';
 import BackButton from '../../components/BackButton';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 
 const ReceivingInformationScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
   const handleSend = () => {
-    console.log("송금하기 버튼 클릭");
+    navigation.navigate('SendInputPage', {type: 'password'});
+    console.log('송금하기 버튼 클릭');
   };
 
   const handleBack = () => {
-    console.log("이전으로 버튼 클릭");
+    navigation.goBack();
+    console.log('이전으로 버튼 클릭');
   };
 
   return (
     <View style={styles.container}>
-      <Title text="송금 정보를 확인하세요." />
-      <DetailBox recipient="엄지우" bank="신한" account="123-456-789000" remitter="박수연" amount={5000} />
+      <Title title="송금 정보를 확인하세요." />
+      <DetailBox
+        recipient="엄지우"
+        bank="신한"
+        account="123-456-789000"
+        remitter="박수연"
+        amount={5000}
+      />
 
       {/* 버튼 */}
       <View style={styles.buttonContainer}>
@@ -40,33 +56,34 @@ const ReceivingInformationScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "white",
+    // justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 20,
+    marginTop: 50,
   },
   buttonContainer: {
     width: '100%',
     bottom: 0,
   },
   sendButton: {
-    backgroundColor: "#373DCC",
-    width: "100%",
+    backgroundColor: '#373DCC',
+    width: '100%',
     height: 70,
     marginTop: 10,
     marginBottom: 5,
   },
   backButton: {
-    backgroundColor: "#B6010E",
-    width: "100%",
+    backgroundColor: '#B6010E',
+    width: '100%',
     height: 70,
     marginTop: 10,
     marginBottom: 5,
   },
   buttonText: {
-    color: "#ffffff",
-    fontWeight: "800",
+    color: '#ffffff',
+    fontWeight: '800',
     fontSize: 20,
   },
 });
