@@ -37,6 +37,11 @@ export default function App() {
           component={TextScreen}
           options={{title: '텍스트 화면'}}
         />
+        <Stack.Screen
+          name="SendInputPage"
+          component={SendInputPage}
+          options={{title: '입력 화면'}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
