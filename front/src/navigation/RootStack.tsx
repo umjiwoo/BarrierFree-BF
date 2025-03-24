@@ -11,6 +11,9 @@ import RemittanceConfirm from '../screens/InformationPage/RemittanceConfirm';
 import SendInputPage from '../screens/sendInputpage';
 import ThreeBtn from '../screens/threebtn';
 import RemittanceInformation from '../screens/InformationPage/RemittanceInformation';
+import CheckAccount from '../screens/checkPage/CheckAccount';
+import CheckHistory from '../screens/checkPage/CheckHistory';
+import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,6 +35,30 @@ const RootStack = () => {
           title: '메인',
           headerShown: false,
           // 필요한 옵션 추가
+        }}
+      />
+      <Stack.Screen
+        name="CheckAccount"
+        component={CheckAccount}
+        options={{
+          title: '계좌 조회',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CheckHistory"
+        component={CheckHistory}
+        options={{
+          title: '내역 조회',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CheckHistoryDetail"
+        component={CheckHistoryDetail}
+        options={{
+          title: '내역 상세',
+          headerShown: false,
         }}
       />
       <Stack.Screen
