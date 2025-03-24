@@ -24,7 +24,7 @@ interface HistoryItemProps {
 
 const histories: HistoryItemProps[] = [
   {
-    historyDate: '2024-01-01',
+    historyDate: '2024년 01월 01일',
     historyTime: '12:00:00',
     historyType: '결제',
     historyWhere: '현대카드',
@@ -32,17 +32,17 @@ const histories: HistoryItemProps[] = [
     historyAmount: 100000,
   },
   {
-    historyDate: '2024-01-01',
+    historyDate: '2024년 01월 01일',
     historyTime: '12:00:00',
-    historyType: '입금',
+    historyType: '계좌 입금',
     historyWhere: '박수연',
     historyAccount: '1234-5678-9012-3456',
     historyAmount: 100000,
   },
   {
-    historyDate: '2024-01-01',
+    historyDate: '2024년 01월 01일',
     historyTime: '12:00:00',
-    historyType: '출금',
+    historyType: '계좌 출금',
     historyWhere: '박수연',
     historyAccount: '1234-5678-9012-3456',
     historyAmount: 100000,
@@ -69,7 +69,10 @@ const CheckHistory = () => {
       <View style={styles.accountInfo}>
         <Text style={styles.accountBank}>{accounts?.accountBank}</Text>
         <Text style={styles.accountNumber}>{accounts?.accountNumber}</Text>
-        <Text style={styles.balance}>잔액: {accounts?.balance}원</Text>
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceTitle}>잔액</Text>
+          <Text style={styles.balance}>{accounts?.balance}원 </Text>
+        </View>
       </View>
       <CheckAccountBox
         data={histories}
@@ -112,16 +115,35 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   accountInfo: {
-    marginBottom: 10,
+    width: '100%',
+    // marginBottom: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 3,
+    borderColor: '#373DCC',
+    borderRadius: 12,
+    alignSelf: 'flex-start',
   },
   accountBank: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   accountNumber: {
-    fontSize: 16,
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  balanceContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 5,
+  },
+  balanceTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
   },
   balance: {
-    fontSize: 16,
+    fontSize: 35,
+    fontWeight: 'bold',
   },
 });

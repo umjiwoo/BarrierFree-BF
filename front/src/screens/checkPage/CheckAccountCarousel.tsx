@@ -60,14 +60,19 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.account}>
-            <Text style={styles.accountBank}>{accountItem.accountBank}</Text>
-            <Text style={styles.accountNumber}>
-              {accountItem.accountNumber}
-            </Text>
-            {accountItem.balance && (
-              <Text style={styles.accountBalance}>
-                잔액 : {accountItem.balance} 원
+            <View style={styles.accountBankContainer}>
+              <Text style={styles.accountBank}>{accountItem.accountBank}</Text>
+              <Text style={styles.accountNumber}>
+                {accountItem.accountNumber}
               </Text>
+            </View>
+            {accountItem.balance && (
+              <View style={styles.accountBalanceContainer}>
+                <Text style={styles.accountBalanceTitle}>잔액</Text>
+                <Text style={styles.accountBalance}>
+                  {accountItem.balance} 원
+                </Text>
+              </View>
             )}
           </View>
         </TouchableOpacity>
@@ -80,18 +85,40 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.history}>
-            <Text style={styles.historyDate}>{historyItem.historyDate}</Text>
-            <Text style={styles.historyTime}>{historyItem.historyTime}</Text>
+            <View style={styles.historyDateContainer}>
+              <Text style={styles.historyDate}>{historyItem.historyDate}</Text>
+              <Text style={styles.historyTime}>{historyItem.historyTime}</Text>
+            </View>
             <Text style={styles.historyType}>{historyItem.historyType}</Text>
-            <Text style={styles.historyWhere}>{historyItem.historyWhere}</Text>
-            {historyItem.historyAccount && (
-              <Text style={styles.historyAccount}>
-                {historyItem.historyAccount}
+            <View style={styles.historyWhereContainer}>
+              <Text style={styles.historyWhere}>
+                {historyItem.historyWhere}
               </Text>
+              {historyItem.historyAccount && (
+                <Text style={styles.historyAccount}>
+                  {historyItem.historyAccount}
+                </Text>
+              )}
+            </View>
+            {historyItem.historyType === '계좌 입금' ? (
+              <View style={styles.historyAmountContainer}>
+                <Text style={[styles.historyAmountTitle, styles.plusAmount]}>
+                  입금
+                </Text>
+                <Text style={[styles.historyAmount, styles.plusAmount]}>
+                  {historyItem.historyAmount} 원
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.historyAmountContainer}>
+                <Text style={[styles.historyAmountTitle, styles.minusAmount]}>
+                  출금
+                </Text>
+                <Text style={[styles.historyAmount, styles.minusAmount]}>
+                  {historyItem.historyAmount} 원
+                </Text>
+              </View>
             )}
-            <Text style={styles.historyAmount}>
-              {historyItem.historyAmount}
-            </Text>
           </View>
         </TouchableOpacity>
       );
@@ -124,13 +151,6 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     }
   };
 
-  // 현재 스크롤 위치를 확인하며 강제로 스냅 적용
-  const handleScroll = (event: any) => {
-    const scrollPosition = event.nativeEvent.contentOffset.x;
-    // 스크롤 방향과 현재 위치 확인으로 스와이프 방향 파악 가능
-    // 하지만 여기선 스냅 기능에 의존하므로 구현하지 않음
-  };
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -143,10 +163,8 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
         snapToInterval={ITEM_WIDTH}
         decelerationRate="fast" // 스냅 효과 강화
         snapToAlignment="center"
-        contentContainerStyle={styles.flatListContent}
         getItemLayout={getItemLayout}
         onMomentumScrollEnd={handleMomentumScrollEnd}
-        onScroll={handleScroll}
         scrollEventThrottle={16}
         initialNumToRender={3}
         maxToRenderPerBatch={3}
@@ -165,18 +183,12 @@ const styles = StyleSheet.create({
     height: '100%',
     // paddingHorizontal: CONTAINER_PADDING, // 컨테이너에 패딩 추가
   },
-  flatListContent: {
-    // paddingHorizontal: 0,
-  },
   item: {
     width: ITEM_WIDTH, // 아이템 너비 적용
     height: '100%',
-    // marginRight: ITEM_SPACING, // 마진 제거
     padding: 30,
     borderRadius: 12,
     backgroundColor: '#f8f8f8',
-    // borderWidth: 1,
-    // borderColor: '#24282B',
   },
   accountName: {
     fontSize: 25,
@@ -192,44 +204,69 @@ const styles = StyleSheet.create({
   account: {
     display: 'flex',
     flexDirection: 'column',
+    gap: 60,
+  },
+  accountBankContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     gap: 5,
   },
   accountBank: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
   },
   accountNumber: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  accountBalanceContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 5,
+  },
+  accountBalanceTitle: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
   },
   accountBalance: {
-    fontSize: 20,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#24282B',
   },
   history: {
     display: 'flex',
     flexDirection: 'column',
+    gap: 30,
+  },
+  historyDateContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     gap: 5,
   },
   historyDate: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
   },
   historyTime: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
   },
   historyType: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#24282B',
   },
+  historyWhereContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 5,
+  },
   historyWhere: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#24282B',
   },
@@ -238,10 +275,28 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#24282B',
   },
-  historyAmount: {
-    fontSize: 20,
+  historyAmountContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    gap: 5,
+  },
+  historyAmountTitle: {
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#24282B',
+  },
+  historyAmount: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  plusAmount: {
+    color: '#B6010E',
+  },
+  minusAmount: {
+    color: '#373DCC',
   },
 });
 
