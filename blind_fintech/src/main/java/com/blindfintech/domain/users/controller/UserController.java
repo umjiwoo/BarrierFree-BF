@@ -1,11 +1,10 @@
 package com.blindfintech.domain.users.controller;
 
+import com.blindfintech.domain.users.dto.UserDto;
 import com.blindfintech.domain.users.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +17,13 @@ public class UserController {
         userService.checkUserIdExists(id);
         return "OK";
     }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<Void> signUp(@RequestBody UserDto userDto) {
+        userService.signUp(userDto);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
