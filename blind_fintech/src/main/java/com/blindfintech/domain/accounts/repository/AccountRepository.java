@@ -22,5 +22,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     """)
     List<AccountProjection> findAllByUser(@Param("user") User user);
 
-//    List<AccountTransaction>
+    @Query("SELECT a.accountState FROM Account a WHERE a.id = :accountId")
+    String findAccountStateById(@Param("accountId") Integer accountId);
 }
