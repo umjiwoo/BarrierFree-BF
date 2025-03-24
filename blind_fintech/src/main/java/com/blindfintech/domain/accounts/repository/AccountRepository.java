@@ -1,5 +1,6 @@
 package com.blindfintech.domain.accounts.repository;
 
+import com.blindfintech.domain.accounts.dto.AccountProjection;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,11 +11,16 @@ import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("""
-        SELECT a.id, a.bankId, a.accountNo, a.username, a.accountBalance,
-        a.dailyTransferLimit, a.oneTimeTransferLimit, a.createdAt,
-        a.failedAttempts, a.accountState
+        SELECT a.id as id, a.bankId as bankId, a.accountNo as accountNo,
+            a.username as username, a.accountBalance as accountBalance,
+            a.dailyTransferLimit as dailyTransferLimit,\s
+            a.oneTimeTransferLimit as oneTimeTransferLimit,\s
+            a.createdAt as createdAt, a.failedAttempts as failedAttempts,\s
+            a.accountState as accountState
         FROM Account a
         WHERE a.user = :user
     """)
-    List<Account> findAllByUser(@Param("user") User user);
+    List<AccountProjection> findAllByUser(@Param("user") User user);
+
+//    List<AccountTransaction>
 }

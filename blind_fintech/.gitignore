@@ -38,4 +38,7 @@ vcs.xml
 .vscode/
 
 ### env ###
-.env
+**/.env
+
+### local ###
+**/DevSecurityConfig

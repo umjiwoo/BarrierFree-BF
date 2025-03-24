@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @Builder
-public class AccountListDto {
-    private List<AccountProjection> accounts;
+public class AccountDetailsDto {
+    private List<AccountDetailsProjection> accountDetails;
 }
