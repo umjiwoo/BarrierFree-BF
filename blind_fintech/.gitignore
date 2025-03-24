@@ -38,4 +38,4 @@ vcs.xml
 .vscode/
 
 ### env ###
-database.properties
+.env
