@@ -19,12 +19,12 @@ import java.time.LocalDate;
 public class User {
     @Id
     @Column(name = "user_id", nullable = false)
-    private Integer id;
+    private Integer uid;
 
     @Size(max = 50)
     @NotNull
     @Column(name = "id", nullable = false, length = 50)
-    private String loginId;
+    private String id;
 
     @Size(max = 255)
     @NotNull
