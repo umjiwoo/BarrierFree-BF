@@ -11,12 +11,22 @@ import {
 interface AccountItemProps {
   accountBank: string;
   accountNumber: string;
-  balance: string;
+  balance: number;
+}
+
+interface HistoryItemProps {
+  historyDate: string;
+  historyTime: string;
+  historyType: string;
+  historyWhere: string;
+  historyAccount?: string;
+  historyAmount: number;
 }
 
 interface CarouselProps {
-  accountData: AccountItemProps[];
-  onSelectAccount?: (account: AccountItemProps) => void;
+  data: AccountItemProps[] | HistoryItemProps[];
+  type: 'account' | 'history';
+  onSelect?: (item: AccountItemProps | HistoryItemProps) => void;
 }
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -28,8 +38,9 @@ const CONTAINER_PADDING = 15; // 컨테이너 패딩 (SendAccountBox의 padding�
 const ITEM_WIDTH = (screenWidth - CONTAINER_PADDING * 2) * 0.97;
 
 const CheckAccountCarousel: React.FC<CarouselProps> = ({
-  accountData,
-  onSelectAccount,
+  data,
+  type,
+  onSelect,
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
@@ -38,23 +49,53 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     item,
     index,
   }: {
-    item: AccountItemProps;
+    item: AccountItemProps | HistoryItemProps;
     index: number;
   }) => {
-    return (
-      <TouchableOpacity
-        style={[styles.item]}
-        onPress={() => onSelectAccount && onSelectAccount(item)}
-        activeOpacity={0.9}>
-        <View style={styles.account}>
-          <Text style={styles.accountBank}>{item.accountBank}</Text>
-          <Text style={styles.accountNumber}>{item.accountNumber}</Text>
-          {item.balance && (
-            <Text style={styles.accountBalance}>잔액 : {item.balance} 원</Text>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
+    if (type === 'account') {
+      const accountItem = item as AccountItemProps;
+      return (
+        <TouchableOpacity
+          style={[styles.item]}
+          onPress={() => onSelect && onSelect(item)}
+          activeOpacity={0.9}>
+          <View style={styles.account}>
+            <Text style={styles.accountBank}>{accountItem.accountBank}</Text>
+            <Text style={styles.accountNumber}>
+              {accountItem.accountNumber}
+            </Text>
+            {accountItem.balance && (
+              <Text style={styles.accountBalance}>
+                잔액 : {accountItem.balance} 원
+              </Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      const historyItem = item as HistoryItemProps;
+      return (
+        <TouchableOpacity
+          style={[styles.item]}
+          onPress={() => onSelect && onSelect(item)}
+          activeOpacity={0.9}>
+          <View style={styles.history}>
+            <Text style={styles.historyDate}>{historyItem.historyDate}</Text>
+            <Text style={styles.historyTime}>{historyItem.historyTime}</Text>
+            <Text style={styles.historyType}>{historyItem.historyType}</Text>
+            <Text style={styles.historyWhere}>{historyItem.historyWhere}</Text>
+            {historyItem.historyAccount && (
+              <Text style={styles.historyAccount}>
+                {historyItem.historyAccount}
+              </Text>
+            )}
+            <Text style={styles.historyAmount}>
+              {historyItem.historyAmount}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
   };
 
   const getItemLayout = (_: any, index: number) => ({
@@ -68,7 +109,7 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / ITEM_WIDTH);
 
-    if (index >= 0 && index < accountData.length) {
+    if (index >= 0 && index < data.length) {
       // 가장 가까운 페이지로 스냅
       setTimeout(() => {
         if (flatListRef.current) {
@@ -90,22 +131,11 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     // 하지만 여기선 스냅 기능에 의존하므로 구현하지 않음
   };
 
-  // 특정 인덱스로 스크롤하는 함수
-  // const scrollToIndex = (index: number) => {
-  //   if (flatListRef.current && index >= 0 && index < accountData.length) {
-  //     flatListRef.current.scrollToIndex({
-  //       index,
-  //       animated: true,
-  //     });
-  //     setActiveIndex(index);
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
       <FlatList
         ref={flatListRef}
-        data={accountData}
+        data={data}
         renderItem={renderItem}
         keyExtractor={(_, index) => index.toString()}
         horizontal
@@ -174,6 +204,41 @@ const styles = StyleSheet.create({
     color: '#24282B',
   },
   accountBalance: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  history: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 5,
+  },
+  historyDate: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyTime: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyType: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyWhere: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyAccount: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyAmount: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#24282B',

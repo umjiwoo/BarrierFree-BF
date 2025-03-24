@@ -5,35 +5,42 @@ import React from 'react';
 import Title from '../../components/Title';
 import CheckAccountBox from './CheckAccountBox';
 import BackButton from '../../components/BackButton';
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../../components/types/CheckAccount';
 
 const SendFromWhere = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const accounts = [
+  const accounts: AccountItemProps[] = [
     {
       accountBank: '신한',
       accountNumber: '110-262-000720',
-      balance: '7000000',
+      balance: 7000000,
     },
     {
       accountBank: '국민',
       accountNumber: '110-262-000720',
-      balance: '7000000',
+      balance: 7000000,
     },
   ];
 
-  const handleSelectAccount = (account: any) => {
+  const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
     // 계좌 선택 시 처리할 로직
     // 계좌 선택 시 계좌 정보를 전달하고 저장하는 로직
-    navigation.navigate('CheckHistory', {selectedAccount: account});
-    console.log('Selected account:', account);
+    navigation.navigate('CheckHistory', {
+      selectedAccount: item,
+    });
+    console.log('Selected account:', item);
   };
 
   return (
     <View style={styles.container}>
       <Title title="계좌 조회" />
       <CheckAccountBox
-        accountData={accounts}
-        onSelectAccount={handleSelectAccount}
+        data={accounts}
+        type="account"
+        onSelect={handleSelectAccount}
       />
 
       {/* 버튼 */}

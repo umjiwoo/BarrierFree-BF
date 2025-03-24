@@ -1,42 +1,20 @@
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../components/types/CheckAccount';
+
 export type RootStackParamList = {
   HomeScreen: undefined;
   Main: undefined;
   CheckAccount: {
-    selectedAccount: {
-      accountBank: string;
-      accountNumber: string;
-      balance: string;
-    };
+    selectedAccount: AccountItemProps;
   };
   CheckHistory: {
-    selectedAccount: {
-      accountBank: string;
-      accountNumber: string;
-      balance: string;
-    };
-    history: {
-      historyDate: string;
-      historyTime: string;
-      historyAmount: string;
-      historyType: string;
-      historyStatus: string;
-      historyAccount?: string;
-    };
+    selectedAccount: AccountItemProps;
+    history: HistoryItemProps;
   };
   CheckHistoryDetail: {
-    selectedAccount: {
-      accountBank: string;
-      accountNumber: string;
-      balance: string;
-    };
-    history: {
-      historyDate: string;
-      historyTime: string;
-      historyAmount: string;
-      historyType: string;
-      historyStatus: string;
-      historyAccount?: string;
-    };
+    history: HistoryItemProps;
   };
   SendFromWhere: {accountNumber: string};
   SendToWho: undefined;

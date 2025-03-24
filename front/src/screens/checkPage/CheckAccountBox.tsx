@@ -1,21 +1,21 @@
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import Carousel from './CheckAccountCarousel';
-
-interface AccountItemProps {
-  accountBank: string;
-  accountNumber: string;
-  balance: string;
-}
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../../components/types/CheckAccount';
 
 interface CheckAccountBoxProps {
-  accountData: AccountItemProps[];
-  onSelectAccount?: (account: AccountItemProps) => void;
+  data: AccountItemProps[] | HistoryItemProps[];
+  type: 'account' | 'history';
+  onSelect?: (item: AccountItemProps | HistoryItemProps) => void;
 }
 
 const CheckAccountBox: React.FC<CheckAccountBoxProps> = ({
-  accountData,
-  onSelectAccount,
+  data,
+  type,
+  onSelect,
 }) => {
   const [containerWidth, setContainerWidth] = useState(0);
 
@@ -25,18 +25,28 @@ const CheckAccountBox: React.FC<CheckAccountBoxProps> = ({
       setContainerWidth(width);
     }
   };
+  const renderContent = () => {
+    if (type === 'account') {
+      return (
+        <View style={styles.accountBox} onLayout={handleLayout}>
+          <Carousel data={data} onSelect={onSelect} type={type} />
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.accountBox} onLayout={handleLayout}>
+          <Carousel data={data} onSelect={onSelect} type={type} />
+        </View>
+      );
+    }
+  };
 
-  return (
-    <View style={styles.accountBoxContainer}>
-      <View style={styles.accountBox} onLayout={handleLayout}>
-        <Carousel accountData={accountData} onSelectAccount={onSelectAccount} />
-      </View>
-    </View>
-  );
+  return <View style={styles.accountBoxContainer}>{renderContent()}</View>;
 };
 
 const styles = StyleSheet.create({
   accountBoxContainer: {
+    width: '100%',
     marginVertical: 10,
     flex: 1,
   },
