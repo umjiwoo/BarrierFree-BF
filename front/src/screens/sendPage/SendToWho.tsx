@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import BackButton from '../../components/BackButton'; // 재사용 버튼 컴포넌트
 import SendAccountBox from './SendAccountBox';
+import Title from '../../components/Title';
 
 const SendToWho = ({navigation}: {navigation: any}) => {
   const accountData = [
@@ -27,13 +28,21 @@ const SendToWho = ({navigation}: {navigation: any}) => {
   ];
 
   const handleSelectAccount = (account: any) => {
-    console.log('선택된 계정:', account);
-    // 선택된 계정으로 필요한 작업 수행
+    // 계좌 선택 시 처리할 로직
+    // 계좌 선택 시 계좌 정보를 전달하고 저장하는 로직
+    navigation.navigate('ReceivingAccountScreen', {selectedAccount: account});
+    console.log('Selected account:', account);
+  };
+
+  const handleDirectInput = () => {
+    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    console.log('직접 입력 버튼 클릭');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>누구에게 보낼까요?</Text>
+      {/* <Text style={styles.title}>누구에게 보낼까요?</Text> */}
+      <Title title="누구에게 보낼까요?" />
 
       {/* 자주 보내는 계좌 */}
       <View style={styles.favoriteContainer}>
@@ -61,7 +70,7 @@ const SendToWho = ({navigation}: {navigation: any}) => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="직접 입력"
-          onPress={() => console.log('직접 입력')}
+          onPress={handleDirectInput}
           style={{
             backgroundColor: '#373DCC',
             width: '100%',
@@ -92,7 +101,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    marginTop: 50,
     alignItems: 'center',
   },
   buttonContainer: {

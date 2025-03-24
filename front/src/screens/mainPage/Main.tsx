@@ -6,15 +6,27 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
+// import {useNavigation} from '@react-navigation/native';
+// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+// import {RootStackParamList} from '../../navigation/types';
 
-const Main = () => {
+const Main = ({navigation}: {navigation: any}) => {
+  // const navigationProps =
+  //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  // const handleSendFromWherePress = () => {
+  //   navigationProps.navigate('SendFromWhere');
+  // };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.grid}>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('SendFromWhere')}>
           <Text style={styles.text}>송금</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>

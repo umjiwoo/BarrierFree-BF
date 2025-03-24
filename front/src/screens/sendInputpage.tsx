@@ -1,12 +1,19 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {
+  RouteProp,
+  useRoute,
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
 import BackButton from '../components/BackButton';
+import {TextInput} from 'react-native-gesture-handler';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
   SendInputPage: {
-    type: 'direct' | 'send' | 'transfer';
+    type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
   };
 };
 
@@ -15,65 +22,155 @@ type SendInputPageRouteProp = RouteProp<SendInputPageParams, 'SendInputPage'>;
 
 const SendInputPage = () => {
   // 네비게이션 객체 가져오기
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  // 상태 관리 임시 추가
+  const [accountNumber, setAccountNumber] = React.useState('');
+  // const [bankName, setBankName] = React.useState('');
 
   // 라우트 파라미터에서 type 가져오기
   const route = useRoute<SendInputPageRouteProp>();
-  const { type } = route.params || { type: 'direct' }; // 기본값 설정
+  const {type} = route.params || {type: 'direct'}; // 기본값 설정
 
   // 타입에 따라 헤더 타이틀 설정
   useEffect(() => {
     let title = '입력 화면';
 
-    if (type === 'direct') {
-      title = '직접 입력';
-    } else if (type === 'send') {
-      title = '송금하기';
-    } else if (type === 'transfer') {
-      title = '이체하기';
+    if (type === 'directMyAccount') {
+      title = '내 계좌 직접 입력';
+    } else if (type === 'directOtherAccount') {
+      title = '상대방 계좌 직접 입력';
+    } else if (type === 'money') {
+      title = '금액 입력';
+    } else if (type === 'password') {
+      title = '비밀번호 입력';
     }
 
-    navigation.setOptions({ title });
+    navigation.setOptions({title});
   }, [navigation, type]);
 
   // 조건에 따라 다른 내용 렌더링
   const renderContent = () => {
-    if (type === 'direct') {
-      // 1. 직접입력을 받는 경우
+    if (type === 'directMyAccount') {
+      // 1. 직접 계좌 입력을 받는 경우
       return (
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>직접 입력 화면입니다.</Text>
+          <Text style={styles.text}>계좌 직접 입력 화면입니다.</Text>
+          <View>
+            {/* <TextInput
+              style={styles.input}
+              value={accountNumber}
+              onChangeText={setAccountNumber}
+              placeholder="계좌번호를 입력해주세요."
+              keyboardType="numeric"
+            /> */}
+          </View>
           <View style={styles.buttonContainer}>
-            <BackButton 
-              text="뒤로 가기" 
+            <BackButton
+              text="확인"
+              style={{
+                backgroundColor: '#373DCC',
+                width: '100%',
+                height: 70,
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              onPress={() => {
+                navigation.navigate('SendToWho', {
+                  accountNumber: accountNumber,
+                });
+              }}
+            />
+            <BackButton
+              text="뒤로 가기"
+              style={styles.backButton}
+              textStyle={styles.backButtonText}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          </View>
+        </View>
+      );
+    } else if (type === 'directOtherAccount') {
+      // 2. 상대방 계좌 직접 입력을 받는 경우
+      return (
+        <View style={styles.contentContainer}>
+          <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
+          <View style={styles.buttonContainer}>
+            <BackButton
+              text="확인"
+              style={{
+                backgroundColor: '#373DCC',
+                width: '100%',
+                height: 70,
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              onPress={() => {
+                navigation.navigate('SendInputPage', {type: 'money'});
+              }}
+            />
+            <BackButton
+              text="뒤로 가기"
               style={styles.backButton}
               textStyle={styles.backButtonText}
             />
           </View>
         </View>
       );
-    } else if (type === 'send') {
-      // 2. 송금하기를 받는 경우
+    } else if (type === 'money') {
+      // 3. 금액 입력을 받는 경우
       return (
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>송금하기 화면입니다.</Text>
+          <Text style={styles.text}>금액 입력 화면입니다.</Text>
           <View style={styles.buttonContainer}>
-            <BackButton 
-              text="뒤로 가기" 
+            <BackButton
+              text="확인"
+              style={{
+                backgroundColor: '#373DCC',
+                width: '100%',
+                height: 70,
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              onPress={() => {
+                navigation.navigate('RemittanceInformation');
+              }}
+            />
+            <BackButton
+              text="뒤로 가기"
               style={styles.backButton}
               textStyle={styles.backButtonText}
             />
           </View>
         </View>
       );
-    } else if (type === 'transfer') {
-      // 3. 이체하기를 받는 경우
+    } else if (type === 'password') {
+      // 4. 비밀번호 입력을 받는 경우
       return (
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>이체하기 화면입니다.</Text>
+          <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
           <View style={styles.buttonContainer}>
-            <BackButton 
-              text="뒤로 가기" 
+            <BackButton
+              text="확인"
+              style={{
+                backgroundColor: '#373DCC',
+                width: '100%',
+                height: 70,
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              onPress={() => {
+                navigation.navigate('RemittanceConfirm');
+              }}
+            />
+            <BackButton
+              text="뒤로 가기"
               style={styles.backButton}
               textStyle={styles.backButtonText}
             />
@@ -83,11 +180,7 @@ const SendInputPage = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      {renderContent()}
-    </View>
-  );
+  return <View style={styles.container}>{renderContent()}</View>;
 };
 
 const styles = StyleSheet.create({
@@ -104,21 +197,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  input: {
+    width: '100%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    fontSize: 16,
+  },
   buttonContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    // marginBottom: 20,
+    width: '100%',
+    bottom: 0,
   },
   backButton: {
-    width: '80%',
-    borderWidth: 1,
-    borderColor: 'red',
-    backgroundColor: 'red',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: '#B6010E',
+    width: '100%',
+    height: 70,
+    marginTop: 10,
+    marginBottom: 5,
   },
   backButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 20,
   },
 });
 
