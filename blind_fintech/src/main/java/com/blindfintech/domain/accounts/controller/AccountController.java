@@ -3,14 +3,13 @@ package com.blindfintech.domain.accounts.controller;
 import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
 import com.blindfintech.domain.accounts.dto.AccountDetailsProjection;
+import com.blindfintech.domain.accounts.dto.AccountInputDto;
 import com.blindfintech.domain.accounts.dto.AccountListDto;
+import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/accounts")
@@ -30,5 +29,19 @@ public class AccountController {
         AccountDetailsDto accountDetails = accountService.getAccountDetails(account_id);
         return ResponseEntity.ok()
                 .body(ResponseDto.success(accountDetails.getAccountDetails()));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createAccount(@RequestBody AccountInputDto accountInputDto) {
+        Account account = accountService.createAccount(accountInputDto);
+        return ResponseEntity.ok()
+                .body(account);
+    }
+
+    @GetMapping("/{account_id}/is_locked")
+    public ResponseEntity<?> getAccountState(@PathVariable int account_id) {
+        String accountState = accountService.getAccountState(account_id);
+        return ResponseEntity.ok()
+                .body(accountState);
     }
 }
