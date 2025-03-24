@@ -59,6 +59,7 @@ public class AccountTransaction {
     private Integer transactionBankId;
 
     @NotNull
+    @Builder.Default
     @Column(name = "transaction_status", nullable = false)
     private Boolean transactionStatus = false;
 

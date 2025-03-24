@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class AccountService {
         Optional<User> user = userService.getCurrentUser();
         Account account = Account.builder()
                 .user(user.get())
-                .accountNo(null)
+                .accountNo(generateAccountNumber())
                 .username(accountInputDto.getUsername() != null ? accountInputDto.getUsername(): user.get().getUserName())
                 .dailyTransferLimit(accountInputDto.getDailyTransferLimit())
                 .oneTimeTransferLimit(accountInputDto.getOneTimeTransferLimit())
@@ -55,5 +56,21 @@ public class AccountService {
     public String getAccountState(int accountId) {
         String accountState = accountRepository.findAccountStateById(accountId);
         return accountState;
+    }
+
+    public static String generateAccountNumber() {
+        Random random = new Random();
+
+        // 앞 3자리
+        String part1 = String.format("%03d", random.nextInt(1000));
+
+        // 가운데 4자리
+        String part2 = String.format("%04d", random.nextInt(10000));
+
+        // 뒤 4자리
+        String part3 = String.format("%04d", random.nextInt(10000));
+
+        // 3자리-4자리-4자리 형식으로 반환
+        return part1 + "-" + part2 + "-" + part3;
     }
 }
