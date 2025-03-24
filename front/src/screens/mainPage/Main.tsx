@@ -21,7 +21,9 @@ const Main = ({navigation}: {navigation: any}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.grid}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('CheckAccount')}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
         <TouchableOpacity
