@@ -1,59 +1,58 @@
 import {View, StyleSheet, Text} from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Title from '../../components/Title';
 import CheckAccountBox from './CheckAccountBox';
 import BackButton from '../../components/BackButton';
 import {RootStackParamList} from '../../navigation/types';
+import {getHistory} from '../../api/axios';
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../../components/types/CheckAccount';
 
-interface AccountItemProps {
-  accountBank: string;
-  accountNumber: string;
-  balance: number;
-}
-
-interface HistoryItemProps {
-  historyDate: string;
-  historyTime: string;
-  historyType: string;
-  historyWhere: string;
-  historyAccount?: string;
-  historyAmount: number;
-}
-
-const histories: HistoryItemProps[] = [
-  {
-    historyDate: '2024-01-01',
-    historyTime: '12:00:00',
-    historyType: '결제',
-    historyWhere: '현대카드',
-    // historyAccount: '1234-5678-9012-3456',
-    historyAmount: 100000,
-  },
-  {
-    historyDate: '2024-01-01',
-    historyTime: '12:00:00',
-    historyType: '입금',
-    historyWhere: '박수연',
-    historyAccount: '1234-5678-9012-3456',
-    historyAmount: 100000,
-  },
-  {
-    historyDate: '2024-01-01',
-    historyTime: '12:00:00',
-    historyType: '출금',
-    historyWhere: '박수연',
-    historyAccount: '1234-5678-9012-3456',
-    historyAmount: 100000,
-  },
-];
+// const histories: HistoryItemProps[] = [
+//   {
+//     historyDate: '2024-01-01',
+//     historyTime: '12:00:00',
+//     historyType: '결제',
+//     historyWhere: '현대카드',
+//     // historyAccount: '1234-5678-9012-3456',
+//     historyAmount: 100000,
+//   },
+//   {
+//     historyDate: '2024-01-01',
+//     historyTime: '12:00:00',
+//     historyType: '입금',
+//     historyWhere: '박수연',
+//     historyAccount: '1234-5678-9012-3456',
+//     historyAmount: 100000,
+//   },
+//   {
+//     historyDate: '2024-01-01',
+//     historyTime: '12:00:00',
+//     historyType: '출금',
+//     historyWhere: '박수연',
+//     historyAccount: '1234-5678-9012-3456',
+//     historyAmount: 100000,
+//   },
+// ];
 
 const CheckHistory = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistory'>>();
 
   const accounts = route.params?.selectedAccount;
+  const [histories, setHistories] = useState<HistoryItemProps[]>([]);
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const data = await getHistory(accounts.id);
+      setHistories(data);
+    };
+    fetchAccounts();
+  }, [accounts.id]);
 
   const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
     // 계좌 선택 시 처리할 로직
@@ -67,9 +66,9 @@ const CheckHistory = () => {
       <Title title="내역 조회" />
       {/* 선택된 계좌 정보 표시 */}
       <View style={styles.accountInfo}>
-        <Text style={styles.accountBank}>{accounts?.accountBank}</Text>
-        <Text style={styles.accountNumber}>{accounts?.accountNumber}</Text>
-        <Text style={styles.balance}>잔액: {accounts?.balance}원</Text>
+        {/* <Text style={styles.accountBank}>{accounts?.accountBank}</Text> */}
+        <Text style={styles.accountNumber}>{accounts?.accountNo}</Text>
+        <Text style={styles.balance}>잔액: {accounts?.accountBalance}원</Text>
       </View>
       <CheckAccountBox
         data={histories}

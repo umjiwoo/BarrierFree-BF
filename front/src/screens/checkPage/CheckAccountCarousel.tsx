@@ -7,22 +7,10 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-
-interface AccountItemProps {
-  accountBank: string;
-  accountNumber: string;
-  balance: number;
-}
-
-interface HistoryItemProps {
-  historyDate: string;
-  historyTime: string;
-  historyType: string;
-  historyWhere: string;
-  historyAccount?: string;
-  historyAmount: number;
-}
-
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../../components/types/CheckAccount';
 interface CarouselProps {
   data: AccountItemProps[] | HistoryItemProps[];
   type: 'account' | 'history';
@@ -60,13 +48,11 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.account}>
-            <Text style={styles.accountBank}>{accountItem.accountBank}</Text>
-            <Text style={styles.accountNumber}>
-              {accountItem.accountNumber}
-            </Text>
-            {accountItem.balance && (
+            {/* <Text style={styles.accountBank}>{accountItem.accountBank}</Text> */}
+            <Text style={styles.accountNumber}>{accountItem.accountNo}</Text>
+            {accountItem.accountBalance && (
               <Text style={styles.accountBalance}>
-                잔액 : {accountItem.balance} 원
+                잔액 : {accountItem.accountBalance} 원
               </Text>
             )}
           </View>
@@ -80,17 +66,23 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.history}>
-            <Text style={styles.historyDate}>{historyItem.historyDate}</Text>
-            <Text style={styles.historyTime}>{historyItem.historyTime}</Text>
-            <Text style={styles.historyType}>{historyItem.historyType}</Text>
-            <Text style={styles.historyWhere}>{historyItem.historyWhere}</Text>
-            {historyItem.historyAccount && (
+            <Text style={styles.historyDate}>
+              {historyItem.transactionDate}
+            </Text>
+            {/* <Text style={styles.historyTime}>{historyItem.historyTime}</Text> */}
+            <Text style={styles.historyType}>
+              {historyItem.transactionType}
+            </Text>
+            <Text style={styles.historyWhere}>
+              {historyItem.transactionName}
+            </Text>
+            {historyItem.transactionAccount && (
               <Text style={styles.historyAccount}>
-                {historyItem.historyAccount}
+                {historyItem.transactionAccount}
               </Text>
             )}
             <Text style={styles.historyAmount}>
-              {historyItem.historyAmount}
+              {historyItem.transactionAmount}
             </Text>
           </View>
         </TouchableOpacity>
