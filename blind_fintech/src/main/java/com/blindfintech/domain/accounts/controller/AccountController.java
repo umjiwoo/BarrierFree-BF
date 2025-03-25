@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
@@ -21,21 +23,21 @@ public class AccountController {
     public ResponseEntity<?> getAccounts() {
         AccountListDto accounts = accountService.getAccounts();
         return ResponseEntity.ok()
-                .body(ResponseDto.success(accounts.getAccounts()));
+                .body(accounts.getAccounts());
     }
 
     @GetMapping("/{account_id}")
     public ResponseEntity<?> getAccountDetails(@PathVariable int account_id) {
         AccountDetailsDto accountDetails = accountService.getAccountDetails(account_id);
         return ResponseEntity.ok()
-                .body(ResponseDto.success(accountDetails.getAccountDetails()));
+                .body(accountDetails.getAccountDetails());
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody AccountInputDto accountInputDto) {
-        Account account = accountService.createAccount(accountInputDto);
+        String accountNo = accountService.createAccount(accountInputDto);
         return ResponseEntity.ok()
-                .body(account);
+                .body(Map.of("accountNo", accountNo));
     }
 
     @GetMapping("/{account_id}/is_locked")

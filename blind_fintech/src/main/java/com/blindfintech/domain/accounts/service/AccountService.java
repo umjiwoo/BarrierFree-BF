@@ -38,7 +38,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Account createAccount(AccountInputDto accountInputDto) {
+    public String createAccount(AccountInputDto accountInputDto) {
         Optional<User> user = userService.getCurrentUser();
         Account account = Account.builder()
                 .user(user.get())
@@ -50,7 +50,7 @@ public class AccountService {
                 .build();
         this.accountRepository.save(account);
 
-        return account;
+        return account.getAccountNo();
     }
 
     public String getAccountState(int accountId) {
