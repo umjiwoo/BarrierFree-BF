@@ -1,8 +1,6 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import BackButton from '../../components/BackButton';
-// import CheckCircle from '../../assets/CheckCircle.svg';
-import checkCircle from '../../assets/checkCircle.png';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Image} from 'react-native';
@@ -17,23 +15,13 @@ const SendSuccess = () => {
           <Text style={styles.titleText}>이체가</Text>
           <Text style={styles.titleText}>완료되었습니다.</Text>
         </View>
-        <Image source={checkCircle} style={styles.checkCircle} />
+        <Image
+          source={require('../../assets/checkCircle.png')}
+          style={styles.checkCircle}
+        />
       </View>
-      {/* {CheckCircle ? (
-        <CheckCircle width={100} height={100} fill="#000000" />
-      ) : (
-        <Text>체크 아이콘</Text>
-      )} */}
       <BackButton
-        textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
-        style={{
-          backgroundColor: '#B6010E',
-          width: '100%',
-          height: 150,
-          marginTop: 10,
-          marginBottom: 5,
-          bottom: 0,
-        }}
+        type="back"
         text="메인으로"
         onPress={() => navigation.navigate('Main')}
       />

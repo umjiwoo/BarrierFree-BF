@@ -41,29 +41,11 @@ const SendFromWhere = ({navigation}: {navigation: any}) => {
 
       {/* 버튼 */}
       <View style={styles.buttonContainer}>
-        <BackButton
-          text="직접 입력"
-          onPress={handleDirectInput}
-          style={{
-            backgroundColor: '#373DCC',
-            width: '100%',
-            height: 70,
-            marginTop: 10,
-            marginBottom: 5,
-          }}
-          textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
-        />
+        <BackButton text="직접 입력" onPress={handleDirectInput} type="input" />
         <BackButton
           text="이전으로"
           onPress={() => navigation.goBack()}
-          style={{
-            backgroundColor: '#B6010E',
-            width: '100%',
-            height: 70,
-            marginTop: 10,
-            marginBottom: 5,
-          }}
-          textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+          type="back"
         />
       </View>
     </View>

@@ -12,6 +12,7 @@ interface BackButtonProps {
   style?: ViewStyle; // 버튼 컨테이너 스타일
   textStyle?: TextStyle; // 텍스트 스타일
   text?: string; // 버튼 텍스트 (기본값: '뒤로')
+  type: 'back' | 'input'; // 버튼 타입 (기본값: 'back') / back -> 빨간 버튼 / input -> 파란 버튼
   onPress?: () => void;
 }
 
@@ -22,16 +23,28 @@ const BackButton: React.FC<BackButtonProps> = ({
   style,
   textStyle,
   text = '뒤로',
+  type,
   onPress,
 }) => {
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
-      style={[styles.container, style]}
+      style={
+        type === 'back'
+          ? [styles.backButton, styles.container, style]
+          : [styles.inputButton, styles.container, style]
+      }
       onPress={onPress ? onPress : () => navigation.goBack()}
       activeOpacity={0.7}>
-      <Text style={[styles.text, textStyle]}>{text}</Text>
+      <Text
+        style={
+          type === 'back'
+            ? [styles.backButtonText, styles.text, textStyle]
+            : [styles.inputButtonText, styles.text, textStyle]
+        }>
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -44,12 +57,34 @@ const styles = StyleSheet.create({
     borderWidth: 1, // 테두리 두께
     borderColor: '#ffffff', // 테두리 색상
     borderRadius: 5, // 테두리 모서리 둥글기
-    backgroundColor: 'transparent', // 배경색 투명
+    // backgroundColor: 'transparent', // 배경색 투명
   },
   text: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '500',
+    fontSize: 20,
+  },
+  backButton: {
+    backgroundColor: '#B6010E',
+    width: '100%',
+    height: 70,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  backButtonText: {
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 20,
+  },
+  inputButton: {
+    backgroundColor: '#373DCC',
+    width: '100%',
+    height: 70,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  inputButtonText: {
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 20,
   },
 });
 

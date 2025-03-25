@@ -54,14 +54,7 @@ const SendFromWhere = () => {
         <BackButton
           text="이전으로"
           onPress={() => navigation.goBack()}
-          style={{
-            backgroundColor: '#B6010E',
-            width: '100%',
-            height: 70,
-            marginTop: 10,
-            marginBottom: 5,
-          }}
-          textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+          type="back"
         />
       </View>
     </View>

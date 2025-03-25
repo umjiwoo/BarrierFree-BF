@@ -8,7 +8,6 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
-import {TextInput} from 'react-native-gesture-handler';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
@@ -68,14 +67,7 @@ const SendInputPage = () => {
           <View style={styles.buttonContainer}>
             <BackButton
               text="확인"
-              style={{
-                backgroundColor: '#373DCC',
-                width: '100%',
-                height: 70,
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              type="input"
               onPress={() => {
                 navigation.navigate('SendToWho', {
                   accountNumber: accountNumber,
@@ -84,8 +76,7 @@ const SendInputPage = () => {
             />
             <BackButton
               text="뒤로 가기"
-              style={styles.backButton}
-              textStyle={styles.backButtonText}
+              type="back"
               onPress={() => {
                 navigation.goBack();
               }}
@@ -101,23 +92,12 @@ const SendInputPage = () => {
           <View style={styles.buttonContainer}>
             <BackButton
               text="확인"
-              style={{
-                backgroundColor: '#373DCC',
-                width: '100%',
-                height: 70,
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              type="input"
               onPress={() => {
                 navigation.navigate('SendInputPage', {type: 'money'});
               }}
             />
-            <BackButton
-              text="뒤로 가기"
-              style={styles.backButton}
-              textStyle={styles.backButtonText}
-            />
+            <BackButton text="뒤로 가기" type="back" />
           </View>
         </View>
       );
@@ -129,22 +109,17 @@ const SendInputPage = () => {
           <View style={styles.buttonContainer}>
             <BackButton
               text="확인"
-              style={{
-                backgroundColor: '#373DCC',
-                width: '100%',
-                height: 70,
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              type="input"
               onPress={() => {
                 navigation.navigate('RemittanceInformation');
               }}
             />
             <BackButton
               text="뒤로 가기"
-              style={styles.backButton}
-              textStyle={styles.backButtonText}
+              type="back"
+              onPress={() => {
+                navigation.goBack();
+              }}
             />
           </View>
         </View>
@@ -157,22 +132,17 @@ const SendInputPage = () => {
           <View style={styles.buttonContainer}>
             <BackButton
               text="확인"
-              style={{
-                backgroundColor: '#373DCC',
-                width: '100%',
-                height: 70,
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+              type="input"
               onPress={() => {
                 navigation.navigate('RemittanceConfirm');
               }}
             />
             <BackButton
               text="뒤로 가기"
-              style={styles.backButton}
-              textStyle={styles.backButtonText}
+              type="back"
+              onPress={() => {
+                navigation.goBack();
+              }}
             />
           </View>
         </View>
@@ -212,18 +182,6 @@ const styles = StyleSheet.create({
     // marginBottom: 20,
     width: '100%',
     bottom: 0,
-  },
-  backButton: {
-    backgroundColor: '#B6010E',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  backButtonText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 20,
   },
 });
 

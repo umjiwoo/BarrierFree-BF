@@ -85,8 +85,7 @@ const CheckHistory = () => {
         <BackButton
           text="이전으로"
           onPress={() => navigation.goBack()}
-          style={styles.button}
-          textStyle={styles.buttonText}
+          type="back"
         />
       </View>
     </View>
@@ -139,17 +138,5 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: 35,
     fontWeight: 'bold',
-  },
-  button: {
-    backgroundColor: '#B6010E',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 20,
   },
 });
