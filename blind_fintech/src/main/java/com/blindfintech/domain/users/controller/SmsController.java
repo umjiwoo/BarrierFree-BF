@@ -1,9 +1,9 @@
 package com.blindfintech.domain.users.controller;
 
-import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.domain.users.dto.SmsDto;
 import com.blindfintech.domain.users.service.SmsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,15 +13,15 @@ public class SmsController {
     private final SmsService smsService;
 
     @PostMapping("/send")
-    public ResponseDto<String> sendMessage(@RequestBody SmsDto smsDto) {
-
+    public ResponseEntity<String> sendMessage(@RequestBody SmsDto smsDto) {
+        System.out.println("send: " + smsDto);
         smsService.sendMessage(smsDto.getPhoneNumber());
-        return ResponseDto.success("SMS 전송 성공"); // 성공 응답
-     }
+        return ResponseEntity.ok("SMS 전송 성공");
+    }
 
-     @PostMapping("/verify")
-    public ResponseDto<String> verifyMessage(@RequestBody SmsDto smsDto) {
-        smsService.verifyCode(smsDto.getPhoneNumber(),smsDto.getVerificationCode());
-        return ResponseDto.success("");
-     }
+    @PostMapping("/verify")
+    public ResponseEntity<String> verifyMessage(@RequestBody SmsDto smsDto) {
+        smsService.verifyCode(smsDto.getPhoneNumber(), smsDto.getVerificationCode());
+        return ResponseEntity.ok("인증 성공");
+    }
 }

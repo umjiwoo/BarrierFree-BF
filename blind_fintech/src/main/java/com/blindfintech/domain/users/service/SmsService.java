@@ -31,7 +31,7 @@ public class SmsService {
 //        throw new Exception()
 //    }
         String verificationCode = generateVerificationCode();
-
+        System.out.println("verificationCode: " + verificationCode);
         Message message = new Message();
         message.setFrom(smsSender);
         message.setTo(phoneNum);
@@ -48,17 +48,21 @@ public class SmsService {
 
     public void verifyCode(String phoneNum, String verificationCode) {
         String savedCode = getSavedCode(phoneNum);
-
-        redisRepository.delete(phoneNum);
+        if (!savedCode.equals(verificationCode)) {
+            throw new BadRequestException(UserExceptionCode.USER_OTP_MISMATCH);
+        }
+        redisRepository.delete(phoneNum);  // 코드 검증 후 삭제
     }
+
 
     private String getSavedCode(String phoneNum) {
         String savedCode = (String) redisRepository.get(phoneNum);
-        if (savedCode != null) {
-            throw new BadRequestException(UserExceptionCode.USER_OTP_EXPIRED);
+        if (savedCode == null) {
+            throw new BadRequestException(UserExceptionCode.USER_OTP_EXPIRED);  // null일 때 예외 던져야 함
         }
         return savedCode;
     }
+
     /*private void validateCodeMatch(String storedCode, String inputCode) {
         if(!storedCode.equals(inputCode)) {
             throw new UserException(UserErrorCode.USER_OTP_MISMATCH);
