@@ -36,7 +36,13 @@ const SendFromWhere = () => {
 
   return (
     <View style={styles.container}>
-      <Title title="계좌 조회" />
+      <View style={styles.titleContainer}>
+        <Title title="계좌 조회" />
+        {/* <Image
+          source={require('../../assets/home.png')}
+          style={styles.checkAccountImage}
+        /> */}
+      </View>
       <CheckAccountBox
         data={accounts}
         type="account"
@@ -76,5 +82,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     bottom: 0,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    justifyContent: 'space-around',
+  },
+  checkAccountImage: {
+    width: 40,
+    height: 40,
   },
 });

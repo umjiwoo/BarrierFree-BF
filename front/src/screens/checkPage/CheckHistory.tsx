@@ -36,7 +36,7 @@ const histories: HistoryItemProps[] = [
     historyTime: '12:00:00',
     historyType: '계좌 입금',
     historyWhere: '박수연',
-    historyAccount: '1234-5678-9012-3456',
+    historyAccount: '1234-5678-9012',
     historyAmount: 100000,
   },
   {
@@ -44,7 +44,7 @@ const histories: HistoryItemProps[] = [
     historyTime: '12:00:00',
     historyType: '계좌 출금',
     historyWhere: '박수연',
-    historyAccount: '1234-5678-9012-3456',
+    historyAccount: '1234-5678-9012',
     historyAmount: 100000,
   },
 ];
@@ -85,14 +85,8 @@ const CheckHistory = () => {
         <BackButton
           text="이전으로"
           onPress={() => navigation.goBack()}
-          style={{
-            backgroundColor: '#B6010E',
-            width: '100%',
-            height: 70,
-            marginTop: 10,
-            marginBottom: 5,
-          }}
-          textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+          style={styles.button}
+          textStyle={styles.buttonText}
         />
       </View>
     </View>
@@ -145,5 +139,17 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: 35,
     fontWeight: 'bold',
+  },
+  button: {
+    backgroundColor: '#B6010E',
+    width: '100%',
+    height: 70,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 20,
   },
 });

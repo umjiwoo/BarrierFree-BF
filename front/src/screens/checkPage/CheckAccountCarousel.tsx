@@ -86,19 +86,32 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           activeOpacity={0.9}>
           <View style={styles.history}>
             <View style={styles.historyDateContainer}>
-              <Text style={styles.historyDate}>{historyItem.historyDate}</Text>
-              <Text style={styles.historyTime}>{historyItem.historyTime}</Text>
-            </View>
-            <Text style={styles.historyType}>{historyItem.historyType}</Text>
-            <View style={styles.historyWhereContainer}>
-              <Text style={styles.historyWhere}>
-                {historyItem.historyWhere}
-              </Text>
-              {historyItem.historyAccount && (
-                <Text style={styles.historyAccount}>
-                  {historyItem.historyAccount}
+              <Text style={styles.historyDateTitle}>일시</Text>
+              <View style={styles.historyDateContent}>
+                <Text style={styles.historyDate}>
+                  {historyItem.historyDate}
                 </Text>
-              )}
+                <Text style={styles.historyTime}>
+                  {historyItem.historyTime}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.historyTypeContainer}>
+              <Text style={styles.historyTypeTitle}>거래유형</Text>
+              <Text style={styles.historyType}>{historyItem.historyType}</Text>
+            </View>
+            <View style={styles.historyWhereContainer}>
+              <Text style={styles.historyWhereTitle}>거래구분</Text>
+              <View style={styles.historyWhereContent}>
+                <Text style={styles.historyWhere}>
+                  {historyItem.historyWhere}
+                </Text>
+                {historyItem.historyAccount && (
+                  <Text style={styles.historyAccount}>
+                    {historyItem.historyAccount}
+                  </Text>
+                )}
+              </View>
             </View>
             {historyItem.historyType === '계좌 입금' ? (
               <View style={styles.historyAmountContainer}>
@@ -242,7 +255,20 @@ const styles = StyleSheet.create({
   },
   historyDateContainer: {
     display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 5,
+  },
+  historyDateTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyDateContent: {
+    display: 'flex',
     flexDirection: 'column',
+    alignItems: 'flex-end',
     gap: 5,
   },
   historyDate: {
@@ -255,6 +281,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#24282B',
   },
+  historyTypeContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 5,
+  },
+  historyTypeTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#24282B',
+    alignSelf: 'flex-end',
+  },
   historyType: {
     fontSize: 30,
     fontWeight: 'bold',
@@ -262,7 +301,20 @@ const styles = StyleSheet.create({
   },
   historyWhereContainer: {
     display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 5,
+  },
+  historyWhereTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#24282B',
+  },
+  historyWhereContent: {
+    display: 'flex',
     flexDirection: 'column',
+    alignItems: 'flex-end',
     gap: 5,
   },
   historyWhere: {
@@ -271,7 +323,7 @@ const styles = StyleSheet.create({
     color: '#24282B',
   },
   historyAccount: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
   },
@@ -283,12 +335,12 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   historyAmountTitle: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
   },
   historyAmount: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#24282B',
   },
