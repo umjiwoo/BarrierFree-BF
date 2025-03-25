@@ -1,7 +1,6 @@
 package com.blindfintech.domain.transction.entity;
 
 import com.blindfintech.domain.accounts.entity.Account;
-import com.blindfintech.domain.bank.entity.Bank;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,14 +17,9 @@ import java.time.Instant;
 @Table(name = "account_transaction")
 public class AccountTransaction {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id", nullable = false)
     private Integer id;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "transaction_uuid", nullable = false, referencedColumnName = "transaction_uuid")
-    private TransactionLog transactionUuid;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -61,13 +55,16 @@ public class AccountTransaction {
     private String transactionAccount;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "transaction_bank_id", nullable = false)
-    private Bank transactionBank;
+    @Column(name = "transaction_bank_id", nullable = false)
+    private Integer transactionBankId;
 
     @NotNull
     @Column(name = "transaction_status", nullable = false)
     private Boolean transactionStatus = false;
+
+    @Size(max = 36)
+    @NotNull
+    @Column(name = "transaction_uuid", nullable = false, length = 36)
+    private String transactionUuid;
 
 }
