@@ -1,6 +1,7 @@
 package com.blindfintech.domain.users.service;
 
 import com.blindfintech.common.exception.BadRequestException;
+import com.blindfintech.domain.users.converter.UserConverter;
 import com.blindfintech.domain.users.dto.UserDto;
 import com.blindfintech.domain.users.entity.User;
 import com.blindfintech.domain.users.exception.UserExceptionCode;
@@ -10,8 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-import java.util.Base64;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -20,38 +20,28 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    //아이디 중복확인
+    // 아이디 중복 확인
     public void checkUserIdExists(String id) {
-        if (userRepository.existsById(id)){
+        if (userRepository.existsById(id)) {
             throw new BadRequestException(UserExceptionCode.USER_ALREADY_EXISTS);
         }
     }
-
     // 회원가입
     public void signUp(UserDto userDto) {
-        String randomSalt = generateSalt();
-        String pwd = userDto.getPassword();
-        String hashedPassword = BCrypt.hashpw(userDto.getPassword(), randomSalt);
+        log.info("회원가입 요청: {}", userDto);
 
-        User user = new User();
-        user.setPassword(hashedPassword);
+        //BCrypt의 `gensalt()`를 사용하여 안전한 salt 생성
+        String hashedPassword = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt());
+
+        // 해시된 비밀번호 전달하여 중복 코드 제거
+        User user = UserConverter.dtoToEntity(userDto, hashedPassword);
+
+        log.info("저장할 유저 정보: {}", user);
         userRepository.save(user);
-
     }
 
-    private String generateSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
+    // 로그인 - ID로 유저 찾기
+    public Optional<User> getUserByLoginId(String loginId) {
+        return userRepository.findById(loginId);
     }
-
-
-    //로그인
-
-
-    //자동 로그인
-
-    //유저 정보 불러오기
-
 }

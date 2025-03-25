@@ -1,9 +1,6 @@
 package com.blindfintech.domain.users.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -18,6 +15,7 @@ import java.time.LocalDate;
 @Table(name = "users")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가
     @Column(name = "user_id", nullable = false)
     private Integer uid;
 
@@ -48,5 +46,14 @@ public class User {
     @NotNull
     @Column(name = "joined_date", nullable = false)
     private Instant joinedDate;
+
+    public User(String loginId, String password, String userName, LocalDate birthDate, String phoneNumber, Instant joinedDate) {
+        this.id = loginId;
+        this.password = password;
+        this.userName = userName;
+        this.birthDate = birthDate;
+        this.phoneNumber = phoneNumber;
+        this.joinedDate = joinedDate;
+    }
 
 }
