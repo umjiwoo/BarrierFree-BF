@@ -19,54 +19,16 @@ const CheckHistoryDetail = () => {
         <Title title="상세 내역" />
       </View>
       <View style={styles.historyContainer}>
-        <View style={styles.historyDateContainer}>
-          <Text style={styles.historyDateTitle}>일시</Text>
-          <View style={styles.historyDateContent}>
-            <Text style={styles.historyDate}>{history.historyDate}</Text>
-            <Text style={styles.historyTime}>{history.historyTime}</Text>
-          </View>
-        </View>
-        <View style={styles.historyTypeContainer}>
-          <Text style={styles.historyTypeTitle}>거래유형</Text>
-          <Text style={styles.historyType}>{history.historyType}</Text>
-        </View>
-        <View style={styles.historyWhereContainer}>
-          <Text style={styles.historyWhereTitle}>거래구분</Text>
-          <View style={styles.historyWhereContent}>
-            <Text style={styles.historyWhere}>{history.historyWhere}</Text>
-            {history.historyAccount && (
-              <Text style={styles.historyAccount}>
-                {history.historyAccount}
-              </Text>
-            )}
-          </View>
-        </View>
-        <View style={styles.historyAmountContainer}>
-          <Text style={styles.historyAmountTitle}>거래금액</Text>
-          {history.historyType === '계좌 입금' ? (
-            <View style={styles.historyAmountPositiveContainer}>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountPositive]}>
-                입금
-              </Text>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountPositive]}>
-                {history.historyAmount} 원
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.historyAmountNegativeContainer}>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountNegative]}>
-                출금
-              </Text>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountNegative]}>
-                {history.historyAmount} 원
-              </Text>
-            </View>
-          )}
-        </View>
+        <Text style={styles.historyDate}>{history.transactionDate}</Text>
+        {/* <Text style={styles.historyTime}>{history.historyTime}</Text> */}
+        <Text style={styles.historyType}>{history.transactionType}</Text>
+        <Text style={styles.historyWhere}>{history.transactionName}</Text>
+        {history.transactionAccount && (
+          <Text style={styles.historyAccount}>
+            {history.transactionAccount}
+          </Text>
+        )}
+        <Text style={styles.historyAmount}>{history.transactionAmount}</Text>
       </View>
 
       {/* 버튼 */}
