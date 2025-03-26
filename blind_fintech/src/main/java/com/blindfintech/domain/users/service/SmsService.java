@@ -31,8 +31,7 @@ public class SmsService {
 //        throw new Exception()
 //    }
         String verificationCode = generateVerificationCode();
-        System.out.println("verificationCode: " + verificationCode);
-        Message message = new Message();
+         Message message = new Message();
         message.setFrom(smsSender);
         message.setTo(phoneNum);
         message.setText("[Blind Fin] 인증 번호는 " + verificationCode + "입니다.");
