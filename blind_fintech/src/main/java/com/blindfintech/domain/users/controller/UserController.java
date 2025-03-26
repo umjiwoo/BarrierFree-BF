@@ -15,20 +15,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/check-id")
-    public ResponseEntity<String> checkId(@RequestParam(name = "userLoginId") String id) {
+    public ResponseEntity<?> checkId(@RequestParam(name = "userLoginId") String id) {
         try {
             userService.checkUserIdExists(id);
-            return ResponseEntity.ok("사용 가능한 ID");  // ID가 존재하지 않으면 사용 가능하다는 메시지
+            return ResponseEntity.ok().build();  // 문구 없이 200 OK 반환
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 ID입니다.");  // ID가 이미 존재할 경우
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 ID입니다.");
         }
     }
 
 
+
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody UserDto userDto) {
-        System.out.println("signUp: " + userDto);
-        System.out.println(userDto);
         userService.signUp(userDto);
         return ResponseEntity.ok().build();
     }
