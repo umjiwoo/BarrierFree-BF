@@ -13,7 +13,6 @@ import java.time.Instant;
 @AllArgsConstructor
 public class UserDto {
     private String userName;
-    private String loginId;
     private String password;
     private String phoneNumber;
     private String birthDate;

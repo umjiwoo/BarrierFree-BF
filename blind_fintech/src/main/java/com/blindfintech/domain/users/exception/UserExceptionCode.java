@@ -4,6 +4,7 @@ import com.blindfintech.common.exception.ExceptionCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// Use는 1000번대 부터 시작
 @RequiredArgsConstructor
 @Getter
 public enum UserExceptionCode implements ExceptionCode {

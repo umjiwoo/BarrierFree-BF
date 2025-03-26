@@ -12,7 +12,6 @@ public class UserConverter {
 
     public static User dtoToEntity(UserDto userDto, String encryptedPassword) {
         return new User(
-                userDto.getLoginId(),
                 encryptedPassword,
                 userDto.getUserName(),
                 LocalDate.parse(userDto.getBirthDate(), DATE_FORMATTER),
