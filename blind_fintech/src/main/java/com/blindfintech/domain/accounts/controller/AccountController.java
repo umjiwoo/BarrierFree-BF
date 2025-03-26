@@ -1,11 +1,8 @@
 package com.blindfintech.domain.accounts.controller;
 
-import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
-import com.blindfintech.domain.accounts.dto.AccountDetailsProjection;
 import com.blindfintech.domain.accounts.dto.AccountInputDto;
 import com.blindfintech.domain.accounts.dto.AccountListDto;
-import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +37,7 @@ public class AccountController {
                 .body(Map.of("accountNo", accountNo));
     }
 
-    @GetMapping("/{account_id}/is_locked")
+    @GetMapping("/{account_id}/account_state")
     public ResponseEntity<?> getAccountState(@PathVariable int account_id) {
         String accountState = accountService.getAccountState(account_id);
         return ResponseEntity.ok()

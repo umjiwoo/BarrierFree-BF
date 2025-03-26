@@ -39,6 +39,7 @@ vcs.xml
 
 ### env ###
 **/.env
+**/redis.properties
 
 ### local ###
 **/DevSecurityConfig
