@@ -36,7 +36,13 @@ const SendFromWhere = () => {
 
   return (
     <View style={styles.container}>
-      <Title title="계좌 조회" />
+      <View style={styles.titleContainer}>
+        <Title title="계좌 조회" />
+        {/* <Image
+          source={require('../../assets/home.png')}
+          style={styles.checkAccountImage}
+        /> */}
+      </View>
       <CheckAccountBox
         data={accounts}
         type="account"
@@ -48,14 +54,7 @@ const SendFromWhere = () => {
         <BackButton
           text="이전으로"
           onPress={() => navigation.goBack()}
-          style={{
-            backgroundColor: '#B6010E',
-            width: '100%',
-            height: 70,
-            marginTop: 10,
-            marginBottom: 5,
-          }}
-          textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
+          type="back"
         />
       </View>
     </View>
@@ -76,5 +75,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     bottom: 0,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    justifyContent: 'space-around',
+  },
+  checkAccountImage: {
+    width: 40,
+    height: 40,
   },
 });

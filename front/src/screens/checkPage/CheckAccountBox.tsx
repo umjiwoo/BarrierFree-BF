@@ -25,23 +25,14 @@ const CheckAccountBox: React.FC<CheckAccountBoxProps> = ({
       setContainerWidth(width);
     }
   };
-  const renderContent = () => {
-    if (type === 'account') {
-      return (
-        <View style={styles.accountBox} onLayout={handleLayout}>
-          <Carousel data={data} onSelect={onSelect} type={type} />
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.accountBox} onLayout={handleLayout}>
-          <Carousel data={data} onSelect={onSelect} type={type} />
-        </View>
-      );
-    }
-  };
 
-  return <View style={styles.accountBoxContainer}>{renderContent()}</View>;
+  return (
+    <View style={styles.accountBoxContainer}>
+      <View style={styles.accountBox} onLayout={handleLayout}>
+        <Carousel data={data} onSelect={onSelect} type={type} />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
