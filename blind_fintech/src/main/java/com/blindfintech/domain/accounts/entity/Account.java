@@ -37,7 +37,6 @@ public class Account {
     @Column(name = "bank_id", nullable = false)
     private Integer bankId = 999;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "account_no", nullable = false)
     private String accountNo;
@@ -62,7 +61,6 @@ public class Account {
     @Column(name = "one_time_transfer_limit", nullable = false)
     private Integer oneTimeTransferLimit = 5000000;
 
-    @Size(max = 30)
     @NotNull
     @Column(name = "account_password", nullable = false, length = 30)
     private String accountPassword;
@@ -83,5 +81,4 @@ public class Account {
     @Lob
     @Column(name = "account_state", nullable = false)
     private String accountState = "ACTIVE";
-
 }
