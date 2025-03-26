@@ -10,42 +10,36 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseDto<T> {
-    private ResultDto result;
+    private Result result;
     private T body;
-
-    public static <T> ResponseDto<T> success(T data) {
-        return ResponseDto.<T>builder()
-                .result(ResultDto.success())
-                .body(data)
-                .build();
-    }
-
-    public static <T> ResponseDto<T> fail(String errorCode, String msg) {
-        return ResponseDto.<T>builder()
-                .result(ResultDto.fail(errorCode, msg))
-                .build();
-    }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ResultDto {
-        private String msg;
-        private String errorCode;
+    public static class Result {
+        private String code;
+        private String message;
+    }
 
-        public static ResultDto success() {
-            return ResultDto.builder()
-                    .msg("success")
-                    .errorCode(null)
-                    .build();
-        }
+    public static <T> ResponseDto<T> success(String code, String message, T body) {
+        return ResponseDto.<T>builder()
+                .result(new Result(code, message))
+                .body(body)
+                .build();
+    }
 
-        public static ResultDto fail(String errorCode, String msg) {
-            return ResultDto.builder()
-                    .msg(msg)
-                    .errorCode(errorCode)
-                    .build();
-        }
+    public static ResponseDto<Void> success(String code, String message) {
+        return ResponseDto.<Void>builder()
+                .result(new Result(code, message))
+                .body(null)
+                .build();
+    }
+
+    public static ResponseDto<Void> error(String code, String message) {
+        return ResponseDto.<Void>builder()
+                .result(new Result(code, message))
+                .body(null)
+                .build();
     }
 }
