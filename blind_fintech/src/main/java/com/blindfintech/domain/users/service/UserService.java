@@ -37,7 +37,7 @@ public class UserService {
     public void signUp(UserDto userDto) {
         log.info("회원가입 요청: {}", userDto);
 
-        //BCrypt의 `gensalt()`를 사용하여 안전한 salt 생성
+        //BCrypt 암호화
         String hashedPassword = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt());
 
         // 해시된 비밀번호 전달하여 중복 코드 제거
@@ -47,9 +47,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User login(LoginDto loginDto,boolean isAutoLogin,HttpServletResponse response) {
-        if (isAutoLogin){
-            setAutoLogin(loginDto,response);
+    public User login(LoginDto loginDto, boolean isAutoLogin, HttpServletResponse response) {
+        if (isAutoLogin) {
+            setAutoLogin(loginDto, response);
         }
         return authenticate(loginDto);
 
@@ -60,7 +60,6 @@ public class UserService {
         Cookie cookie = new Cookie("autoLogin", token);
         cookie.setPath("/");
         response.addCookie(cookie);
-
     }
 
     private User authenticate(LoginDto loginDto) {
@@ -77,12 +76,12 @@ public class UserService {
     }
 
     // 로그인 - ID로 유저 찾기
-    public Optional<User> getUserByLoginId(String loginId) {
-        return userRepository.findById(loginId);
-    }
+//    public Optional<User> getUserByLoginId(String loginId) {
+//        return userRepository.findById(loginId);
+//    }
 
     public void deleteCookies(HttpServletResponse response) {
-        Cookie cookie = new Cookie("sessionId", null ); // 쿠키 이름 설정 (예: "sessionId")
+        Cookie cookie = new Cookie("sessionId", null); // 쿠키 이름 설정 (예: "sessionId")
         cookie.setHttpOnly(true); //서버에서만 접근 가능
         cookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 만료 시간 7일
         cookie.setPath("/"); // 애플리케이션 전체에서 쿠키 삭제 가능하도록 설정
@@ -90,8 +89,8 @@ public class UserService {
     }
 
 
-    public Optional<User> getUserInfo(String phoneNumber,HttpServletResponse response) {
-    //        User user = userRepository.getUserInfoByPhoneNumber(phoneNumber);
+    public Optional<User> getUserInfo(String phoneNumber, HttpServletResponse response) {
+        //        User user = userRepository.getUserInfoByPhoneNumber(phoneNumber);
         Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
         return user;
     }
@@ -100,7 +99,7 @@ public class UserService {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ( "sessionId".equals(cookie.getName())) {
+                if ("sessionId".equals(cookie.getName())) {
                     cookie.setMaxAge(7 * 24 * 60 * 60);
                     response.addCookie(cookie);
                     break;
@@ -109,7 +108,9 @@ public class UserService {
 
             }
         }
+        return null;
     }
+
 
     public void getUserInfoById(Integer userId) {
     }

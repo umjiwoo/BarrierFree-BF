@@ -22,7 +22,7 @@ public class UserController {
     public ResponseEntity<ResponseDto<Void>> checkId(@RequestParam(name = "userLoginId") String phoneNumber) {
         try {
             userService.checkUserIdExists(phoneNumber);
-            return ResponseEntity.ok(ResponseDto.success(1000, "사용가능한 ID입니다."));
+            return ResponseEntity.ok(ResponseDto.success(200, "사용가능한 ID입니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseDto.error(1001, "중복된 ID입니다."));
@@ -30,22 +30,25 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
         userService.signUp(userDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ResponseDto.success(200, "회원가입 성공"));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<User>> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<ResponseDto<User>> login(@RequestBody LoginDto loginDto,
+                                                   @RequestParam(required = false, defaultValue = "false") boolean isAutoLogin,
+                                                   HttpServletResponse response) {
         System.out.println("login: " + loginDto);
-        User user = userService.login(loginDto);
-        return ResponseEntity.ok(ResponseDto.success(1000,"로그인 성공", user));
+        User user = userService.login(loginDto, isAutoLogin, response);
+        return ResponseEntity.ok(ResponseDto.success(200,"로그인 성공 ",user));
     }
+
 
     @GetMapping("auto-login")
     public ResponseEntity<ResponseDto<Void>> autoLogin(HttpServletResponse response, HttpServletRequest request) {
         userService.autoLogin(request, response);
-        return ResponseEntity.ok(ResponseDto.success(1000,"자동 로그인 성공"));
+        return ResponseEntity.ok(ResponseDto.success(200,"자동 로그인 성공"));
     }
 
     @PostMapping("/logout")
@@ -54,9 +57,9 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.success(1000, "로그아웃 성공"));
     }
 
-    @GetMapping("/infos/{userId}")
-    public ResponseEntity<ResponseDto<Void>>  infos(@PathVariable("userId") Integer userId) {
-        userService.getUserInfoById(userId);
-        return ResponseEntity.ok(ResponseDto.success(1000, "유저 정보 갖고오기"));
-    }
+//    @GetMapping("/infos/{userId}")
+//    public ResponseEntity<ResponseDto<Void>>  infos(@PathVariable("userId") Integer userId) {
+//        userService.getUserInfoById(userId);
+//        return ResponseEntity.ok(ResponseDto.success(1000, "유저 정보 갖고오기"));
+//    }
 }

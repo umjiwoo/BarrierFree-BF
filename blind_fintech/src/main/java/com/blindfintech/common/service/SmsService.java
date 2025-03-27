@@ -1,4 +1,4 @@
-package com.blindfintech.domain.users.service;
+package com.blindfintech.common.service;
 
 
 import com.blindfintech.common.repository.RedisRepository;
@@ -68,8 +68,4 @@ public class SmsService {
         }
     }
 */
-
-
-
-
 }
