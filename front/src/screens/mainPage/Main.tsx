@@ -5,12 +5,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  Vibration,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
-import CustomVibration from '../../components/CustomVibration';
+import {ButtonTabVibrationPress} from '../../components/vibration/ButtonVibrationPress';
 
 const Main = () => {
   const navigationProps =
@@ -24,11 +23,6 @@ const Main = () => {
     navigationProps.navigate('SendFromWhere');
   };
 
-  const handleButtonPress = () => {
-    // Vibration.vibrate([0, 100, 30, 100], false);
-    CustomVibration.vibrateWithAmplitude(500, 50);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.grid}>
@@ -36,7 +30,7 @@ const Main = () => {
           style={styles.button}
           onPress={() => {
             handleCheckAccountPress();
-            handleButtonPress();
+            ButtonTabVibrationPress();
           }}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
