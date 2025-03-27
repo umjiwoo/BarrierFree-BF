@@ -28,8 +28,8 @@ import static com.blindfintech.domain.transction.exception.TransactionExceptionC
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TransctionService {
-    private final TransctionRepository transactionRepository;
+public class TransactionService {
+    private final AccountTransactionRepository accountTransactionRepository;
     private final AccountRepository accountRepository;
     private final BankRepository bankRepository;
 
@@ -43,12 +43,7 @@ public class TransctionService {
 
         Bank accountBank = bankRepository.findBankById(account.getBankId());
         if(accountBank.getBankCode().equals(checkAccountRequest.getTransactionAccountBankCode())){
-            return CheckAccountResultDto.from(
-                    account.getId(),
-                    checkAccountRequest.getTransactionAccountNumber(),
-                    checkAccountRequest.getTransactionAccountBankCode(),
-                    account.getUsername()
-            );
+            return CheckAccountResultDto.from(account.getId(), account.getUsername());
         }else{
             throw new BadRequestException(TransactionExceptionCode.ACCOUNT_NOT_FOUND);
         }

@@ -1,11 +1,10 @@
 package com.blindfintech.domain.transction.controller;
 
-import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
 import com.blindfintech.domain.transction.dto.TransactionResultDto;
-import com.blindfintech.domain.transction.service.TransctionService;
+import com.blindfintech.domain.transction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/accounts/transaction")
 public class TransactionController {
-    private final TransctionService transactionService;
+    private final TransactionService transactionService;
 
     @GetMapping("/check_account")
     public ResponseEntity<CheckAccountResultDto> checkAccount(
