@@ -4,20 +4,26 @@ import com.blindfintech.domain.users.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "account")
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id", nullable = false)
     private Integer id;
 
@@ -28,10 +34,10 @@ public class Account {
     private User user;
 
     @NotNull
+    @Builder.Default
     @Column(name = "bank_id", nullable = false)
-    private Integer bankId;
+    private Integer bankId = 999;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "account_no", nullable = false)
     private String accountNo;
@@ -42,38 +48,38 @@ public class Account {
     private String username;
 
     @NotNull
-    @ColumnDefault("0")
+    @Builder.Default
     @Column(name = "account_balance", nullable = false)
-    private Long accountBalance;
+    private Long accountBalance =0L;
 
     @NotNull
-    @ColumnDefault("10000000")
+    @Builder.Default
     @Column(name = "daily_transfer_limit", nullable = false)
-    private Integer dailyTransferLimit;
+    private Integer dailyTransferLimit = 10000000;
 
     @NotNull
-    @ColumnDefault("5000000")
+    @Builder.Default
     @Column(name = "one_time_transfer_limit", nullable = false)
-    private Integer oneTimeTransferLimit;
+    private Integer oneTimeTransferLimit = 5000000;
 
-    @Size(max = 30)
     @NotNull
     @Column(name = "account_password", nullable = false, length = 30)
     private String accountPassword;
 
     @NotNull
+    @CreatedDate
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     @NotNull
-    @ColumnDefault("0")
+    @Builder.Default
     @Column(name = "failed_attempts", nullable = false)
-    private Integer failedAttempts;
+    private Integer failedAttempts = 0;
 
     @NotNull
-    @ColumnDefault("'ACTIVE'")
+    @Builder.Default
     @Lob
     @Column(name = "account_state", nullable = false)
-    private String accountState;
-
+    private String accountState = "ACTIVE";
 }
