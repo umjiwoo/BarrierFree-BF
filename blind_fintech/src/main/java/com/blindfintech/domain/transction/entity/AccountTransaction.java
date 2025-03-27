@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,9 +29,8 @@ public class AccountTransaction {
     private Account account;
 
     @NotNull
-    @Lob
     @Column(name = "transaction_type", nullable = false)
-    private String transactionType;
+    private TransactionType transactionType;
 
     @Size(max = 32)
     @NotNull
@@ -39,7 +39,7 @@ public class AccountTransaction {
 
     @NotNull
     @Column(name = "transaction_amount", nullable = false)
-    private Integer transactionAmount;
+    private Long transactionAmount;
 
     @NotNull
     @Column(name = "transaction_balance", nullable = false)
@@ -47,7 +47,7 @@ public class AccountTransaction {
 
     @NotNull
     @Column(name = "transaction_date", nullable = false)
-    private Instant transactionDate;
+    private LocalDateTime transactionDate; // TODO 현재 일시 데이터타입 확인 - yeahpeu, 성빈님 어떻게 했는지
 
     @Size(max = 32)
     @NotNull
