@@ -7,6 +7,6 @@ public class TokenException extends BaseException {
     }
 
     public TokenException(String message) {
-        super("INVALID_TOKEN", message);
+        super(401, message);
     }
 }

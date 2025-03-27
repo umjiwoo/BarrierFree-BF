@@ -29,7 +29,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         String errorMessage = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
 
-        ExceptionResponse exception = new ExceptionResponse("BAD_REQUEST", errorMessage);
+        ExceptionResponse exception = new ExceptionResponse(400, errorMessage);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(exception);
