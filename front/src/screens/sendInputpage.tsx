@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {
   RouteProp,
@@ -8,7 +8,9 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
-import {TextInput} from 'react-native-gesture-handler';
+// import {TextInput} from 'react-native-gesture-handler';
+import TimerBasedDigitInput from '../components/TimerBasedDigitInput';
+import { TensorflowModel, loadTensorflowModel } from 'react-native-fast-tflite';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
@@ -21,16 +23,40 @@ type SendInputPageParams = {
 type SendInputPageRouteProp = RouteProp<SendInputPageParams, 'SendInputPage'>;
 
 const SendInputPage = () => {
-  // 네비게이션 객체 가져오기
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-
-  // 상태 관리 임시 추가
   const [accountNumber, setAccountNumber] = React.useState('');
-  // const [bankName, setBankName] = React.useState('');
+  const [isHandwritingVisible, setIsHandwritingVisible] = useState(false);
+  const [currentDigitIndex, setCurrentDigitIndex] = useState(0);
+  const [tfliteModel, setTfliteModel] = useState<TensorflowModel | null>(null);
+  const [modelLoaded, setModelLoaded] = useState(false);
 
-  // 라우트 파라미터에서 type 가져오기
+  // TFLite 모델 로드
+  useEffect(() => {
+    const loadModel = async () => {
+      try {
+        const model = await loadTensorflowModel(require('../assets/handwriting_model.tflite'));
+        setTfliteModel(model);
+        setModelLoaded(true);
+        console.log('TFLite 모델 로드 성공');
+      } catch (error) {
+        console.error('TFLite 모델 로드 실패:', error);
+      }
+    };
+    loadModel();
+  }, []);
+
   const route = useRoute<SendInputPageRouteProp>();
-  const {type} = route.params || {type: 'direct'}; // 기본값 설정
+  const {type = 'directMyAccount'} = route.params || {};
+
+  // 손글씨로 인식된 숫자 처리
+  const handleDigitRecognized = (digit: string) => {
+    setAccountNumber(prev => {
+      const newNumber = prev + digit;
+      console.log('인식된 계좌번호:', newNumber);
+      return newNumber;
+    });
+    setCurrentDigitIndex(prev => prev + 1);
+  };
 
   // 타입에 따라 헤더 타이틀 설정
   useEffect(() => {
@@ -49,48 +75,27 @@ const SendInputPage = () => {
     navigation.setOptions({title});
   }, [navigation, type]);
 
+  // 컴포넌트 마운트 시 directMyAccount인 경우 바로 손글씨 입력 표시
+  useEffect(() => {
+    if (type === 'directMyAccount') {
+      setIsHandwritingVisible(true);
+    }
+  }, [type]);
+
   // 조건에 따라 다른 내용 렌더링
   const renderContent = () => {
     if (type === 'directMyAccount') {
-      // 1. 직접 계좌 입력을 받는 경우
       return (
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>계좌 직접 입력 화면입니다.</Text>
-          <View>
-            {/* <TextInput
-              style={styles.input}
-              value={accountNumber}
-              onChangeText={setAccountNumber}
-              placeholder="계좌번호를 입력해주세요."
-              keyboardType="numeric"
-            /> */}
-          </View>
-          <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              style={{
-                backgroundColor: '#373DCC',
-                width: '100%',
-                height: 70,
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-              textStyle={{color: '#ffffff', fontWeight: '800', fontSize: 20}}
-              onPress={() => {
-                navigation.navigate('SendToWho', {
-                  accountNumber: accountNumber,
-                });
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              style={styles.backButton}
-              textStyle={styles.backButtonText}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          </View>
+          <TimerBasedDigitInput
+            visible={isHandwritingVisible}
+            onClose={() => navigation.goBack()}
+            onDigitRecognized={handleDigitRecognized}
+            currentDigitIndex={currentDigitIndex}
+            maxDigits={12}
+            externalModel={tfliteModel}
+            externalModelLoaded={modelLoaded}
+          />
         </View>
       );
     } else if (type === 'directOtherAccount') {

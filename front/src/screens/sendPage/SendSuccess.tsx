@@ -1,7 +1,6 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import BackButton from '../../components/BackButton';
-// import CheckCircle from '../../assets/CheckCircle.svg';
 import checkCircle from '../../assets/checkCircle.png';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';

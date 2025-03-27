@@ -11,6 +11,11 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
           onPress={() => navigation.navigate('Main')}>
           <Text style={styles.text}>test</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('CameraTest')}>
+          <Text style={styles.text}>카메라 테스트</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

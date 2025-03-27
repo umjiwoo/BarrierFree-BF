@@ -6,6 +6,7 @@ import {
 export type RootStackParamList = {
   HomeScreen: undefined;
   Main: undefined;
+  CameraTest: undefined;
   CheckAccount: {
     selectedAccount: AccountItemProps;
   };
@@ -16,12 +17,14 @@ export type RootStackParamList = {
   CheckHistoryDetail: {
     history: HistoryItemProps;
   };
-  SendFromWhere: {accountNumber: string};
+  SendFromWhere: {accountNumber?: string};
   SendToWho: undefined;
   SendSuccess: undefined;
   ReceivingAccountScreen: undefined;
   RemittanceConfirm: undefined;
   RemittanceInformation: undefined;
-  SendInputPage: undefined;
+  SendInputPage: {
+    type?: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
+  };
   ThreeBtn: undefined;
 };
