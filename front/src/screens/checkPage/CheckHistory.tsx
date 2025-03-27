@@ -12,47 +12,56 @@ import {
   HistoryItemProps,
 } from '../../components/types/CheckAccount';
 
-// const histories: HistoryItemProps[] = [
-//   {
-//     historyDate: '2024-01-01',
-//     historyTime: '12:00:00',
-//     historyType: '결제',
-//     historyWhere: '현대카드',
-//     // historyAccount: '1234-5678-9012-3456',
-//     historyAmount: 100000,
-//   },
-//   {
-//     historyDate: '2024-01-01',
-//     historyTime: '12:00:00',
-//     historyType: '입금',
-//     historyWhere: '박수연',
-//     historyAccount: '1234-5678-9012-3456',
-//     historyAmount: 100000,
-//   },
-//   {
-//     historyDate: '2024-01-01',
-//     historyTime: '12:00:00',
-//     historyType: '출금',
-//     historyWhere: '박수연',
-//     historyAccount: '1234-5678-9012-3456',
-//     historyAmount: 100000,
-//   },
-// ];
+const histories: HistoryItemProps[] = [
+  {
+    id: 1,
+    transactionStatus: true,
+    transactionBankId: 1,
+    transactionBalance: 100000,
+    transactionAccount: '110-262-000720',
+    transactionAmount: 100000,
+    transactionType: 'withdraw',
+    transactionDate: '2024-01-01',
+    transactionName: '박수연',
+  },
+  {
+    id: 2,
+    transactionStatus: true,
+    transactionBankId: 1,
+    transactionBalance: 100000,
+    transactionAccount: '110-262-000720',
+    transactionAmount: 100000,
+    transactionDate: '2024-01-01',
+    transactionType: 'deposit',
+    transactionName: '박수연',
+  },
+  {
+    id: 3,
+    transactionStatus: true,
+    transactionBankId: 1,
+    transactionBalance: 100000,
+    transactionAccount: '110-262-000720',
+    transactionDate: '2024-01-01',
+    transactionType: 'withdraw',
+    transactionAmount: 100000,
+    transactionName: '박수연',
+  },
+];
 
 const CheckHistory = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistory'>>();
 
   const accounts = route.params?.selectedAccount;
-  const [histories, setHistories] = useState<HistoryItemProps[]>([]);
+  // const [histories, setHistories] = useState<HistoryItemProps[]>([]);
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      const data = await getHistory(accounts.id);
-      setHistories(data);
-    };
-    fetchAccounts();
-  }, [accounts.id]);
+  // useEffect(() => {
+  //   const fetchAccounts = async () => {
+  //     const data = await getHistory(accounts.id);
+  //     setHistories(data);
+  //   };
+  //   fetchAccounts();
+  // }, [accounts.id]);
 
   const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
     // 계좌 선택 시 처리할 로직

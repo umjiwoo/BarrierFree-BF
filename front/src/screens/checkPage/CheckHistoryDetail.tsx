@@ -21,14 +21,22 @@ const CheckHistoryDetail = () => {
       <View style={styles.historyContainer}>
         <Text style={styles.historyDate}>{history.transactionDate}</Text>
         {/* <Text style={styles.historyTime}>{history.historyTime}</Text> */}
-        <Text style={styles.historyType}>{history.transactionType}</Text>
+        {/* <Text style={styles.historyType}>{history.transactionType}</Text> */}
         <Text style={styles.historyWhere}>{history.transactionName}</Text>
         {history.transactionAccount && (
           <Text style={styles.historyAccount}>
             {history.transactionAccount}
           </Text>
         )}
-        <Text style={styles.historyAmount}>{history.transactionAmount}</Text>
+        {history.transactionType === 'deposit' ? (
+          <Text style={[styles.historyAmount, styles.plusAmount]}>
+            입금 {history.transactionAmount} 원
+          </Text>
+        ) : (
+          <Text style={[styles.historyAmount, styles.minusAmount]}>
+            출금 {history.transactionAmount} 원
+          </Text>
+        )}
       </View>
 
       {/* 버튼 */}
@@ -181,10 +189,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: 5,
   },
-  historyAmountPositive: {
+  plusAmount: {
     color: '#B6010E',
   },
-  historyAmountNegative: {
+  minusAmount: {
     color: '#373DCC',
   },
 });

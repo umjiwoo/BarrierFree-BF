@@ -70,9 +70,9 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
               {historyItem.transactionDate}
             </Text>
             {/* <Text style={styles.historyTime}>{historyItem.historyTime}</Text> */}
-            <Text style={styles.historyType}>
+            {/* <Text style={styles.historyType}>
               {historyItem.transactionType}
-            </Text>
+            </Text> */}
             <Text style={styles.historyWhere}>
               {historyItem.transactionName}
             </Text>
@@ -81,9 +81,15 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
                 {historyItem.transactionAccount}
               </Text>
             )}
-            <Text style={styles.historyAmount}>
-              {historyItem.transactionAmount}
-            </Text>
+            {historyItem.transactionType === 'deposit' ? (
+              <Text style={[styles.historyAmount, styles.plusAmount]}>
+                입금 {historyItem.transactionAmount} 원
+              </Text>
+            ) : (
+              <Text style={[styles.historyAmount, styles.minusAmount]}>
+                출금 {historyItem.transactionAmount} 원
+              </Text>
+            )}
           </View>
         </TouchableOpacity>
       );
