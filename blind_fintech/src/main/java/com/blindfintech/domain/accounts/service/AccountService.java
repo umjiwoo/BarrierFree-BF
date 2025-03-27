@@ -58,7 +58,7 @@ public class AccountService {
             throw new BadRequestException(ACCOUNT_ALREADY_EXISTS);
         }
 
-        String encodedPassword = passwordEncoder.encode(accountInputDto.getAccountPassword().toString());
+        String encodedPassword = passwordEncoder.encode(accountInputDto.getAccountPassword());
 
         Account account = Account.builder()
                 .user(user.get())
