@@ -10,6 +10,6 @@ public class BadRequestException extends BaseException {
     }
 
     public BadRequestException(String message) {
-        super("BAD_REQUEST", message);
+        super(400, message);
     }
 }

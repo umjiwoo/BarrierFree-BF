@@ -18,25 +18,25 @@ public class ResponseDto<T> {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Result {
-        private String code;
+        private int code;
         private String message;
     }
 
-    public static <T> ResponseDto<T> success(String code, String message, T body) {
+    public static <T> ResponseDto<T> success(int code, String message, T body) {
         return ResponseDto.<T>builder()
                 .result(new Result(code, message))
                 .body(body)
                 .build();
     }
 
-    public static ResponseDto<Void> success(String code, String message) {
+    public static ResponseDto<Void> success(int code, String message) {
         return ResponseDto.<Void>builder()
                 .result(new Result(code, message))
                 .body(null)
                 .build();
     }
 
-    public static ResponseDto<Void> error(String code, String message) {
+    public static ResponseDto<Void> error(int code, String message) {
         return ResponseDto.<Void>builder()
                 .result(new Result(code, message))
                 .body(null)
