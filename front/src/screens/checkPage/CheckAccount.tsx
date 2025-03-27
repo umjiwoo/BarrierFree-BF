@@ -1,7 +1,7 @@
 import {View, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Title from '../../components/Title';
 import CheckAccountBox from './CheckAccountBox';
 import BackButton from '../../components/BackButton';
@@ -9,7 +9,8 @@ import {
   AccountItemProps,
   HistoryItemProps,
 } from '../../components/types/CheckAccount';
-import {getAccounts} from '../../api/axios';
+// import {getAccounts} from '../../api/axios';
+import useTab from '../../components/vibration/useTab';
 
 const SendFromWhere = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -50,13 +51,24 @@ const SendFromWhere = () => {
     },
   ];
 
+  const useTap = useTab();
+
   const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
-    navigation.navigate('CheckHistory', {
-      selectedAccount: item,
-      id: item.id,
-    });
-    console.log('Selected account:', item);
+    useTap.handlePress(() =>
+      navigation.navigate('CheckHistory', {
+        selectedAccount: item,
+        id: item.id,
+      }),
+    );
   };
+  // const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
+  //   navigation.navigate('CheckHistory', {
+  //     selectedAccount: item,
+  //     id: item.id,
+  //   });
+  //   console.log('Selected account:', item);
+  // };
+
   console.log(accounts);
   return (
     <View style={styles.container}>
@@ -73,7 +85,7 @@ const SendFromWhere = () => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="이전으로"
-          onPress={() => navigation.goBack()}
+          onPress={() => useTap.handlePress(() => navigation.goBack())}
           type="back"
         />
       </View>

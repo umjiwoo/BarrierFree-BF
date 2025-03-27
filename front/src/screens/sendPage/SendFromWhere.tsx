@@ -4,6 +4,7 @@ import React from 'react';
 import Title from '../../components/Title';
 import SendAccountBox from './SendAccountBox';
 import BackButton from '../../components/BackButton';
+import useTab from '../../components/vibration/useTab';
 
 const SendFromWhere = ({navigation}: {navigation: any}) => {
   const accounts = [
@@ -19,15 +20,21 @@ const SendFromWhere = ({navigation}: {navigation: any}) => {
     },
   ];
 
+  const useTap = useTab();
+
   const handleSelectAccount = (account: any) => {
     // 계좌 선택 시 처리할 로직
     // 계좌 선택 시 계좌 정보를 전달하고 저장하는 로직
-    navigation.navigate('SendToWho', {selectedAccount: account});
+    useTap.handlePress(() =>
+      navigation.navigate('SendToWho', {selectedAccount: account}),
+    );
     console.log('Selected account:', account);
   };
 
   const handleDirectInput = () => {
-    navigation.navigate('SendInputPage', {type: 'directMyAccount'});
+    useTap.handlePress(() =>
+      navigation.navigate('SendInputPage', {type: 'directMyAccount'}),
+    );
     console.log('직접 입력 버튼 클릭');
   };
 
@@ -44,7 +51,7 @@ const SendFromWhere = ({navigation}: {navigation: any}) => {
         <BackButton text="직접 입력" onPress={handleDirectInput} type="input" />
         <BackButton
           text="이전으로"
-          onPress={() => navigation.goBack()}
+          onPress={() => useTap.handlePress(() => navigation.goBack())}
           type="back"
         />
       </View>

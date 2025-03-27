@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
+  PanResponder,
 } from 'react-native';
 import {
   AccountItemProps,
   HistoryItemProps,
 } from '../../components/types/CheckAccount';
+import {CarouselSwipeVibrationPress} from '../../components/vibration/buttonVibrationPress';
+
 interface CarouselProps {
   data: AccountItemProps[] | HistoryItemProps[];
   type: 'account' | 'history';
@@ -32,6 +35,52 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: evt => {
+        return evt.nativeEvent.touches.length === 2;
+      },
+      // onMoveShouldSetPanResponder: evt => {
+      //   // 모든 터치 이벤트를 PanResponder가 처리하도록 함
+      //   return evt.nativeEvent.touches.length === 2;
+      // },
+      onPanResponderGrant: () => {
+        // 터치 시작 시 스크롤 비활성화
+        if (flatListRef.current) {
+          flatListRef.current.setNativeProps({scrollEnabled: false});
+        }
+      },
+      onPanResponderRelease: () => {
+        // 터치 종료 시 스크롤 다시 활성화
+        if (flatListRef.current) {
+          flatListRef.current.setNativeProps({scrollEnabled: true});
+        }
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (evt.nativeEvent.touches.length === 2) {
+          const {dx} = gestureState;
+          if (Math.abs(dx) > 50) {
+            if (dx > 0 && activeIndex > 0) {
+              flatListRef.current?.scrollToIndex({
+                index: activeIndex - 1,
+                animated: true,
+              });
+              setActiveIndex(activeIndex - 1);
+              CarouselSwipeVibrationPress();
+            } else if (dx < 0 && activeIndex < data.length - 1) {
+              flatListRef.current?.scrollToIndex({
+                index: activeIndex + 1,
+                animated: true,
+              });
+              setActiveIndex(activeIndex + 1);
+              CarouselSwipeVibrationPress();
+            }
+          }
+        }
+      },
+    }),
+  ).current;
 
   const renderItem = ({
     item,
@@ -130,6 +179,7 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
         renderItem={renderItem}
         keyExtractor={(_, index) => index.toString()}
         horizontal
+        // scrollEnabled={false}
         showsHorizontalScrollIndicator={false}
         snapToInterval={ITEM_WIDTH}
         decelerationRate="fast" // 스냅 효과 강화
@@ -143,6 +193,7 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
         pagingEnabled={false} // pagingEnabled를 false로 설정
         disableIntervalMomentum={true}
         directionalLockEnabled={true}
+        {...panResponder.panHandlers}
       />
     </View>
   );

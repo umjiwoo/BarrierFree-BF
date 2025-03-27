@@ -6,18 +6,20 @@ import DetailBox from '../../components/information/DetailBoxConfirm';
 import BackButton from '../../components/BackButton';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
+import useTab from '../../components/vibration/useTab';
 
 const ReceivingConfirmScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const useTap = useTab();
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
-    navigation.navigate('SendSuccess');
+    useTap.handlePress(() => navigation.navigate('SendSuccess'));
   };
 
   const handleBack = () => {
     console.log('이전으로 버튼 클릭');
-    navigation.goBack();
+    useTap.handlePress(() => navigation.goBack());
   };
 
   return (
@@ -29,12 +31,14 @@ const ReceivingConfirmScreen: React.FC = () => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="송금하기"
+          type="input"
           onPress={handleSend}
           style={styles.sendButton}
           textStyle={styles.buttonText}
         />
         <BackButton
           text="이전으로"
+          type="back"
           onPress={handleBack}
           style={styles.backButton}
           textStyle={styles.buttonText}

@@ -4,9 +4,10 @@ import BackButton from '../../components/BackButton';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Image} from 'react-native';
-
+import useTab from '../../components/vibration/useTab';
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const useTap = useTab();
 
   return (
     <View style={styles.container}>
@@ -23,7 +24,7 @@ const SendSuccess = () => {
       <BackButton
         type="back"
         text="메인으로"
-        onPress={() => navigation.navigate('Main')}
+        onPress={() => useTap.handlePress(() => navigation.navigate('Main'))}
       />
     </View>
   );

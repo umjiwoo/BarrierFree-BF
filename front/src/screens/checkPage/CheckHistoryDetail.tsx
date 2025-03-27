@@ -5,9 +5,11 @@ import React from 'react';
 import Title from '../../components/Title';
 import BackButton from '../../components/BackButton';
 import {RootStackParamList} from '../../navigation/types';
+import useTab from '../../components/vibration/useTab';
 
 const CheckHistoryDetail = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const useTap = useTab();
 
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
 
@@ -43,7 +45,7 @@ const CheckHistoryDetail = () => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="이전으로"
-          onPress={() => navigation.goBack()}
+          onPress={() => useTap.handlePress(() => navigation.goBack())}
           type="back"
         />
       </View>

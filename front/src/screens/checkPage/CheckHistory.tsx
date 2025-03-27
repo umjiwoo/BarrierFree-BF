@@ -1,16 +1,17 @@
 import {View, StyleSheet, Text} from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Title from '../../components/Title';
 import CheckAccountBox from './CheckAccountBox';
 import BackButton from '../../components/BackButton';
 import {RootStackParamList} from '../../navigation/types';
-import {getHistory} from '../../api/axios';
+// import {getHistory} from '../../api/axios';
 import {
   AccountItemProps,
   HistoryItemProps,
 } from '../../components/types/CheckAccount';
+import useTab from '../../components/vibration/useTab';
 
 const histories: HistoryItemProps[] = [
   {
@@ -63,11 +64,14 @@ const CheckHistory = () => {
   //   fetchAccounts();
   // }, [accounts.id]);
 
+  const useTap = useTab();
+
   const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
-    // 계좌 선택 시 처리할 로직
-    navigation.navigate('CheckHistoryDetail', {
-      history: item as HistoryItemProps,
-    });
+    useTap.handlePress(() =>
+      navigation.navigate('CheckHistoryDetail', {
+        history: item as HistoryItemProps,
+      }),
+    );
   };
 
   return (
@@ -89,7 +93,7 @@ const CheckHistory = () => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="이전으로"
-          onPress={() => navigation.goBack()}
+          onPress={() => useTap.handlePress(() => navigation.goBack())}
           type="back"
         />
       </View>

@@ -3,6 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import BackButton from '../../components/BackButton'; // 재사용 버튼 컴포넌트
 import SendAccountBox from './SendAccountBox';
 import Title from '../../components/Title';
+import useTab from '../../components/vibration/useTab';
 
 const SendToWho = ({navigation}: {navigation: any}) => {
   const accountData = [
@@ -27,15 +28,19 @@ const SendToWho = ({navigation}: {navigation: any}) => {
     // 필요에 따라 더 많은 계정을 추가할 수 있습니다
   ];
 
+  const useTap = useTab();
+
   const handleSelectAccount = (account: any) => {
-    // 계좌 선택 시 처리할 로직
-    // 계좌 선택 시 계좌 정보를 전달하고 저장하는 로직
-    navigation.navigate('ReceivingAccountScreen', {selectedAccount: account});
+    useTap.handlePress(() =>
+      navigation.navigate('ReceivingAccountScreen', {selectedAccount: account}),
+    );
     console.log('Selected account:', account);
   };
 
   const handleDirectInput = () => {
-    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    useTap.handlePress(() =>
+      navigation.navigate('SendInputPage', {type: 'directOtherAccount'}),
+    );
     console.log('직접 입력 버튼 클릭');
   };
 
@@ -71,7 +76,7 @@ const SendToWho = ({navigation}: {navigation: any}) => {
         <BackButton text="직접 입력" onPress={handleDirectInput} type="input" />
         <BackButton
           text="이전으로"
-          onPress={() => navigation.goBack()}
+          onPress={() => useTap.handlePress(() => navigation.goBack())}
           type="back"
         />
       </View>

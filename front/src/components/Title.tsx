@@ -2,17 +2,28 @@ import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import useTab from './vibration/useTab';
 
 const Title = ({title}: {title: string}) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const useTap = useTab();
+  const handleMainPress = () => {
+    navigation.navigate('Main');
+  };
 
   return (
     <View style={styles.titleContainer}>
       <Text style={styles.title}>{title}</Text>
       <TouchableOpacity
         style={styles.homeButton}
-        onPress={() => navigation.navigate('Main')}>
-        <Image source={require('../assets/home.png')} style={styles.image} />
+        onPress={() => useTap.handlePress(handleMainPress)}>
+        <Image
+          source={require('../assets/home.png')}
+          style={styles.image}
+          accessible={true}
+          accessibilityLabel="메뉴로 돌아가기"
+          accessibilityRole="button"
+        />
       </TouchableOpacity>
     </View>
   );

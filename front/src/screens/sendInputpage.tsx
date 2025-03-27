@@ -8,6 +8,7 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
+import useTab from '../components/vibration/useTab';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
@@ -22,6 +23,7 @@ type SendInputPageRouteProp = RouteProp<SendInputPageParams, 'SendInputPage'>;
 const SendInputPage = () => {
   // 네비게이션 객체 가져오기
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const useTap = useTab();
 
   // 상태 관리 임시 추가
   const [accountNumber, setAccountNumber] = React.useState('');
@@ -30,6 +32,32 @@ const SendInputPage = () => {
   // 라우트 파라미터에서 type 가져오기
   const route = useRoute<SendInputPageRouteProp>();
   const {type} = route.params || {type: 'direct'}; // 기본값 설정
+
+  const handleGoBack = () => {
+    useTap.handlePress(() => navigation.goBack());
+  };
+
+  const handleMyAccount = () => {
+    useTap.handlePress(() =>
+      navigation.navigate('SendToWho', {
+        accountNumber: accountNumber,
+      }),
+    );
+  };
+
+  const handleOtherAccount = () => {
+    useTap.handlePress(() =>
+      navigation.navigate('SendInputPage', {type: 'money'}),
+    );
+  };
+
+  const handleMoney = () => {
+    useTap.handlePress(() => navigation.navigate('RemittanceInformation'));
+  };
+
+  const handlePassword = () => {
+    useTap.handlePress(() => navigation.navigate('RemittanceConfirm'));
+  };
 
   // 타입에 따라 헤더 타이틀 설정
   useEffect(() => {
@@ -55,32 +83,9 @@ const SendInputPage = () => {
       return (
         <View style={styles.contentContainer}>
           <Text style={styles.text}>계좌 직접 입력 화면입니다.</Text>
-          <View>
-            {/* <TextInput
-              style={styles.input}
-              value={accountNumber}
-              onChangeText={setAccountNumber}
-              placeholder="계좌번호를 입력해주세요."
-              keyboardType="numeric"
-            /> */}
-          </View>
           <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                navigation.navigate('SendToWho', {
-                  accountNumber: accountNumber,
-                });
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
+            <BackButton text="확인" type="input" onPress={handleMyAccount} />
+            <BackButton text="뒤로 가기" type="back" onPress={handleGoBack} />
           </View>
         </View>
       );
@@ -90,14 +95,8 @@ const SendInputPage = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
           <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                navigation.navigate('SendInputPage', {type: 'money'});
-              }}
-            />
-            <BackButton text="뒤로 가기" type="back" />
+            <BackButton text="확인" type="input" onPress={handleOtherAccount} />
+            <BackButton text="뒤로 가기" type="back" onPress={handleGoBack} />
           </View>
         </View>
       );
@@ -107,20 +106,8 @@ const SendInputPage = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.text}>금액 입력 화면입니다.</Text>
           <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                navigation.navigate('RemittanceInformation');
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
+            <BackButton text="확인" type="input" onPress={handleMoney} />
+            <BackButton text="뒤로 가기" type="back" onPress={handleGoBack} />
           </View>
         </View>
       );
@@ -130,20 +117,8 @@ const SendInputPage = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
           <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                navigation.navigate('RemittanceConfirm');
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
+            <BackButton text="확인" type="input" onPress={handlePassword} />
+            <BackButton text="뒤로 가기" type="back" onPress={handleGoBack} />
           </View>
         </View>
       );

@@ -9,19 +9,23 @@ import {
 import Title from '../../components/Title';
 import DetailBox from '../../components/information/DetailBoxAccount';
 import BackButton from '../../components/BackButton';
+import useTab from '../../components/vibration/useTab';
 
 const ReceivingAccountScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const useTap = useTab();
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
-    navigation.navigate('SendInputPage', {type: 'money'}); // 금액 입력 페이지로 이동
+    useTap.handlePress(() =>
+      navigation.navigate('SendInputPage', {type: 'money'}),
+    ); // 금액 입력 페이지로 이동
     // alert('송금하기 버튼 클릭됨!');
   };
 
   const handleBack = () => {
     console.log('이전으로 버튼 클릭');
-    navigation.goBack();
+    useTap.handlePress(() => navigation.goBack());
   };
 
   return (
@@ -33,12 +37,14 @@ const ReceivingAccountScreen: React.FC = () => {
       <View style={styles.buttonContainer}>
         <BackButton
           text="송금하기"
+          type="input"
           onPress={handleSend}
           style={styles.sendButton}
           textStyle={styles.buttonText}
         />
         <BackButton
           text="이전으로"
+          type="back"
           onPress={handleBack}
           style={styles.backButton}
           textStyle={styles.buttonText}

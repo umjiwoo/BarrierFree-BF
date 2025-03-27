@@ -9,11 +9,13 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
-import {ButtonTabVibrationPress} from '../../components/vibration/ButtonVibrationPress';
+import useTab from '../../components/vibration/useTab';
 
 const Main = () => {
   const navigationProps =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const useTap = useTab();
 
   const handleCheckAccountPress = () => {
     navigationProps.navigate('CheckAccount');
@@ -28,21 +30,22 @@ const Main = () => {
       <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => {
-            handleCheckAccountPress();
-            ButtonTabVibrationPress();
-          }}>
+          onPress={() => useTap.handlePress(handleCheckAccountPress)}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={handleSendFromWherePress}>
+          onPress={() => useTap.handlePress(handleSendFromWherePress)}>
           <Text style={styles.text}>송금</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => useTap.handlePress()}>
           <Text style={styles.text}>결제</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => useTap.handlePress()}>
           <Text style={styles.text}>마이 페이지</Text>
         </TouchableOpacity>
       </View>
