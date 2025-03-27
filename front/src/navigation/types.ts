@@ -6,9 +6,7 @@ import {
 export type RootStackParamList = {
   HomeScreen: undefined;
   Main: undefined;
-  CheckAccount: {
-    selectedAccount: AccountItemProps;
-  };
+  CheckAccount: undefined;
   CheckHistory: {
     selectedAccount: AccountItemProps;
     history: HistoryItemProps;
@@ -16,7 +14,7 @@ export type RootStackParamList = {
   CheckHistoryDetail: {
     history: HistoryItemProps;
   };
-  SendFromWhere: {accountNumber: string};
+  SendFromWhere: undefined;
   SendToWho: undefined;
   SendSuccess: undefined;
   ReceivingAccountScreen: undefined;

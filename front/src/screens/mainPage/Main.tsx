@@ -5,30 +5,44 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Vibration,
 } from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {RootStackParamList} from '../../navigation/types';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
+import CustomVibration from '../../components/CustomVibration';
 
-const Main = ({navigation}: {navigation: any}) => {
-  // const navigationProps =
-  //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+const Main = () => {
+  const navigationProps =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // const handleSendFromWherePress = () => {
-  //   navigationProps.navigate('SendFromWhere');
-  // };
+  const handleCheckAccountPress = () => {
+    navigationProps.navigate('CheckAccount');
+  };
+
+  const handleSendFromWherePress = () => {
+    navigationProps.navigate('SendFromWhere');
+  };
+
+  const handleButtonPress = () => {
+    // Vibration.vibrate([0, 100, 30, 100], false);
+    CustomVibration.vibrateWithAmplitude(500, 50);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('CheckAccount')}>
+          onPress={() => {
+            handleCheckAccountPress();
+            handleButtonPress();
+          }}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('SendFromWhere')}>
+          onPress={handleSendFromWherePress}>
           <Text style={styles.text}>송금</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
@@ -61,14 +75,17 @@ const styles = StyleSheet.create({
   button: {
     width: '45%', // 2x2 그리드 배치
     height: '50%',
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
+    borderRadius: 12,
+    borderWidth: 3,
+    borderColor: '#7F35D4',
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
   },
   text: {
     fontSize: 40,
-    color: 'white',
+    color: '#7F35D4',
     fontWeight: 'bold',
   },
 });
