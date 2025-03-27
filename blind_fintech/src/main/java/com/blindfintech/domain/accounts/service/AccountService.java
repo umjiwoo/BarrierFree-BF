@@ -11,6 +11,7 @@ import com.blindfintech.domain.users.entity.User;
 import com.blindfintech.domain.users.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +45,20 @@ public class AccountService {
 
     @Transactional
     public String createAccount(AccountInputDto accountInputDto) {
+        String password = accountInputDto.getAccountPassword();
+        if (!StringUtils.isNumeric(password)
+                || 0 > Integer.parseInt(password)
+                || Integer.parseInt(password) >= 10000) {
+            throw new BadRequestException(PASSWORD_ERROR);
+        }
+
         Optional<User> user = userService.getCurrentUser();
         String newAccountNo = generateAccountNumber(user.get().getPhoneNumber());
         if (accountRepository.existsByAccountNo(newAccountNo)) {
             throw new BadRequestException(ACCOUNT_ALREADY_EXISTS);
         }
 
-        String encodedPassword = passwordEncoder.encode(accountInputDto.getAccountPassword());
+        String encodedPassword = passwordEncoder.encode(accountInputDto.getAccountPassword().toString());
 
         Account account = Account.builder()
                 .user(user.get())

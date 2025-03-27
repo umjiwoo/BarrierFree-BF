@@ -1,6 +1,6 @@
 package com.blindfintech.domain.accounts.dto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public interface AccountDetailsProjection {
     Integer getId();
@@ -8,7 +8,7 @@ public interface AccountDetailsProjection {
     String getTransactionName();
     Integer getTransactionAmount();
     Integer getTransactionBalance();
-    Instant getTransactionDate();
+    LocalDateTime getTransactionDate();
     String getTransactionAccount();
     Integer getTransactionBankId();
     Boolean getTransactionStatus();

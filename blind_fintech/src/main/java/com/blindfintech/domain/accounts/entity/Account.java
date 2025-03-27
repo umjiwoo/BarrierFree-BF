@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Getter
 @Builder
@@ -62,14 +63,14 @@ public class Account {
     private Integer oneTimeTransferLimit = 5000000;
 
     @NotNull
-    @Column(name = "account_password", nullable = false, length = 30)
+    @Column(name = "account_password", nullable = false)
     private String accountPassword;
 
     @NotNull
     @CreatedDate
     @Builder.Default
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt = Instant.now();
+    private LocalDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
     @NotNull
     @Builder.Default

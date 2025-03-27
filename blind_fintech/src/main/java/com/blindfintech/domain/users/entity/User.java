@@ -19,11 +19,6 @@ public class User {
     @Column(name = "user_id", nullable = false)
     private Integer id;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "id", nullable = false, length = 50)
-    private String id1;
-
     @Size(max = 255)
     @NotNull
     @Column(name = "password", nullable = false)

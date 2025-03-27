@@ -6,8 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
 
-import java.time.Instant;
+import java.time.*;
 
 @Getter
 @Builder
@@ -46,8 +47,10 @@ public class AccountTransaction {
     private Integer transactionBalance;
 
     @NotNull
+    @CreatedDate
+    @Builder.Default
     @Column(name = "transaction_date", nullable = false)
-    private Instant transactionDate;
+    private LocalDateTime transactionDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();;
 
     @Size(max = 32)
     @NotNull
