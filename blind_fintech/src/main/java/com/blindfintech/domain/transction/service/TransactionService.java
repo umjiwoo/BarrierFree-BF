@@ -64,8 +64,6 @@ public class TransctionService {
             throw new BaseException(INSUFFICIENT_BALANCE);
         }
 
-        // 잔액이 송금 가능한 경우
-        // 메시지 삽입
         // 메시지 발행
         // 1. TransactionDto로 변경
         TransactionDto transactionData = TransactionDto.from(transactionRequest);
