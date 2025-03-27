@@ -1,16 +1,21 @@
 package com.blindfintech.domain.transction.entity;
 
+import com.blindfintech.domain.transction.service.TransactionLogDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "transaction_log")
 public class TransactionLog {
     @Id
@@ -19,17 +24,24 @@ public class TransactionLog {
     private Integer id;
 
     @NotNull
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_state", nullable = false)
-    private String transactionState;
+    private TransactionState transactionState;
 
     @NotNull
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Size(max = 36)
     @NotNull
     @Column(name = "transaction_uuid", nullable = false, length = 36)
     private String transactionUuid;
 
+    public static TransactionLog from(TransactionLogDto transactionLogData) {
+        return TransactionLog.builder()
+                .transactionState(transactionLogData.getTransactionState())
+                .transactionUuid(transactionLogData.getTransactionUuid())
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 }

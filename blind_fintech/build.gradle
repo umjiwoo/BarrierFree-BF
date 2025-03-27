@@ -35,6 +35,8 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+	implementation 'org.springframework.kafka:spring-kafka'
 }
 
 tasks.named('test') {

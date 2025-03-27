@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 public class TransactionRequest {
     private Integer senderAccountId;
-    private String transactionAccountNumber;
-    private String transactionAccountBank;
-    private Integer transactionAmount;
+    private Integer receiverAccountId;
+    private Long transactionAmount;
     private String transactionName;
 }

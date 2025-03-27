@@ -26,8 +26,11 @@ public class TransactionController {
     }
 
     @PostMapping("/send_money")
-    public ResponseEntity<TransactionResultDto> sendMoney(
+    public ResponseEntity<?> sendMoney(
             @RequestBody TransactionRequest transactionRequest){
         return ResponseEntity.ok().body(transactionService.sendMoney(transactionRequest));
+
+        transactionService.produceSendMoney(transactionRequest);
+        return ResponseEntity.ok().body("ok");
     }
 }
