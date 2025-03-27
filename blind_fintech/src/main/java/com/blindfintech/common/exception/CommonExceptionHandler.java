@@ -1,5 +1,6 @@
 package com.blindfintech.common.exception;
 
+import com.blindfintech.common.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         String errorMessage = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
 
-        ExceptionResponse exception = new ExceptionResponse("BAD_REQUEST", errorMessage);
+        ExceptionResponse exception = new ExceptionResponse(400, errorMessage);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(exception);
@@ -45,12 +46,12 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException e) {
+    public ResponseEntity<ResponseDto> handleBadRequestException(BadRequestException e) {
         log.error("errorMessage: {}", e.getMessage());
 
         ExceptionResponse exception = new ExceptionResponse(e.getCode(), e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.error(exception));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
