@@ -7,14 +7,15 @@ import lombok.RequiredArgsConstructor;
 // Use는 1000번대 부터 시작
 @RequiredArgsConstructor
 @Getter
-public enum UserExceptionCode implements ExceptionCode {
+public enum UserStatusCode implements ExceptionCode {
 
     // NOT_FOUND_USER_ID("USER-001", "존재하지 않는 계정입니다."),
     // NOT_FOUND_USER_ID("USER-002", "비밀번호를 다시 확인해주세요.");
 
-    USER_ALREADY_EXISTS("USER-001", "이미 존재하는 아이디입니다."),
+    USER_ALREADY_EXISTS(2001, "이미 존재하는 아이디입니다."),
     USER_OTP_EXPIRED("USER-002", "인증번호가 만료되었습니다."),
-    USER_OTP_MISMATCH("USER-003","인증번호가 일치하지 않습니다." );
+    USER_OTP_MISMATCH("USER-003","인증번호가 일치하지 않습니다." ),
+    USER_LOGIN_MISMATCH(2050,"아이디가 일치하지 않습니다.");
     private final String code;
     private final String message;
 }

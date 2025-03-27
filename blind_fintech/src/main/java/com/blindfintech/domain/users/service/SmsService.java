@@ -2,7 +2,7 @@ package com.blindfintech.domain.users.service;
 
 
 import com.blindfintech.common.repository.RedisRepository;
-import com.blindfintech.domain.users.exception.UserExceptionCode;
+import com.blindfintech.domain.users.exception.UserStatusCode;
 import com.blindfintech.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -48,7 +48,7 @@ public class SmsService {
     public void verifyCode(String phoneNum, String verificationCode) {
         String savedCode = getSavedCode(phoneNum);
         if (!savedCode.equals(verificationCode)) {
-            throw new BadRequestException(UserExceptionCode.USER_OTP_MISMATCH);
+            throw new BadRequestException(UserStatusCode.USER_OTP_MISMATCH);
         }
         redisRepository.delete(phoneNum);  // 코드 검증 후 삭제
     }
@@ -57,7 +57,7 @@ public class SmsService {
     private String getSavedCode(String phoneNum) {
         String savedCode = (String) redisRepository.get(phoneNum);
         if (savedCode == null) {
-            throw new BadRequestException(UserExceptionCode.USER_OTP_EXPIRED);  // null일 때 예외 던져야 함
+            throw new BadRequestException(UserStatusCode.USER_OTP_EXPIRED);  // null일 때 예외 던져야 함
         }
         return savedCode;
     }
