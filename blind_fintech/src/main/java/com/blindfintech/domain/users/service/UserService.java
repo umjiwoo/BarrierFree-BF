@@ -22,7 +22,6 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
 
     // 아이디 중복 확인 - 유저 휴대폰 번호 기준으로

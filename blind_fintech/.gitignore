@@ -38,4 +38,8 @@ vcs.xml
 .vscode/
 
 ### env ###
-.env
+**/.env
+**/redis.properties
+
+### local ###
+**/DevSecurityConfig

@@ -1,5 +1,6 @@
 package com.blindfintech.common.dto;
 
+import com.blindfintech.common.exception.ExceptionResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,9 +37,16 @@ public class ResponseDto<T> {
                 .build();
     }
 
-    public static ResponseDto<Void> error(int code, String message) {
+    public static <T> ResponseDto<T> success(T body) {
+        return ResponseDto.<T>builder()
+                .result(new Result(200, "success"))
+                .body(body)
+                .build();
+    }
+
+    public static ResponseDto<Void> error(ExceptionResponse exception) {
         return ResponseDto.<Void>builder()
-                .result(new Result(code, message))
+                .result(new Result(exception.getCode(), exception.getMessage()))
                 .body(null)
                 .build();
     }
