@@ -19,7 +19,7 @@ const SendAccountBox: React.FC<SendAccountBoxProps> = ({
   accountData,
   onSelectAccount,
 }) => {
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [_containerWidth, setContainerWidth] = useState(0);
 
   const handleLayout = (event: any) => {
     const {width} = event.nativeEvent.layout;

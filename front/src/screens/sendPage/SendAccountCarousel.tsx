@@ -33,13 +33,13 @@ const SendAccountCarousel: React.FC<CarouselProps> = ({
   accountData,
   onSelectAccount,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [_activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
   const renderItem = ({
     item,
-    index,
-  }: {
+  }: // index,
+  {
     item: AccountItemProps;
     index: number;
   }) => {
@@ -88,8 +88,8 @@ const SendAccountCarousel: React.FC<CarouselProps> = ({
   };
 
   // 현재 스크롤 위치를 확인하며 강제로 스냅 적용
-  const handleScroll = (event: any) => {
-    const scrollPosition = event.nativeEvent.contentOffset.x;
+  const handleScroll = (_: any) => {
+    // const scrollPosition = event.nativeEvent.contentOffset.x;
     // 스크롤 방향과 현재 위치 확인으로 스와이프 방향 파악 가능
     // 하지만 여기선 스냅 기능에 의존하므로 구현하지 않음
   };
