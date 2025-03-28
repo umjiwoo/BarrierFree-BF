@@ -20,7 +20,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가
     @Column(name = "user_id", nullable = false)
-    private Integer uid;
+    private Integer id;
 
     @Size(max = 255)
     @NotNull
