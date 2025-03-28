@@ -100,7 +100,12 @@ public class UserService {
         return null;
     }
 
-
+    public Optional<User> getCurrentUser() {
+        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //        User user = (User) authentication.getPrincipal();
+        Optional<User> user = userRepository.findById(1);
+        return user;
+    }
     public void getUserInfoById(Integer userId) {
     }
 }

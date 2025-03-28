@@ -20,13 +20,9 @@ public class UserController {
 
     @GetMapping("/check-id")
     public ResponseEntity<ResponseDto<Void>> checkId(@RequestParam(name = "userLoginId") String phoneNumber) {
-        try {
+
             userService.checkUserIdExists(phoneNumber);
             return ResponseEntity.ok(ResponseDto.success(200, "사용가능한 ID입니다."));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ResponseDto.error(1001, "중복된 ID입니다."));
-        }
     }
 
     @PostMapping("/sign-up")
