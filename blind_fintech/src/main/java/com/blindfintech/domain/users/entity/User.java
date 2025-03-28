@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,9 +43,9 @@ public class User {
 
     @NotNull
     @Column(name = "joined_date", nullable = false)
-    private Instant joinedDate;
+    private LocalDateTime joinedDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();;
 
-    public User(String password, String userName, LocalDate birthDate, String phoneNumber, Instant joinedDate) {
+    public User(String password, String userName, LocalDate birthDate, String phoneNumber, LocalDateTime joinedDate) {
         this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;

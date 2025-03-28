@@ -39,10 +39,8 @@ public class UserService {
 
         //BCrypt 암호화
         String hashedPassword = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt());
-
         // 해시된 비밀번호 전달하여 중복 코드 제거
         User user = UserConverter.dtoToEntity(userDto, hashedPassword);
-
         log.info("저장할 유저 정보: {}", user);
         userRepository.save(user);
     }
@@ -75,11 +73,6 @@ public class UserService {
         return user;
     }
 
-    // 로그인 - ID로 유저 찾기
-//    public Optional<User> getUserByLoginId(String loginId) {
-//        return userRepository.findById(loginId);
-//    }
-
     public void deleteCookies(HttpServletResponse response) {
         Cookie cookie = new Cookie("sessionId", null); // 쿠키 이름 설정 (예: "sessionId")
         cookie.setHttpOnly(true); //서버에서만 접근 가능
@@ -90,7 +83,6 @@ public class UserService {
 
 
     public Optional<User> getUserInfo(String phoneNumber, HttpServletResponse response) {
-        //        User user = userRepository.getUserInfoByPhoneNumber(phoneNumber);
         Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
         return user;
     }
@@ -104,8 +96,6 @@ public class UserService {
                     response.addCookie(cookie);
                     break;
                 }
-
-
             }
         }
         return null;

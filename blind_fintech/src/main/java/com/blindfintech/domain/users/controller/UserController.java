@@ -54,12 +54,12 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<ResponseDto<Void>> logout(HttpServletResponse response) {
         userService.deleteCookies(response);
-        return ResponseEntity.ok(ResponseDto.success(1000, "로그아웃 성공"));
+        return ResponseEntity.ok(ResponseDto.success(200, "로그아웃 성공"));
     }
 
 //    @GetMapping("/infos/{userId}")
 //    public ResponseEntity<ResponseDto<Void>>  infos(@PathVariable("userId") Integer userId) {
 //        userService.getUserInfoById(userId);
-//        return ResponseEntity.ok(ResponseDto.success(1000, "유저 정보 갖고오기"));
+//        return ResponseEntity.ok(ResponseDto.success(200, "유저 정보 갖고오기"));
 //    }
 }
