@@ -1,6 +1,7 @@
 package com.blindfintech.domain.accounts.service;
 
 import com.blindfintech.common.exception.BadRequestException;
+import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.constants.BranchCode;
 import com.blindfintech.domain.accounts.constants.ProductCode;
 import com.blindfintech.domain.accounts.dto.*;
@@ -24,6 +25,7 @@ import static com.blindfintech.domain.accounts.exception.AccountExceptionCode.*;
 @RequiredArgsConstructor
 public class AccountService {
     private final UserService userService;
+    private final SmsService smsService;
     private final AccountRepository accountRepository;
     private final AccountTransactionRepository accountTransactionRepository;
     private final PasswordEncoder passwordEncoder;
@@ -88,5 +90,40 @@ public class AccountService {
         accountNumber.append(phoneNumber);
 
         return accountNumber.toString();
+    }
+
+    @Transactional
+    public IsCorrectPwdDto validatePassword(int account_id, String accountPassword) {
+        Account account = accountRepository.findAccountById(account_id);
+        int failedAttempts = account.getFailedAttempts();
+
+        boolean isLocked = false;
+        boolean isCorrect = false;
+
+        if (failedAttempts < 5) {
+            String correctPassword = account.getAccountPassword();
+            isCorrect = passwordEncoder.matches(accountPassword, correctPassword);
+
+            if (!isCorrect) {
+                failedAttempts = account.failedPassword();
+
+                if (failedAttempts >= 5) {
+                    account.lockAccount();
+                    isLocked = true;
+                }
+            }
+        } else {
+            isLocked = true;
+        }
+        return IsCorrectPwdDto.builder()
+                .isCorrect(isCorrect)
+                .isLocked(isLocked).build();
+    }
+
+    @Transactional
+    public void unlockAccount(int account_id, String phoneNumber, String verificationCode) {
+        smsService.verifyCode(phoneNumber, verificationCode);
+        Account account = accountRepository.findAccountById(account_id);
+        account.unlockAccount();
     }
 }
