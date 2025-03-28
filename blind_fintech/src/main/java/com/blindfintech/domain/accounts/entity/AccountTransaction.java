@@ -29,7 +29,6 @@ public class AccountTransaction {
     private Account account;
 
     @NotNull
-    @Lob
     @Column(name = "transaction_type", nullable = false)
     private String transactionType;
 
@@ -44,13 +43,13 @@ public class AccountTransaction {
 
     @NotNull
     @Column(name = "transaction_balance", nullable = false)
-    private Integer transactionBalance;
+    private Long transactionBalance;
 
     @NotNull
     @CreatedDate
     @Builder.Default
     @Column(name = "transaction_date", nullable = false)
-    private LocalDateTime transactionDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();;
+    private LocalDateTime transactionDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
     @Size(max = 32)
     @NotNull
