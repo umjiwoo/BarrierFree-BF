@@ -1,18 +1,17 @@
-import React, {useState, useRef} from 'react';
+import {Dimensions, StyleSheet, View, Text} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  FlatList,
-  PanResponder,
-} from 'react-native';
+  GestureHandlerRootView,
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
+import Carousel from 'react-native-reanimated-carousel';
 import {
   AccountItemProps,
   HistoryItemProps,
 } from '../../components/types/CheckAccount';
 import {CarouselSwipeVibrationPress} from '../../components/vibration/buttonVibrationPress';
+import {useState, useRef} from 'react';
 
 interface CarouselProps {
   data: AccountItemProps[] | HistoryItemProps[];
@@ -21,71 +20,57 @@ interface CarouselProps {
 }
 
 const {width: screenWidth} = Dimensions.get('window');
-// const ITEM_SPACING = 5; // 아이템 간 간격
-const CONTAINER_PADDING = 15; // 컨테이너 패딩 (SendAccountBox의 padding과 동일)
-// const VISIBLE_ITEMS = 1.0; // 한 화면에 보여질 아이템 개수 (정확히 한 개만 보이게)
-
-// 아이템 너비 계산 수정 - 화면에 딱 맞도록 계산
-const ITEM_WIDTH = (screenWidth - CONTAINER_PADDING * 2) * 0.97;
+const CONTAINER_PADDING = 30;
+const ITEM_WIDTH = screenWidth - CONTAINER_PADDING * 1.5;
+// const ITEM_WIDTH = screenWidth - CONTAINER_PADDING * 2;
 
 const CheckAccountCarousel: React.FC<CarouselProps> = ({
   data,
   type,
   onSelect,
 }) => {
+  console.log('data', data);
   const [activeIndex, setActiveIndex] = useState(0);
-  const flatListRef = useRef<FlatList>(null);
+  const carouselRef = useRef<any>(null);
+  const [isSwipeInProgress, setIsSwipeInProgress] = useState(false);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: evt => {
-        return evt.nativeEvent.touches.length === 2;
-      },
-      // onMoveShouldSetPanResponder: evt => {
-      //   // 모든 터치 이벤트를 PanResponder가 처리하도록 함
-      //   return evt.nativeEvent.touches.length === 2;
-      // },
-      onPanResponderGrant: () => {
-        // 터치 시작 시 스크롤 비활성화
-        if (flatListRef.current) {
-          flatListRef.current.setNativeProps({scrollEnabled: false});
-        }
-      },
-      onPanResponderRelease: () => {
-        // 터치 종료 시 스크롤 다시 활성화
-        if (flatListRef.current) {
-          flatListRef.current.setNativeProps({scrollEnabled: true});
-        }
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        if (evt.nativeEvent.touches.length === 2) {
-          const {dx} = gestureState;
-          if (Math.abs(dx) > 50) {
-            if (dx > 0 && activeIndex > 0) {
-              flatListRef.current?.scrollToIndex({
-                index: activeIndex - 1,
-                animated: true,
-              });
-              setActiveIndex(activeIndex - 1);
-              CarouselSwipeVibrationPress();
-            } else if (dx < 0 && activeIndex < data.length - 1) {
-              flatListRef.current?.scrollToIndex({
-                index: activeIndex + 1,
-                animated: true,
-              });
-              setActiveIndex(activeIndex + 1);
-              CarouselSwipeVibrationPress();
-            }
-          }
-        }
-      },
-    }),
-  ).current;
+  // 두 손가락 제스처 처리
+  const handleGestureEvent = (event: PanGestureHandlerGestureEvent) => {
+    const {numberOfPointers, translationX} = event.nativeEvent;
+    // 이미 스와이프 중이면 무시
+    if (isSwipeInProgress) {
+      return;
+    }
+    if (numberOfPointers === 2 && Math.abs(translationX) > 50) {
+      setIsSwipeInProgress(true);
+      if (translationX > 0 && activeIndex > 0) {
+        // // 오른쪽 스와이프 (이전 아이템)
+        // carouselRef.current?.scrollTo({index: activeIndex - 1});
+        // setActiveIndex(activeIndex - 1);
+        const newIndex = activeIndex - 1;
+        carouselRef.current?.scrollTo({index: newIndex});
+        setActiveIndex(newIndex);
+        CarouselSwipeVibrationPress();
+      } else if (translationX < 0 && activeIndex < data.length - 1) {
+        // // 왼쪽 스와이프 (다음 아이템)
+        // carouselRef.current?.scrollTo({index: activeIndex + 1});
+        // setActiveIndex(activeIndex + 1);
+        const newIndex = activeIndex + 1;
+        carouselRef.current?.scrollTo({index: newIndex});
+        setActiveIndex(newIndex);
+        CarouselSwipeVibrationPress();
+      }
+      // 일정 시간 후 스와이프 상태 초기화
+      setTimeout(() => {
+        setIsSwipeInProgress(false);
+      }, 500); // 애니메이션 시간과 동일하게 설정
+    }
+  };
 
   const renderItem = ({
     item,
-    index,
-  }: {
+  }: // index,
+  {
     item: AccountItemProps | HistoryItemProps;
     index: number;
   }) => {
@@ -93,11 +78,10 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
       const accountItem = item as AccountItemProps;
       return (
         <TouchableOpacity
-          style={[styles.item]}
+          style={styles.item}
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.account}>
-            {/* <Text style={styles.accountBank}>{accountItem.accountBank}</Text> */}
             <Text style={styles.accountNumber}>{accountItem.accountNo}</Text>
             {accountItem.accountBalance && (
               <Text style={styles.accountBalance}>
@@ -111,17 +95,13 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
       const historyItem = item as HistoryItemProps;
       return (
         <TouchableOpacity
-          style={[styles.item]}
+          style={styles.item}
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.history}>
             <Text style={styles.historyDate}>
               {historyItem.transactionDate}
             </Text>
-            {/* <Text style={styles.historyTime}>{historyItem.historyTime}</Text> */}
-            {/* <Text style={styles.historyType}>
-              {historyItem.transactionType}
-            </Text> */}
             <Text style={styles.historyWhere}>
               {historyItem.transactionName}
             </Text>
@@ -145,110 +125,63 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     }
   };
 
-  const getItemLayout = (_: any, index: number) => ({
-    length: ITEM_WIDTH,
-    offset: ITEM_WIDTH * index,
-    index,
-  });
-
-  // 스와이프가 끝났을 때 호출되는 함수
-  const handleMomentumScrollEnd = (event: any) => {
-    const scrollPosition = event.nativeEvent.contentOffset.x;
-    const index = Math.round(scrollPosition / ITEM_WIDTH);
-
-    if (index >= 0 && index < data.length) {
-      // 가장 가까운 페이지로 스냅
-      setTimeout(() => {
-        if (flatListRef.current) {
-          flatListRef.current.scrollToIndex({
-            index,
-            animated: true,
-          });
-        }
-      }, 10);
-
-      setActiveIndex(index);
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(_, index) => index.toString()}
-        horizontal
-        // scrollEnabled={false}
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={ITEM_WIDTH}
-        decelerationRate="fast" // 스냅 효과 강화
-        snapToAlignment="center"
-        getItemLayout={getItemLayout}
-        onMomentumScrollEnd={handleMomentumScrollEnd}
-        scrollEventThrottle={16}
-        initialNumToRender={3}
-        maxToRenderPerBatch={3}
-        windowSize={5}
-        pagingEnabled={false} // pagingEnabled를 false로 설정
-        disableIntervalMomentum={true}
-        directionalLockEnabled={true}
-        {...panResponder.panHandlers}
-      />
-    </View>
+    <GestureHandlerRootView style={styles.container}>
+      <PanGestureHandler
+        onGestureEvent={handleGestureEvent}
+        activeOffsetX={[-10, 10]}>
+        <View style={styles.container}>
+          <Carousel
+            ref={carouselRef}
+            loop={false}
+            width={ITEM_WIDTH}
+            data={data}
+            scrollAnimationDuration={500}
+            onSnapToItem={index => setActiveIndex(index)}
+            renderItem={renderItem}
+            enabled={false} // 일반 스와이프 비활성화
+            mode="parallax"
+            modeConfig={{
+              parallaxScrollingScale: 0.95,
+              parallaxScrollingOffset: 20,
+            }}
+            defaultIndex={0}
+            autoFillData={false}
+            snapEnabled={true}
+            windowSize={1}
+            vertical={false}
+            style={styles.carousel}
+          />
+        </View>
+      </PanGestureHandler>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: '100%',
+  },
+  carousel: {
     width: '100%',
     height: '100%',
-    // paddingHorizontal: CONTAINER_PADDING, // 컨테이너에 패딩 추가
   },
   item: {
-    width: ITEM_WIDTH, // 아이템 너비 적용
+    width: '100%',
     height: '100%',
     padding: 30,
     borderRadius: 12,
-    backgroundColor: '#f8f8f8',
-  },
-  accountName: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginBottom: 3,
-  },
-  accountDate: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    color: '#24282B',
+    // backgroundColor: '#f8f8f8',
+    // borderColor: 'red',
+    // borderWidth: 1,
   },
   account: {
-    display: 'flex',
     flexDirection: 'column',
     gap: 60,
   },
-  accountBankContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 5,
-  },
-  accountBank: {
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
   accountNumber: {
     fontSize: 35,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  accountBalanceContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 5,
-  },
-  accountBalanceTitle: {
-    fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
   },
@@ -258,73 +191,13 @@ const styles = StyleSheet.create({
     color: '#24282B',
   },
   history: {
-    display: 'flex',
     flexDirection: 'column',
     gap: 30,
-  },
-  historyDateContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 5,
-  },
-  historyDateTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  historyDateContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: 5,
   },
   historyDate: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
-  },
-  historyTime: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  historyTypeContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 5,
-  },
-  historyTypeTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#24282B',
-    alignSelf: 'flex-end',
-  },
-  historyType: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  historyWhereContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 5,
-  },
-  historyWhereTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  historyWhereContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: 5,
   },
   historyWhere: {
     fontSize: 30,
@@ -332,18 +205,6 @@ const styles = StyleSheet.create({
     color: '#24282B',
   },
   historyAccount: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  historyAmountContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    gap: 5,
-  },
-  historyAmountTitle: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#24282B',
