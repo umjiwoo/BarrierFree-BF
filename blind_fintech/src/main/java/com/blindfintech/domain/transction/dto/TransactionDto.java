@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class TransactionDto {
     private Integer senderAccountId;
     private Integer receiverAccountId;
-    private Long amount;
+    private Integer amount;
     private String transactionName;
     private LocalDateTime timestamp;
 

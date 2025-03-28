@@ -10,6 +10,6 @@ import lombok.Setter;
 public class TransactionRequest {
     private Integer senderAccountId;
     private Integer receiverAccountId;
-    private Long transactionAmount;
+    private Integer transactionAmount;
     private String transactionName;
 }
