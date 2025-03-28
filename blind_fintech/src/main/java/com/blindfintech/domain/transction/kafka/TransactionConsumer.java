@@ -38,7 +38,7 @@ public class TransactionConsumer {
 
             long offset = record.offset();
             int partition = record.partition();
-            String transactionUuid = UUID.randomUUID().toString() + "-" + partition + "-" + offset;
+            String transactionUuid = "send_money" + "-" + partition + "-" + offset;
 
             TransactionLog transactionLog = TransactionLog.from(
                     TransactionLogDto.from(transactionUuid, TransactionState.PROCESSING));

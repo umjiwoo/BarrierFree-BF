@@ -3,7 +3,9 @@ package com.blindfintech.domain.transction.service;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.common.exception.BaseException;
 import com.blindfintech.domain.accounts.entity.Account;
+import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
+import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
 import com.blindfintech.domain.bank.Repository.BankRepository;
 import com.blindfintech.domain.bank.entity.Bank;
 import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
@@ -11,13 +13,12 @@ import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
 import com.blindfintech.domain.transction.dto.TransactionDto;
 import com.blindfintech.domain.transction.dto.TransactionResultDto;
-import com.blindfintech.domain.transction.entity.AccountTransaction;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.exception.TransactionExceptionCode;
 import com.blindfintech.domain.transction.kafka.TransactionProducer;
-import com.blindfintech.domain.transction.repository.AccountTransactionRepository;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -68,15 +69,16 @@ public class TransactionService {
     }
 
     @Async
-    public TransactionResultDto consumeSendMoney(TransactionDto transactionDto, String transactionUuid){
+    @Transactional
+    public void consumeSendMoney(TransactionDto transactionDto, String transactionUuid){
         log.info("🟢 Received TransactionDto: {}", transactionDto.toString());
 
         // 메시지 처리
-        Long sendAmount = transactionDto.getAmount();
+        Long sendAmount = (long)transactionDto.getAmount();
         TransactionLog transactionLog = null;
 
         // 1. 보내는 계좌 amount 차액
-        Account sender = accountRepository.findByIdWithLock(transactionDto.getSenderAccountId())
+        Account sender = accountRepository.findAccountByIdWithLock(transactionDto.getSenderAccountId())
                 .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
 
         Long senderAccountBalance = sender.getAccountBalance();
@@ -95,7 +97,7 @@ public class TransactionService {
         transactionLogRepository.save(transactionLog);
 
         // 2. 받는 계좌 amount 증액
-        Account receiver = accountRepository.findByIdWithLock(transactionDto.getReceiverAccountId())
+        Account receiver = accountRepository.findAccountByIdWithLock(transactionDto.getReceiverAccountId())
                 .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
 
         Long receiverAccountBalance = receiver.getAccountBalance();
@@ -109,11 +111,10 @@ public class TransactionService {
 
         // TransactoinLog 가 Completed인 경우 AccountTransaction 생성
         // TODO 송금인, 수신인 둘 다 생성돼야 함
-        AccountTransaction accountTransaction = new AccountTransaction();
+//        AccountTransaction accountTransaction = new AccountTransaction();
 //        accountTransaction.setId();
 //        accountTransaction.setAccount();
 
         // TODO 최근 거래 계좌 내역을 저장하는 TransactionHistory 테이블 데이터 생성
-        return TransactionResultDto.from(accountTransaction);
     }
 }

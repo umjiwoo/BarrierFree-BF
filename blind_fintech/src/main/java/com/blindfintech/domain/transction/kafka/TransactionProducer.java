@@ -3,7 +3,6 @@ package com.blindfintech.domain.transction.kafka;
 import com.blindfintech.domain.transction.dto.TransactionDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
-import com.blindfintech.domain.transction.repository.AccountTransactionRepository;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
 import com.blindfintech.domain.transction.service.TransactionLogDto;
 import lombok.AllArgsConstructor;
@@ -43,7 +42,7 @@ public class TransactionProducer {
 
                 long offset = result.getRecordMetadata().offset();
                 int partition = result.getRecordMetadata().partition();
-                String transactionUuid = UUID.randomUUID().toString() + "-" + partition + "-" + offset;
+                String transactionUuid = "send_money" + "-" + partition + "-" + offset;
 
                 // 메시지 전송 성공 시 TransactionLog 데이터 생성 - pending 상태
                 TransactionLog transactionLog = TransactionLog.from(

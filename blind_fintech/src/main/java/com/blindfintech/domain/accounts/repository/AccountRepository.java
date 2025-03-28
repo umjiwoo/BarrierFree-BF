@@ -3,11 +3,14 @@ package com.blindfintech.domain.accounts.repository;
 import com.blindfintech.domain.accounts.dto.AccountProjection;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.users.entity.User;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("""
@@ -29,6 +32,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findAccountById(Integer accountId);
     Optional<Account> findAccountByAccountNo(String accountNumber);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Account> findByIdWithLock(Integer accountId);
+    @Query(value = "SELECT * FROM account WHERE account_id = :accountId FOR UPDATE", nativeQuery = true)
+    Optional<Account> findAccountByIdWithLock(Integer accountId);
 }
