@@ -5,6 +5,27 @@ import {
 import {AxiosResponse} from 'axios';
 import {axiosInstance} from './axios';
 
+interface AccountCreateParams {
+  username: string;
+  dailyTransferLimit: number;
+  oneTimeTransferLimit: number;
+  accountPassword: string;
+}
+
+// 계좌 생성 함수
+const makeAccounts = async (accountData: AccountCreateParams): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axiosInstance.post(
+      '/api/accounts/create',
+      accountData,
+    );
+    return response.data.body;
+  } catch (error) {
+    console.error('계좌 생성 실패:', error);
+    return [];
+  }
+};
+
 // 계좌 조회 함수
 const getAccounts = async (): Promise<AccountItemProps[]> => {
   try {
@@ -40,4 +61,26 @@ const getHistories = async (id: number): Promise<HistoryItemProps[]> => {
   }
 };
 
-export {getAccounts, getHistories};
+// 계좌 잠김 상태 조회 함수
+const getAccountLockStatus = async (id: number): Promise<boolean> => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/accounts/${id}/account_state`,
+    );
+
+    if (response.data.result.code === 200) {
+      console.log('조회 성공');
+      if (response.data.body === 'ACTIVE') {
+        return true;
+      }
+    } else {
+      console.log('조회 실패');
+    }
+    return false;
+  } catch (error) {
+    console.error('계좌 내역 조회 실패:', error);
+    return false;
+  }
+};
+
+export {makeAccounts, getAccounts, getHistories, getAccountLockStatus};
