@@ -1,5 +1,7 @@
 package com.blindfintech.common.config;
 
+import com.blindfintech.common.jwt.JwtAuthenticationFilter;
+import com.blindfintech.common.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +18,16 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+
     /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
