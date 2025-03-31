@@ -35,6 +35,7 @@ public class TransactionService {
     private final BankRepository bankRepository;
 
     private final TransactionProducer producer;
+    private final TransactionProcessor transactionProcessor;
     private final TransactionLogRepository transactionLogRepository;
 
     public CheckAccountResultDto checkAccount(CheckAccountRequest checkAccountRequest) {
@@ -57,7 +58,7 @@ public class TransactionService {
 
         // 잔액이 송금 가능한 금액이 아닌 경우
         if(transactionRequest.getTransactionAmount() > sender.getAccountBalance()){
-            throw new BaseException(INSUFFICIENT_BALANCE);
+            throw new BadRequestException(INSUFFICIENT_BALANCE);
         }
 
         // 메시지 발행
@@ -69,43 +70,17 @@ public class TransactionService {
     }
 
     @Async
-    @Transactional
     public void consumeSendMoney(TransactionDto transactionDto, String transactionUuid){
         log.info("🟢 Received TransactionDto: {}", transactionDto.toString());
 
         // 메시지 처리
-        Long sendAmount = (long)transactionDto.getAmount();
-        TransactionLog transactionLog = null;
-
-        // 1. 보내는 계좌 amount 차액
-        Account sender = accountRepository.findAccountByIdWithLock(transactionDto.getSenderAccountId())
-                .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
-
-        Long senderAccountBalance = sender.getAccountBalance();
-
-        if (senderAccountBalance.compareTo(sendAmount) < 0) {
-            // TransactionLog 데이터 생성 - WITHDRAW_FAILED
-            transactionLog = TransactionLog.from(
-                    TransactionLogDto.from(transactionUuid, TransactionState.WITHDRAW_FAILED));
+        try {
+            transactionProcessor.performSendMoneyTransaction(transactionDto, transactionUuid);
+        }catch(Exception e){
+            TransactionLog transactionLog = TransactionLog.from(
+                    TransactionLogDto.from(transactionUuid, TransactionState.FAILED));
             transactionLogRepository.save(transactionLog);
         }
-
-        sender.setAccountBalance(senderAccountBalance - sendAmount);
-
-        transactionLog = TransactionLog.from(
-                TransactionLogDto.from(transactionUuid, TransactionState.WITHDRAW_COMPLETED));
-        transactionLogRepository.save(transactionLog);
-
-        // 2. 받는 계좌 amount 증액
-        Account receiver = accountRepository.findAccountByIdWithLock(transactionDto.getReceiverAccountId())
-                .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
-
-        Long receiverAccountBalance = receiver.getAccountBalance();
-        receiver.setAccountBalance(receiverAccountBalance - sendAmount);
-
-        transactionLog = TransactionLog.from(
-                TransactionLogDto.from(transactionUuid, TransactionState.WITHDRAW_COMPLETED));
-        transactionLogRepository.save(transactionLog);
 
         // TODO TransactionLog 땡기기 - 웹소켓 이용?
 
