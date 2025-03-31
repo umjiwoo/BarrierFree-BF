@@ -1,6 +1,7 @@
 package com.blindfintech.domain.users.service;
 
 import com.blindfintech.common.exception.BadRequestException;
+import com.blindfintech.common.jwt.JwtUtil;
 import com.blindfintech.domain.users.converter.UserConverter;
 import com.blindfintech.domain.users.dto.LoginDto;
 import com.blindfintech.domain.users.dto.UserDto;
@@ -22,6 +23,8 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
+
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
     // 아이디 중복 확인 - 유저 휴대폰 번호 기준으로
@@ -29,39 +32,37 @@ public class UserService {
         if (userRepository.existsByPhoneNumber(phoneNumber)) {
             throw new BadRequestException(UserStatusCode.USER_ALREADY_EXISTS);
         }
-        return;
     }
 
     // 회원가입
     public void signUp(UserDto userDto) {
         log.info("회원가입 요청: {}", userDto);
 
-        //BCrypt 암호화
+        // 비밀번호 암호화
         String hashedPassword = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt());
-        // 해시된 비밀번호 전달하여 중복 코드 제거
         User user = UserConverter.dtoToEntity(userDto, hashedPassword);
         log.info("저장할 유저 정보: {}", user);
         userRepository.save(user);
     }
 
+    // 로그인
     public User login(LoginDto loginDto, boolean isAutoLogin, HttpServletResponse response) {
+        User user = authenticate(loginDto);
+
         if (isAutoLogin) {
-            setAutoLogin(loginDto, response);
+            String token = jwtUtil.generateToken(user.getPhoneNumber());
+            response.addHeader("Authorization", "Bearer " + token);
+            response.addCookie(new Cookie("token", token));
         }
-        return authenticate(loginDto);
 
+        return user;
     }
 
-    private void setAutoLogin(LoginDto loginDto, HttpServletResponse response) {
-        String token = UUID.randomUUID().toString();
-        Cookie cookie = new Cookie("autoLogin", token);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }
-
+    // 비밀번호 인증
     private User authenticate(LoginDto loginDto) {
         String phoneNumber = loginDto.getPhoneNumber();
         String password = loginDto.getPassword();
+
         User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_LOGIN_MISMATCH));
 
@@ -72,40 +73,51 @@ public class UserService {
         return user;
     }
 
+    // 자동 로그인 설정
+    public void setAutoLogin(HttpServletResponse response) {
+        String token = UUID.randomUUID().toString();
+        Cookie cookie = new Cookie("autoLogin", token);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    // 쿠키 삭제
     public void deleteCookies(HttpServletResponse response) {
-        Cookie cookie = new Cookie("sessionId", null); // 쿠키 이름 설정 (예: "sessionId")
-        cookie.setHttpOnly(true); //서버에서만 접근 가능
-        cookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 만료 시간 7일
-        cookie.setPath("/"); // 애플리케이션 전체에서 쿠키 삭제 가능하도록 설정
-        response.addCookie(cookie); // 응답에 쿠키 추가
+        Cookie cookie = new Cookie("sessionId", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // 즉시 만료
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
-
-    public Optional<User> getUserInfo(String phoneNumber, HttpServletResponse response) {
-        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
-        return user;
+    // 유저 정보 조회
+    public Optional<User> getUserInfo(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber);
     }
 
-    public LoginDto autoLogin(HttpServletRequest request, HttpServletResponse response) {
+    // 자동 로그인 (쿠키 확인 후 갱신)
+    public void autoLogin(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("sessionId".equals(cookie.getName())) {
                     cookie.setMaxAge(7 * 24 * 60 * 60);
                     response.addCookie(cookie);
-                    break;
+                    return;
                 }
             }
         }
-        return null;
     }
 
-    public Optional<User> getCurrentUser() {
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //        User user = (User) authentication.getPrincipal();
-        Optional<User> user = userRepository.findById(1);
-        return user;
+    // 현재 로그인한 사용자 조회 (JWT 토큰 기반)
+    public Optional<User> getCurrentUser(String token) {
+        String phoneNumber = jwtUtil.getUserLoginIdFromToken(token);
+        return userRepository.findByPhoneNumber(phoneNumber);
     }
-    public void getUserInfoById(Integer userId) {
+
+    // ID로 사용자 조회
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_NOT_FOUND));
     }
 }
