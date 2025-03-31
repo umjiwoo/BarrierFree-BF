@@ -10,8 +10,25 @@ const CheckHistoryDetail = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
-
   const history = route.params?.history;
+
+  const formatDateManually = (isoString: string): any => {
+    const date = new Date(isoString);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // 0부터 시작
+    const day = pad(date.getDate());
+    const hour = pad(date.getHours());
+    const minute = pad(date.getMinutes());
+    const second = pad(date.getSeconds());
+
+    return {
+      date: `${year}년 ${month}월 ${day}일`,
+      time: `${hour}:${minute}:${second}`,
+    };
+  };
+  // formatDateManually(history.transactionDate);
 
   return (
     <View style={styles.container}>
@@ -19,16 +36,21 @@ const CheckHistoryDetail = () => {
         <Title title="상세 내역" />
       </View>
       <View style={styles.historyContainer}>
-        <Text style={styles.historyDate}>{history.transactionDate}</Text>
-        {/* <Text style={styles.historyTime}>{history.historyTime}</Text> */}
-        {/* <Text style={styles.historyType}>{history.transactionType}</Text> */}
+        <View style={styles.historyDateContainer}>
+          <Text style={styles.historyDate}>
+            {formatDateManually(history.transactionDate).date}
+          </Text>
+          <Text style={styles.historyTime}>
+            {formatDateManually(history.transactionDate).time}
+          </Text>
+        </View>
         <Text style={styles.historyWhere}>{history.transactionName}</Text>
         {history.transactionAccount && (
           <Text style={styles.historyAccount}>
             {history.transactionAccount}
           </Text>
         )}
-        {history.transactionType === 'deposit' ? (
+        {history.transactionType === 'DEPOSIT' ? (
           <Text style={[styles.historyAmount, styles.plusAmount]}>
             입금 {history.transactionAmount} 원
           </Text>
@@ -88,9 +110,9 @@ const styles = StyleSheet.create({
   },
   historyDateContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 5,
   },
   historyDateTitle: {

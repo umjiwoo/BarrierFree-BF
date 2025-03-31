@@ -9,46 +9,46 @@ import {
   AccountItemProps,
   HistoryItemProps,
 } from '../../components/types/CheckAccount';
-import {getAccounts} from '../../api/axios';
+import {getAccounts} from '../../api/axiosAccount';
 
 const SendFromWhere = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  // const [accounts, setAccounts] = useState<AccountItemProps[]>([]);
+  const [accounts, setAccounts] = useState<AccountItemProps[]>([]);
 
-  // useEffect(() => {
-  //   const fetchAccounts = async () => {
-  //     const data = await getAccounts();
-  //     setAccounts(data);
-  //   };
-  //   fetchAccounts();
-  // }, []);
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const data = await getAccounts();
+      setAccounts(data);
+    };
+    fetchAccounts();
+  }, []);
 
-  const accounts: AccountItemProps[] = [
-    {
-      accountNo: '110-262-000720',
-      accountBalance: 7000000,
-      accountState: 'active',
-      bankId: 1,
-      createdAt: '2021-01-01',
-      dailyTransferLimit: 1000000,
-      failedAttempts: 0,
-      id: 1,
-      oneTimeTransferLimit: 1000000,
-      updatedAt: '2021-01-01',
-    },
-    {
-      accountNo: '110-123-456789',
-      accountBalance: 100000,
-      accountState: 'active',
-      bankId: 1,
-      createdAt: '2021-01-01',
-      dailyTransferLimit: 1000000,
-      failedAttempts: 0,
-      id: 1,
-      oneTimeTransferLimit: 1000000,
-      updatedAt: '2025-03-26',
-    },
-  ];
+  // const accounts: AccountItemProps[] = [
+  //   {
+  //     accountNo: '110-262-000720',
+  //     accountBalance: 7000000,
+  //     accountState: 'active',
+  //     bankId: 1,
+  //     createdAt: '2021-01-01',
+  //     dailyTransferLimit: 1000000,
+  //     failedAttempts: 0,
+  //     id: 1,
+  //     oneTimeTransferLimit: 1000000,
+  //     updatedAt: '2021-01-01',
+  //   },
+  //   {
+  //     accountNo: '110-123-456789',
+  //     accountBalance: 100000,
+  //     accountState: 'active',
+  //     bankId: 1,
+  //     createdAt: '2021-01-01',
+  //     dailyTransferLimit: 1000000,
+  //     failedAttempts: 0,
+  //     id: 1,
+  //     oneTimeTransferLimit: 1000000,
+  //     updatedAt: '2025-03-26',
+  //   },
+  // ];
 
   const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
     navigation.navigate('CheckHistory', {

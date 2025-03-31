@@ -33,6 +33,20 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
+  const formatDateManually = (isoString: string): string => {
+    const date = new Date(isoString);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // 0부터 시작
+    const day = pad(date.getDate());
+    const hour = pad(date.getHours());
+    const minute = pad(date.getMinutes());
+    const second = pad(date.getSeconds());
+
+    return `${year}년 ${month}월 ${day}일 \n${hour}:${minute}:${second}`;
+  };
+
   const renderItem = ({
     item,
     index,
@@ -67,7 +81,8 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           activeOpacity={0.9}>
           <View style={styles.history}>
             <Text style={styles.historyDate}>
-              {historyItem.transactionDate}
+              {/* {historyItem.transactionDate} */}
+              {formatDateManually(historyItem.transactionDate)}
             </Text>
             {/* <Text style={styles.historyTime}>{historyItem.historyTime}</Text> */}
             {/* <Text style={styles.historyType}>
@@ -81,7 +96,7 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
                 {historyItem.transactionAccount}
               </Text>
             )}
-            {historyItem.transactionType === 'deposit' ? (
+            {historyItem.transactionType === 'DEPOSIT' ? (
               <Text style={[styles.historyAmount, styles.plusAmount]}>
                 입금 {historyItem.transactionAmount} 원
               </Text>

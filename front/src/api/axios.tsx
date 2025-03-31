@@ -1,8 +1,5 @@
-import axios, {AxiosResponse} from 'axios';
-import {
-  AccountItemProps,
-  HistoryItemProps,
-} from '../components/types/CheckAccount';
+import axios from 'axios';
+import {HistoryItemProps} from '../components/types/CheckAccount';
 
 // axios 인스턴스 생성
 export const axiosInstance = axios.create({
@@ -13,21 +10,10 @@ export const axiosInstance = axios.create({
   },
 });
 
-// 계좌 조회 함수
-export const getAccounts = async (): Promise<AccountItemProps[]> => {
-  try {
-    const response: AxiosResponse = await axiosInstance.get('/accounts');
-    return response.data.body;
-  } catch (error) {
-    console.error('계좌 조회 실패:', error);
-    return []; // 에러 발생 시 빈 배열 반환
-  }
-};
-
 // 계좌 내역 조회 함수
 export const getHistory = async (id: number): Promise<HistoryItemProps[]> => {
   try {
-    const response = await axiosInstance.get(`/accounts/${id}`);
+    const response = await axiosInstance.get(`/api/accounts/${id}`);
     return response.data.body;
   } catch (error) {
     console.error('계좌 내역 조회 실패:', error);
