@@ -50,13 +50,14 @@ public class User implements UserDetails {
     @Column(name = "joined_date", nullable = false)
     private LocalDateTime joinedDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
-    public User(String password, String userName, LocalDate birthDate, String phoneNumber) {
+    public User(String password, String userName, LocalDate birthDate, String phoneNumber,LocalDateTime joinedDate) {
         this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.joinedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

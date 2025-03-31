@@ -31,8 +31,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             if (jwtUtil.validateToken(token)) {
-                String userId = jwtUtil.getUserLoginIdFromToken(token);
-                User user = userService.findById(userId); // 유저 정보를 가져오는 방법은 서비스 로직에 맞게 구현
+                String userPhoneNumber = jwtUtil.getUserLoginIdFromToken(token);
+                User user = userService.findByPhoneNumber(userPhoneNumber); // 유저 정보를 가져오는 방법은 서비스 로직에 맞게 구현
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

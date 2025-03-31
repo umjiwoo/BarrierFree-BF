@@ -91,9 +91,9 @@ public class UserService {
     }
 
     // 유저 정보 조회
-    public Optional<User> getUserInfo(String phoneNumber) {
-        return userRepository.findByPhoneNumber(phoneNumber);
-    }
+//    public Optional<User> getUserInfo(String phoneNumber) {
+//        return userRepository.findByPhoneNumber(phoneNumber);
+//    }
 
     // 자동 로그인 (쿠키 확인 후 갱신)
     public void autoLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -110,14 +110,22 @@ public class UserService {
     }
 
     // 현재 로그인한 사용자 조회 (JWT 토큰 기반)
-    public Optional<User> getCurrentUser(String token) {
+    public Optional<User> getCurrentUser() {
+        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //        User user = (User) authentication.getPrincipal();
+        Optional<User> user = userRepository.findById(1);
+        return user;
+    }
+
+    // 현재 로그인한 사용자 조회 (JWT 토큰 기반)
+    public Optional<User> getUserInfo(String token) {
         String phoneNumber = jwtUtil.getUserLoginIdFromToken(token);
         return userRepository.findByPhoneNumber(phoneNumber);
     }
 
     // ID로 사용자 조회
-    public User findById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_NOT_FOUND));
+    public User findByPhoneNumber(String userPhoneNumber) {
+        return userRepository.findByPhoneNumber(userPhoneNumber)
+                .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_LOGIN_MISMATCH));
     }
 }

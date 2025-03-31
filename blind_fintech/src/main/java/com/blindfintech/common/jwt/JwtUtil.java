@@ -13,8 +13,9 @@ public class JwtUtil {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    @Value("${jwt.expiration-time}")
-    private long expirationTime;
+//    @Value("${jwt.expiration-time}")
+    private long expirationTime = 24 * 60 * 60 * 1000 * 7;
+
 
     // JWT 생성
     public String generateToken(String userLoginId) {
