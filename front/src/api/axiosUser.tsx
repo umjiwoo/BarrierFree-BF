@@ -1,7 +1,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {axiosInstance, ApiResponse, SignUpUserProps} from './axios';
-
-const signUp = async (user: SignUpUserProps): Promise<ApiResponse> => {
+import {Alert} from 'react-native';
+const signUpUser = async (user: SignUpUserProps): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await axiosInstance.post(
       '/api/users/sign-up',
@@ -31,4 +31,51 @@ const signUp = async (user: SignUpUserProps): Promise<ApiResponse> => {
   }
 };
 
-export {signUp};
+const loginUser = async (user: {
+  phoneNumber: string;
+  password: string;
+}): Promise<ApiResponse> => {
+  try {
+    const response: AxiosResponse<ApiResponse> = await axiosInstance.post(
+      '/api/users/login',
+      user,
+    );
+    console.log('결과 상태 조회 : ', response.data.result.code);
+    if (response.data.result.code === 200) {
+      console.log('로그인 성공: ', response.data.body);
+      return response.data;
+    } else {
+      if (response.data.result.code === 1004) {
+        console.log('아이디가 일치하지 않습니다: ', user);
+        Alert.alert('아이디가 일치하지 않습니다.');
+        return response.data;
+      } else if (response.data.result.code === 1005) {
+        console.log('비밀번호가 일치하지 않습니다: ', user);
+        Alert.alert('비밀번호가 일치하지 않습니다.');
+        return response.data;
+      }
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const logoutUser = async (): Promise<ApiResponse> => {
+  try {
+    const response: AxiosResponse<ApiResponse> = await axiosInstance.post(
+      '/api/users/logout',
+    );
+    console.log('결과 상태 조회 : ', response.data.result.code);
+    if (response.data.result.code === 200) {
+      console.log('로그아웃 성공: ', response.data.body);
+      return response.data;
+    } else {
+      console.log('로그아웃 실패: ', response.data.result.message);
+      return response.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export {signUpUser, loginUser, logoutUser};
