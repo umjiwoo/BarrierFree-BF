@@ -135,4 +135,12 @@ public class UserService {
                 .map(user -> new User(user))  // Optional 처리
                 .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_ID_MISMATCH));
     }
+
+    public Optional<User> getCurrentUser() {
+        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //        User user = (User) authentication.getPrincipal();
+        Optional<User> user = userRepository.findById(1);
+        return user;
+    }
+
 }
