@@ -1,5 +1,6 @@
 package com.blindfintech.domain.accounts.service;
 
+import com.blindfintech.common.ai.OpenAiClient;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.domain.accounts.constants.BranchCode;
 import com.blindfintech.domain.accounts.constants.ProductCode;
@@ -89,4 +90,11 @@ public class AccountService {
 
         return accountNumber.toString();
     }
+
+    private final OpenAiClient openAiClient;
+
+    public String analyze(String prompt, String input) {
+        return openAiClient.sendRequest(prompt, input);
+    }
+
 }
