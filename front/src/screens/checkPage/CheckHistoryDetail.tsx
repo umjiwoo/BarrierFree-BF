@@ -10,8 +10,25 @@ const CheckHistoryDetail = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
-
   const history = route.params?.history;
+
+  const formatDateManually = (isoString: string): any => {
+    const date = new Date(isoString);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // 0부터 시작
+    const day = pad(date.getDate());
+    const hour = pad(date.getHours());
+    const minute = pad(date.getMinutes());
+    const second = pad(date.getSeconds());
+
+    return {
+      date: `${year}년 ${month}월 ${day}일`,
+      time: `${hour}:${minute}:${second}`,
+    };
+  };
+  // formatDateManually(history.transactionDate);
 
   return (
     <View style={styles.container}>
@@ -20,53 +37,28 @@ const CheckHistoryDetail = () => {
       </View>
       <View style={styles.historyContainer}>
         <View style={styles.historyDateContainer}>
-          <Text style={styles.historyDateTitle}>일시</Text>
-          <View style={styles.historyDateContent}>
-            <Text style={styles.historyDate}>{history.historyDate}</Text>
-            <Text style={styles.historyTime}>{history.historyTime}</Text>
-          </View>
+          <Text style={styles.historyDate}>
+            {formatDateManually(history.transactionDate).date}
+          </Text>
+          <Text style={styles.historyTime}>
+            {formatDateManually(history.transactionDate).time}
+          </Text>
         </View>
-        <View style={styles.historyTypeContainer}>
-          <Text style={styles.historyTypeTitle}>거래유형</Text>
-          <Text style={styles.historyType}>{history.historyType}</Text>
-        </View>
-        <View style={styles.historyWhereContainer}>
-          <Text style={styles.historyWhereTitle}>거래구분</Text>
-          <View style={styles.historyWhereContent}>
-            <Text style={styles.historyWhere}>{history.historyWhere}</Text>
-            {history.historyAccount && (
-              <Text style={styles.historyAccount}>
-                {history.historyAccount}
-              </Text>
-            )}
-          </View>
-        </View>
-        <View style={styles.historyAmountContainer}>
-          <Text style={styles.historyAmountTitle}>거래금액</Text>
-          {history.historyType === '계좌 입금' ? (
-            <View style={styles.historyAmountPositiveContainer}>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountPositive]}>
-                입금
-              </Text>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountPositive]}>
-                {history.historyAmount} 원
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.historyAmountNegativeContainer}>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountNegative]}>
-                출금
-              </Text>
-              <Text
-                style={[styles.historyAmount, styles.historyAmountNegative]}>
-                {history.historyAmount} 원
-              </Text>
-            </View>
-          )}
-        </View>
+        <Text style={styles.historyWhere}>{history.transactionName}</Text>
+        {history.transactionAccount && (
+          <Text style={styles.historyAccount}>
+            {history.transactionAccount}
+          </Text>
+        )}
+        {history.transactionType === 'DEPOSIT' ? (
+          <Text style={[styles.historyAmount, styles.plusAmount]}>
+            입금 {history.transactionAmount} 원
+          </Text>
+        ) : (
+          <Text style={[styles.historyAmount, styles.minusAmount]}>
+            출금 {history.transactionAmount} 원
+          </Text>
+        )}
       </View>
 
       {/* 버튼 */}
@@ -118,9 +110,9 @@ const styles = StyleSheet.create({
   },
   historyDateContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 5,
   },
   historyDateTitle: {
@@ -219,10 +211,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: 5,
   },
-  historyAmountPositive: {
+  plusAmount: {
     color: '#B6010E',
   },
-  historyAmountNegative: {
+  minusAmount: {
     color: '#373DCC',
   },
 });

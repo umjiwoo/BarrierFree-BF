@@ -7,22 +7,10 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-
-interface AccountItemProps {
-  accountBank: string;
-  accountNumber: string;
-  balance: number;
-}
-
-interface HistoryItemProps {
-  historyDate: string;
-  historyTime: string;
-  historyType: string;
-  historyWhere: string;
-  historyAccount?: string;
-  historyAmount: number;
-}
-
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../../components/types/CheckAccount';
 interface CarouselProps {
   data: AccountItemProps[] | HistoryItemProps[];
   type: 'account' | 'history';
@@ -45,6 +33,20 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
+  const formatDateManually = (isoString: string): string => {
+    const date = new Date(isoString);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // 0부터 시작
+    const day = pad(date.getDate());
+    const hour = pad(date.getHours());
+    const minute = pad(date.getMinutes());
+    const second = pad(date.getSeconds());
+
+    return `${year}년 ${month}월 ${day}일 \n${hour}:${minute}:${second}`;
+  };
+
   const renderItem = ({
     item,
     index,
@@ -60,19 +62,12 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.account}>
-            <View style={styles.accountBankContainer}>
-              <Text style={styles.accountBank}>{accountItem.accountBank}</Text>
-              <Text style={styles.accountNumber}>
-                {accountItem.accountNumber}
+            {/* <Text style={styles.accountBank}>{accountItem.accountBank}</Text> */}
+            <Text style={styles.accountNumber}>{accountItem.accountNo}</Text>
+            {accountItem.accountBalance && (
+              <Text style={styles.accountBalance}>
+                잔액 : {accountItem.accountBalance} 원
               </Text>
-            </View>
-            {accountItem.balance && (
-              <View style={styles.accountBalanceContainer}>
-                <Text style={styles.accountBalanceTitle}>잔액</Text>
-                <Text style={styles.accountBalance}>
-                  {accountItem.balance} 원
-                </Text>
-              </View>
             )}
           </View>
         </TouchableOpacity>
@@ -85,52 +80,30 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           onPress={() => onSelect && onSelect(item)}
           activeOpacity={0.9}>
           <View style={styles.history}>
-            <View style={styles.historyDateContainer}>
-              <Text style={styles.historyDateTitle}>일시</Text>
-              <View style={styles.historyDateContent}>
-                <Text style={styles.historyDate}>
-                  {historyItem.historyDate}
-                </Text>
-                <Text style={styles.historyTime}>
-                  {historyItem.historyTime}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.historyTypeContainer}>
-              <Text style={styles.historyTypeTitle}>거래유형</Text>
-              <Text style={styles.historyType}>{historyItem.historyType}</Text>
-            </View>
-            <View style={styles.historyWhereContainer}>
-              <Text style={styles.historyWhereTitle}>거래구분</Text>
-              <View style={styles.historyWhereContent}>
-                <Text style={styles.historyWhere}>
-                  {historyItem.historyWhere}
-                </Text>
-                {historyItem.historyAccount && (
-                  <Text style={styles.historyAccount}>
-                    {historyItem.historyAccount}
-                  </Text>
-                )}
-              </View>
-            </View>
-            {historyItem.historyType === '계좌 입금' ? (
-              <View style={styles.historyAmountContainer}>
-                <Text style={[styles.historyAmountTitle, styles.plusAmount]}>
-                  입금
-                </Text>
-                <Text style={[styles.historyAmount, styles.plusAmount]}>
-                  {historyItem.historyAmount} 원
-                </Text>
-              </View>
+            <Text style={styles.historyDate}>
+              {/* {historyItem.transactionDate} */}
+              {formatDateManually(historyItem.transactionDate)}
+            </Text>
+            {/* <Text style={styles.historyTime}>{historyItem.historyTime}</Text> */}
+            {/* <Text style={styles.historyType}>
+              {historyItem.transactionType}
+            </Text> */}
+            <Text style={styles.historyWhere}>
+              {historyItem.transactionName}
+            </Text>
+            {historyItem.transactionAccount && (
+              <Text style={styles.historyAccount}>
+                {historyItem.transactionAccount}
+              </Text>
+            )}
+            {historyItem.transactionType === 'DEPOSIT' ? (
+              <Text style={[styles.historyAmount, styles.plusAmount]}>
+                입금 {historyItem.transactionAmount} 원
+              </Text>
             ) : (
-              <View style={styles.historyAmountContainer}>
-                <Text style={[styles.historyAmountTitle, styles.minusAmount]}>
-                  출금
-                </Text>
-                <Text style={[styles.historyAmount, styles.minusAmount]}>
-                  {historyItem.historyAmount} 원
-                </Text>
-              </View>
+              <Text style={[styles.historyAmount, styles.minusAmount]}>
+                출금 {historyItem.transactionAmount} 원
+              </Text>
             )}
           </View>
         </TouchableOpacity>
