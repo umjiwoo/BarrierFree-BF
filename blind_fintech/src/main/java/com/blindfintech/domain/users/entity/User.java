@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import java.time.*;
 import java.util.Collection;
 import java.util.List;
@@ -51,6 +53,7 @@ public class User implements UserDetails {
     private LocalDateTime joinedDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
     public User(String password, String userName, LocalDate birthDate, String phoneNumber,LocalDateTime joinedDate) {
+        this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;

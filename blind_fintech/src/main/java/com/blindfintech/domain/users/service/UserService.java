@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -130,10 +132,10 @@ public class UserService {
                 .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_ID_MISMATCH));
     }
 
-    public Optional<User> getCurrentUser() {
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //        User user = (User) authentication.getPrincipal();
-        Optional<User> user = userRepository.findById(1);
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
         return user;
     }
 

@@ -31,8 +31,8 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
 
     public AccountListDto getAccounts() {
-        Optional<User> user = userService.getCurrentUser();
-        List<AccountProjection> accounts = accountRepository.findAllByUser(user.get());
+        User user = userService.getCurrentUser();
+        List<AccountProjection> accounts = accountRepository.findAllByUser(user);
         return AccountListDto.builder().
                 accounts(accounts).
                 build();
@@ -54,8 +54,8 @@ public class AccountService {
             throw new BadRequestException(PASSWORD_ERROR);
         }
 
-        Optional<User> user = userService.getCurrentUser();
-        String newAccountNo = generateAccountNumber(user.get().getPhoneNumber());
+        User user = userService.getCurrentUser();
+        String newAccountNo = generateAccountNumber(user.getPhoneNumber());
         if (accountRepository.existsByAccountNo(newAccountNo)) {
             throw new BadRequestException(ACCOUNT_ALREADY_EXISTS);
         }
@@ -63,9 +63,9 @@ public class AccountService {
         String encodedPassword = passwordEncoder.encode(accountInputDto.getAccountPassword());
 
         Account account = Account.builder()
-                .user(user.get())
+                .user(user)
                 .accountNo(newAccountNo)
-                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.get().getUsername())
+                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.getUsername())
                 .dailyTransferLimit(accountInputDto.getDailyTransferLimit())
                 .oneTimeTransferLimit(accountInputDto.getOneTimeTransferLimit())
                 .accountPassword(encodedPassword)
