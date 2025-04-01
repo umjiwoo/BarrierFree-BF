@@ -1,5 +1,21 @@
 import axios from 'axios';
 
+export interface ApiResponse {
+  result: {
+    code: number;
+    message?: string;
+  };
+  body?: any;
+}
+
+export interface SignUpUserProps {
+  userName: string;
+  password: string;
+  phoneNumber: string;
+  birthDate: string;
+  joinedDate: string;
+}
+
 // axios 인스턴스 생성
 export const axiosInstance = axios.create({
   baseURL: 'http://10.0.2.2:8080', // Android 에뮬레이터에서 localhost 접근
@@ -38,9 +54,3 @@ export const callApi = async <T,>({
     throw error;
   }
 };
-
-// export const createTransaction = (data: any) => callApi({
-//   method: 'POST',
-//   url: '/transactions',
-//   data,
-// });
