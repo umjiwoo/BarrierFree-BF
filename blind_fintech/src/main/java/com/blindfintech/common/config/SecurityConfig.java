@@ -1,5 +1,6 @@
 package com.blindfintech.common.config;
 
+import com.blindfintech.common.jwt.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,18 +18,29 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (프론트엔드에서 호출 가능하도록)
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()  // 모든 요청을 허용
-                        .anyRequest().authenticated()       // 그 외의 요청은 인증 필요
-                );
+                        .requestMatchers("/users/**",
+                                "/swagger-ui/**",          // Swagger UI 허용
+                                "/v3/api-docs/**"    ).permitAll()  // 허용할 API 목록
+                        .anyRequest().authenticated()  // 나머지는 인증 필요
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // JWT 필터 추가
 
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();

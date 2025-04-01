@@ -42,4 +42,4 @@ vcs.xml
 **/redis.properties
 
 ### local ###
-**/DevSecurityConfig
+**/DevSecurityConfig.java
