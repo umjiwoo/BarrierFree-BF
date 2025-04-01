@@ -17,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -48,14 +47,22 @@ public class UserService {
     // 로그인
     public User login(LoginDto loginDto, boolean isAutoLogin, HttpServletResponse response) {
         User user = authenticate(loginDto);
-
         if (isAutoLogin) {
             String token = jwtUtil.generateToken(user.getPhoneNumber());
-            response.addHeader("Authorization", "Bearer " + token);
-            response.addCookie(new Cookie("token", token));
+            setTokenInResponse(token, response);
         }
-
-        return user;
+        // 보안을 위해 비밀번호를 null로 설정하여 반환
+        user.setPassword(null);  // 비밀번호 제거
+        return user;  // 비밀번호를 제외한 User 객체 반환
+    }
+    // JWT 쿠키 및 헤더 설정
+    private void setTokenInResponse(String token, HttpServletResponse response) {
+        response.addHeader("Authorization", "Bearer " + token);
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) jwtUtil.getExpirationTime() / 1000); // JWT 만료 시간 설정
+        response.addCookie(cookie);
     }
 
     // 비밀번호 인증
@@ -73,13 +80,13 @@ public class UserService {
         return user;
     }
 
-    // 자동 로그인 설정
+/*    // 자동 로그인 설정
     public void setAutoLogin(HttpServletResponse response) {
         String token = UUID.randomUUID().toString();
         Cookie cookie = new Cookie("autoLogin", token);
         cookie.setPath("/");
         response.addCookie(cookie);
-    }
+    }*/
 
     // 쿠키 삭제
     public void deleteCookies(HttpServletResponse response) {
@@ -90,31 +97,25 @@ public class UserService {
         response.addCookie(cookie);
     }
 
-    // 유저 정보 조회
-//    public Optional<User> getUserInfo(String phoneNumber) {
-//        return userRepository.findByPhoneNumber(phoneNumber);
-//    }
-
     // 자동 로그인 (쿠키 확인 후 갱신)
     public void autoLogin(HttpServletRequest request, HttpServletResponse response) {
+        String token = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("sessionId".equals(cookie.getName())) {
-                    cookie.setMaxAge(7 * 24 * 60 * 60);
-                    response.addCookie(cookie);
-                    return;
+                if (cookie.getName().equals("token")) {
+                    token = cookie.getValue();
+                    break;
                 }
             }
         }
-    }
-
-    // 현재 로그인한 사용자 조회 (JWT 토큰 기반)
-    public Optional<User> getCurrentUser() {
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //        User user = (User) authentication.getPrincipal();
-        Optional<User> user = userRepository.findById(1);
-        return user;
+        if (token != null && jwtUtil.validateToken(token)) {
+            String userLoginId = jwtUtil.getUserLoginIdFromToken(token);
+            Optional<User> user = userRepository.findByPhoneNumber(userLoginId);
+            String newToken = jwtUtil.generateToken(user.get().getPhoneNumber());
+            response.addHeader("Authorization", "Bearer " + newToken);
+            response.addCookie(new Cookie("token", newToken));
+        }
     }
 
     // 현재 로그인한 사용자 조회 (JWT 토큰 기반)
@@ -127,5 +128,11 @@ public class UserService {
     public User findByPhoneNumber(String userPhoneNumber) {
         return userRepository.findByPhoneNumber(userPhoneNumber)
                 .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_LOGIN_MISMATCH));
+    }
+    //유저 정보 조회
+    public User getUserInfoById(Integer userId) {
+        return userRepository.findById(userId)
+                .map(user -> new User(user))  // Optional 처리
+                .orElseThrow(() -> new BadRequestException(UserStatusCode.USER_ID_MISMATCH));
     }
 }

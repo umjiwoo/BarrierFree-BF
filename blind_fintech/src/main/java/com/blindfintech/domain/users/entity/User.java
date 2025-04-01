@@ -51,11 +51,17 @@ public class User implements UserDetails {
     private LocalDateTime joinedDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
     public User(String password, String userName, LocalDate birthDate, String phoneNumber,LocalDateTime joinedDate) {
-        this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.joinedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
+    public User(User user) {
+        this.id = user.id;
+        this.userName = user.userName;
+        this.birthDate = user.birthDate;
+        this.phoneNumber = user.phoneNumber;
+        this.joinedDate = user.joinedDate;
     }
 
 
