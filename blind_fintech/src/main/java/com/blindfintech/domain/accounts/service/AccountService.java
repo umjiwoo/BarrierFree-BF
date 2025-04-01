@@ -63,7 +63,7 @@ public class AccountService {
         Account account = Account.builder()
                 .user(user.get())
                 .accountNo(newAccountNo)
-                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.get().getUserName())
+                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.get().getUsername())
                 .dailyTransferLimit(accountInputDto.getDailyTransferLimit())
                 .oneTimeTransferLimit(accountInputDto.getOneTimeTransferLimit())
                 .accountPassword(encodedPassword)
@@ -89,4 +89,5 @@ public class AccountService {
 
         return accountNumber.toString();
     }
+
 }
