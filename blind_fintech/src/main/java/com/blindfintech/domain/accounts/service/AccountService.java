@@ -93,7 +93,10 @@ public class AccountService {
 
     private final OpenAiClient openAiClient;
 
-    public String analyze(String prompt, String input) {
+    public String aiSearchAccountTransaction(String accountNo, String input) {
+
+        String prompt = "Search Account";
+//        AccountTransactionRepository.findAiAccountTransactioon(Optional<AccountProjection>)
         return openAiClient.sendRequest(prompt, input);
     }
 

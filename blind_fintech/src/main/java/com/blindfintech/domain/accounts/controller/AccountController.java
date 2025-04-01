@@ -45,4 +45,10 @@ public class AccountController {
         return ResponseEntity.ok()
                 .body(ResponseDto.success(accountState));
     }
+    @GetMapping("/search-ai-accountTransction")
+    public ResponseEntity<?> searchAiAccountTransction(@RequestParam String accountNo,
+                                                       @RequestParam String reponse) {
+        String aiResponsse = accountService.aiSearchAccountTransaction(accountNo, reponse);
+        return ResponseEntity.ok().body(aiResponsse);
+    }
 }
