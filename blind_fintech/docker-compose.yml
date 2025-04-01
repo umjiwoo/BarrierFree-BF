@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    image: ujw4179/blindfin_server:lts
+    container_name: blindfin_server
+    volumes:
+      - /home/ubuntu/blindfin_server:/app/data
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - backend_network
+    ports:
+      - "8080:8080"
+
+networks:
+  backend_network:
+    driver: bridge

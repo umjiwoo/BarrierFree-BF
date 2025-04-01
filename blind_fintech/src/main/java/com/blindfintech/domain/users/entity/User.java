@@ -7,8 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.*;
+import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +22,12 @@ import java.time.*;
 @Setter
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가
     @Column(name = "user_id", nullable = false)
-    private Integer uid;
+    private Long id;
 
     @Size(max = 255)
     @NotNull
@@ -45,12 +52,29 @@ public class User {
     @Column(name = "joined_date", nullable = false)
     private LocalDateTime joinedDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
-    public User(String password, String userName, LocalDate birthDate, String phoneNumber, LocalDateTime joinedDate) {
+    public User(String password, String userName, LocalDate birthDate, String phoneNumber,LocalDateTime joinedDate) {
         this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
-        this.joinedDate = joinedDate;
+        this.joinedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
+    public User(User user) {
+        this.id = user.id;
+        this.userName = user.userName;
+        this.birthDate = user.birthDate;
+        this.phoneNumber = user.phoneNumber;
+        this.joinedDate = user.joinedDate;
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userName;
+    }
 }

@@ -53,9 +53,9 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.success(200, "로그아웃 성공"));
     }
 
-//    @GetMapping("/infos/{userId}")
-//    public ResponseEntity<ResponseDto<Void>>  infos(@PathVariable("userId") Integer userId) {
-//        userService.getUserInfoById(userId);
-//        return ResponseEntity.ok(ResponseDto.success(200, "유저 정보 갖고오기"));
-//    }
+    @GetMapping("/infos/{userId}")
+    public ResponseEntity<ResponseDto<User>>  infos(@PathVariable("userId") Integer userId) {
+        User user = userService.getUserInfoById(userId);
+        return ResponseEntity.ok(ResponseDto.success(200, "유저 정보 갖고오기",user));
+    }
 }

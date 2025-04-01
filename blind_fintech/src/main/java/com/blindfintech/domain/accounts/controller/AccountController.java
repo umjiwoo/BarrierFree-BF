@@ -2,10 +2,13 @@ package com.blindfintech.domain.accounts.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.common.exception.BadRequestException;
+import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
 import com.blindfintech.domain.accounts.dto.AccountInputDto;
 import com.blindfintech.domain.accounts.dto.AccountListDto;
+import com.blindfintech.domain.accounts.dto.IsCorrectPwdDto;
 import com.blindfintech.domain.accounts.service.AccountService;
+import com.blindfintech.domain.users.dto.SmsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +53,18 @@ public class AccountController {
                                                        @RequestParam String reponse) {
         String aiResponsse = accountService.aiSearchAccountTransaction(accountNo, reponse);
         return ResponseEntity.ok().body(aiResponsse);
+    }
+
+    @PostMapping("{account_id}/check-pwd")
+    public ResponseEntity<?> checkPassword(@PathVariable int account_id, String accountPassword) {
+        IsCorrectPwdDto isCorrect = accountService.validatePassword(account_id, accountPassword);
+        return ResponseEntity.ok()
+                .body(ResponseDto.success(isCorrect));
+    }
+
+    @PostMapping("{account_id}/unlock")
+    public ResponseEntity<?> unlockAccount(@PathVariable int account_id, @RequestBody SmsDto smsDto) {
+        accountService.unlockAccount(account_id, smsDto.getPhoneNumber(), smsDto.getVerificationCode());
+        return ResponseEntity.ok(ResponseDto.success(null));
     }
 }

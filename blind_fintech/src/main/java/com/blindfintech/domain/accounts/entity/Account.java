@@ -83,4 +83,16 @@ public class Account {
     @Lob
     @Column(name = "account_state", nullable = false)
     private String accountState = "ACTIVE";
+
+    public int failedPassword() {
+        return ++this.failedAttempts;
+    }
+
+    public void lockAccount() {
+        this.accountState = "SUSPENDED";
+    }
+
+    public void unlockAccount() {
+        this.accountState = "ACTIVE";
+    }
 }

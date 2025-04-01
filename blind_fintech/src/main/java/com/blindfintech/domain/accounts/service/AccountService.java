@@ -2,6 +2,7 @@ package com.blindfintech.domain.accounts.service;
 
 import com.blindfintech.common.ai.OpenAiClient;
 import com.blindfintech.common.exception.BadRequestException;
+import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.constants.BranchCode;
 import com.blindfintech.domain.accounts.constants.ProductCode;
 import com.blindfintech.domain.accounts.dto.*;
@@ -25,13 +26,14 @@ import static com.blindfintech.domain.accounts.exception.AccountExceptionCode.*;
 @RequiredArgsConstructor
 public class AccountService {
     private final UserService userService;
+    private final SmsService smsService;
     private final AccountRepository accountRepository;
     private final AccountTransactionRepository accountTransactionRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AccountListDto getAccounts() {
-        Optional<User> user = userService.getCurrentUser();
-        List<AccountProjection> accounts = accountRepository.findAllByUser(user.get());
+        User user = userService.getCurrentUser();
+        List<AccountProjection> accounts = accountRepository.findAllByUser(user);
         return AccountListDto.builder().
                 accounts(accounts).
                 build();
@@ -53,8 +55,8 @@ public class AccountService {
             throw new BadRequestException(PASSWORD_ERROR);
         }
 
-        Optional<User> user = userService.getCurrentUser();
-        String newAccountNo = generateAccountNumber(user.get().getPhoneNumber());
+        User user = userService.getCurrentUser();
+        String newAccountNo = generateAccountNumber(user.getPhoneNumber());
         if (accountRepository.existsByAccountNo(newAccountNo)) {
             throw new BadRequestException(ACCOUNT_ALREADY_EXISTS);
         }
@@ -62,9 +64,9 @@ public class AccountService {
         String encodedPassword = passwordEncoder.encode(accountInputDto.getAccountPassword());
 
         Account account = Account.builder()
-                .user(user.get())
+                .user(user)
                 .accountNo(newAccountNo)
-                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.get().getUserName())
+                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.getUsername())
                 .dailyTransferLimit(accountInputDto.getDailyTransferLimit())
                 .oneTimeTransferLimit(accountInputDto.getOneTimeTransferLimit())
                 .accountPassword(encodedPassword)
@@ -100,4 +102,39 @@ public class AccountService {
         return openAiClient.sendRequest(prompt, input);
     }
 
+
+    @Transactional
+    public IsCorrectPwdDto validatePassword(int account_id, String accountPassword) {
+        Account account = accountRepository.findAccountById(account_id);
+        int failedAttempts = account.getFailedAttempts();
+
+        boolean isLocked = false;
+        boolean isCorrect = false;
+
+        if (failedAttempts < 5) {
+            String correctPassword = account.getAccountPassword();
+            isCorrect = passwordEncoder.matches(accountPassword, correctPassword);
+
+            if (!isCorrect) {
+                failedAttempts = account.failedPassword();
+
+                if (failedAttempts >= 5) {
+                    account.lockAccount();
+                    isLocked = true;
+                }
+            }
+        } else {
+            isLocked = true;
+        }
+        return IsCorrectPwdDto.builder()
+                .isCorrect(isCorrect)
+                .isLocked(isLocked).build();
+    }
+
+    @Transactional
+    public void unlockAccount(int account_id, String phoneNumber, String verificationCode) {
+        smsService.verifyCode(phoneNumber, verificationCode);
+        Account account = accountRepository.findAccountById(account_id);
+        account.unlockAccount();
+    }
 }
