@@ -44,9 +44,20 @@ public class OpenAiClient {
         }
     }
 
+//    private Map<String, Object> buildRequest(String prompt, String input) {
+//        return Map.of(
+//                "model", "gpt-4o-mini",
+//                "messages", List.of(
+//                        Map.of("role", "system", "content", prompt),
+//                        Map.of("role", "user", "content", "Input: " + input)
+//                ),
+//                "temperature", 0.7
+//        );
+//    }
+
     private Map<String, Object> buildRequest(String prompt, String input) {
         return Map.of(
-                "model", "gpt-4o-mini",
+                "model", "deepseek-chat",
                 "messages", List.of(
                         Map.of("role", "system", "content", prompt),
                         Map.of("role", "user", "content", "Input: " + input)
@@ -54,7 +65,6 @@ public class OpenAiClient {
                 "temperature", 0.7
         );
     }
-
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
