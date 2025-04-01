@@ -1,6 +1,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {axiosInstance, ApiResponse, SignUpUserProps} from './axios';
 import {Alert} from 'react-native';
+
 const signUpUser = async (user: SignUpUserProps): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await axiosInstance.post(
@@ -25,6 +26,40 @@ const signUpUser = async (user: SignUpUserProps): Promise<ApiResponse> => {
       throw new Error(
         error.response?.data?.message ||
           '회원가입 처리 중 오류가 발생했습니다.',
+      );
+    }
+    throw error;
+  }
+};
+
+const checkId = async (phoneNumber: string): Promise<ApiResponse> => {
+  try {
+    const response: AxiosResponse<ApiResponse> = await axiosInstance.get(
+      '/api/users/check-id',
+      {params: {userLoginId: phoneNumber}},
+    );
+    console.log('결과 상태 조회 : ', response.data.result.code);
+    if (response.data.result.code === 200) {
+      console.log('사용 가능한 아이디: ', response.data.body);
+      return response.data;
+    } else {
+      if (response.data.result.code === 1001) {
+        console.log('사용 불가능한 아이디: ', phoneNumber);
+        Alert.alert('이미 존재하는 회원입니다다.');
+        return response.data;
+      }
+      return response.data;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 500) {
+        throw new Error(
+          '서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+        );
+      }
+      throw new Error(
+        error.response?.data?.message ||
+          '아이디 중복 검사 처리 중 오류가 발생했습니다.',
       );
     }
     throw error;
@@ -78,4 +113,4 @@ const logoutUser = async (): Promise<ApiResponse> => {
     throw error;
   }
 };
-export {signUpUser, loginUser, logoutUser};
+export {signUpUser, checkId, loginUser, logoutUser};
