@@ -45,16 +45,18 @@ public class UserService {
     }
 
     // 로그인
+    // 로그인
     public User login(LoginDto loginDto, boolean isAutoLogin, HttpServletResponse response) {
         User user = authenticate(loginDto);
-        if (isAutoLogin) {
-            String token = jwtUtil.generateToken(user.getPhoneNumber());
-            setTokenInResponse(token, response);
-        }
+        // 로그인 시 항상 JWT 생성
+        String token = jwtUtil.generateToken(user.getPhoneNumber());
+        setTokenInResponse(token, response);
+
         // 보안을 위해 비밀번호를 null로 설정하여 반환
-        user.setPassword(null);  // 비밀번호 제거
-        return user;  // 비밀번호를 제외한 User 객체 반환
+        user.setPassword(null);
+        return user;
     }
+
     // JWT 쿠키 및 헤더 설정
     private void setTokenInResponse(String token, HttpServletResponse response) {
         response.addHeader("Authorization", "Bearer " + token);
@@ -79,14 +81,6 @@ public class UserService {
 
         return user;
     }
-
-/*    // 자동 로그인 설정
-    public void setAutoLogin(HttpServletResponse response) {
-        String token = UUID.randomUUID().toString();
-        Cookie cookie = new Cookie("autoLogin", token);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }*/
 
     // 쿠키 삭제
     public void deleteCookies(HttpServletResponse response) {
