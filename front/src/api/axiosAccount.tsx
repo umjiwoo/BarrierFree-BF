@@ -19,10 +19,18 @@ const makeAccounts = async (accountData: AccountCreateParams): Promise<any> => {
       '/api/accounts/create',
       accountData,
     );
+
+    if (response.data.result.code === 200) {
+      console.log('계좌 생성 성공: ', response.data.body);
+    } else if (response.data.result.code === 2001) {
+      console.log(response.data.result.message);
+    } else if (response.data.result.code === 2002) {
+      console.log(response.data.result.message);
+    }
     return response.data.body;
   } catch (error) {
     console.error('계좌 생성 실패:', error);
-    return [];
+    return null;
   }
 };
 
@@ -83,4 +91,71 @@ const getAccountLockStatus = async (id: number): Promise<boolean> => {
   }
 };
 
-export {makeAccounts, getAccounts, getHistories, getAccountLockStatus};
+// 계좌 비밀번호 조회 함수
+const postAccountPassword = async (
+  id: number,
+  password: string,
+): Promise<any> => {
+  try {
+    const response = await axiosInstance.post(`/api/accounts/${id}/check-pwd`, {
+      account_id: id,
+      accountPassword: password,
+    });
+    if (response.data.result.code === 200) {
+      if (response.data.body.isLocked) {
+        return {isLocked: true};
+      } else {
+        if (response.data.body.isCorrect === true) {
+          return {isCorrect: true};
+        } else {
+          return {isCorrect: false};
+        }
+      }
+    } else {
+      return {
+        error: '비밀번호 조회 실패, 비밀번호를 확인해주세요.',
+      };
+    }
+  } catch (error) {
+    console.error('계좌 비밀번호 조회 실패:', error);
+    return {error: '비밀번호 조회 실패', message: error};
+  }
+};
+
+// 계좌 잠김 해제
+const postAccountUnlock = async (
+  id: number,
+  phoneNumber: string,
+  verificationCode: string,
+): Promise<any> => {
+  try {
+    const response = await axiosInstance.post(`/api/accounts/${id}/unlock`, {
+      phoneNumber: phoneNumber,
+      verificationCode: verificationCode,
+    });
+
+    if (response.data.result.code === 200) {
+      return {success: true};
+    } else if (response.data.result.code === 1002) {
+      return {error: '인증 코드가 일치하지 않습니다.'};
+    } else if (response.data.result.code === 1003) {
+      return {error: '인증 코드가 만료되었습니다.'};
+    }
+    return {
+      error: '계좌 잠김 해제 실패',
+      message: response.data.result.message,
+    };
+  } catch (error) {
+    console.error('계좌 잠김 해제 실패:', error);
+    return {error: '계좌 잠김 해제 실패', message: error};
+  }
+};
+
+export {
+  makeAccounts,
+  getAccounts,
+  getHistories,
+  getAccountLockStatus,
+  postAccountPassword,
+  postAccountUnlock,
+};
