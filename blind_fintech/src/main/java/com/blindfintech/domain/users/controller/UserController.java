@@ -27,7 +27,9 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
+        System.out.println("회원가입요청");
         userService.signUp(userDto);
+        System.out.println("회원가입");
         return ResponseEntity.ok(ResponseDto.success(200, "회원가입 성공"));
     }
 

@@ -37,7 +37,8 @@ public class UserService {
 
     // 회원가입
     public void signUp(UserDto userDto) {
-        log.info("회원가입 요청: {}", userDto);
+        System.out.println("회원가입 서비스 ");
+        System.out.println(userDto);
 
         // 비밀번호 암호화
         String hashedPassword = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt());

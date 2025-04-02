@@ -49,9 +49,10 @@ public class AccountController {
                 .body(ResponseDto.success(accountState));
     }
     @GetMapping("/search-ai-accountTransction")
-    public ResponseEntity<?> searchAiAccountTransction(@RequestParam String accountNo,
+    public ResponseEntity<?> searchAiAccountTransction(@RequestParam Integer accountNo,
                                                        @RequestParam String reponse) {
         String aiResponsse = accountService.aiSearchAccountTransaction(accountNo, reponse);
+        System.out.println(aiResponsse);
         return ResponseEntity.ok().body(aiResponsse);
     }
 
