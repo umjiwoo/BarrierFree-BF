@@ -55,6 +55,10 @@ public class AccountService {
             throw new BadRequestException(PASSWORD_ERROR);
         }
 
+        if (accountInputDto.getOneTimeTransferLimit() > accountInputDto.getDailyTransferLimit()) {
+            throw new BadRequestException(ONETIME_LIMIT_OVER);
+        }
+
         User user = userService.getCurrentUser();
         String newAccountNo = generateAccountNumber(user.getPhoneNumber());
         if (accountRepository.existsByAccountNo(newAccountNo)) {
