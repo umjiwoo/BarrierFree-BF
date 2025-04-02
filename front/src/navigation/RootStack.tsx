@@ -14,6 +14,7 @@ import RemittanceInformation from '../screens/InformationPage/RemittanceInformat
 import CheckAccount from '../screens/checkPage/CheckAccount';
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
+import MyAccount from '../screens/myPage/MyAccount';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -123,6 +124,14 @@ const RootStack = () => {
         component={ThreeBtn}
         options={{
           title: '금액을 입력하세요.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="MyAccount"
+        component={MyAccount}
+        options={{
+          title: '내 계좌 조회',
           headerShown: false,
         }}
       />
