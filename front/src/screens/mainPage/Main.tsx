@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,24 +6,46 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {RootStackParamList} from '../../navigation/types';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useAccountStore} from '../../stores/accountStore';
+import {getAccounts} from '../../api/axiosAccount';
+const Main = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const {selectedAccount, setSelectedAccount} = useAccountStore();
 
-const Main = ({navigation}: {navigation: any}) => {
-  // const navigationProps =
-  //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const response = await getAccounts();
+      console.log('response', response[0]);
+      setSelectedAccount(response[0]);
+    };
+    fetchAccounts();
+  }, [setSelectedAccount]);
 
-  // const handleSendFromWherePress = () => {
-  //   navigationProps.navigate('SendFromWhere');
-  // };
+  useEffect(() => {
+    console.log('selectedAccount', selectedAccount);
+  }, [selectedAccount]);
+
+  const handleCheckHistoryPress = async () => {
+    if (!selectedAccount) {
+      console.log('계좌 생성 필요');
+      navigation.navigate('CheckAccount');
+    } else {
+      navigation.navigate('CheckHistory');
+    }
+  };
+
+  const handleMyPagePress = () => {
+    navigation.navigate('MyAccount');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('CheckAccount')}>
+          onPress={handleCheckHistoryPress}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -34,7 +56,7 @@ const Main = ({navigation}: {navigation: any}) => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>결제</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleMyPagePress}>
           <Text style={styles.text}>마이 페이지</Text>
         </TouchableOpacity>
       </View>

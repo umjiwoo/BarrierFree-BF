@@ -9,6 +9,7 @@ export interface AccountItemProps {
   id: number;
   oneTimeTransferLimit: number;
   updatedAt: string;
+  username: string;
 }
 
 export interface HistoryItemProps {
