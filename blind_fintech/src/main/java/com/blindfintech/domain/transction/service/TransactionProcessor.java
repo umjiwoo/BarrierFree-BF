@@ -3,18 +3,21 @@ package com.blindfintech.domain.transction.service;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
+import com.blindfintech.domain.transction.config.handler.TransactionWebSocketHandler;
 import com.blindfintech.domain.transction.dto.TransactionDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.ACCOUNT_NOT_FOUND;
 import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.INSUFFICIENT_BALANCE;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class TransactionProcessor {
@@ -32,11 +35,15 @@ public class TransactionProcessor {
         transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.WITHDRAW_COMPLETED));
         transactionLogRepository.save(transactionLog);
 
+        log.info("💲송금인 계좌 차액 완료");
+
         // 2. 받는 계좌 amount 증액
         updateReceiverBalance(transactionDto.getReceiverAccountId(), sendAmount, transactionUuid);
 
         transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.WITHDRAW_COMPLETED));
         transactionLogRepository.save(transactionLog);
+
+        log.info("💲수취인 계좌 증액 완료");
     }
 
     private void updateSenderBalance(int senderAccountId, long sendAmount, String transactionUuid) {

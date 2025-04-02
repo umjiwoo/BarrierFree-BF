@@ -44,6 +44,8 @@ dependencies {
     // encrypt
 	implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
 
+	// websocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {

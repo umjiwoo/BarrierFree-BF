@@ -8,6 +8,7 @@ import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
 import com.blindfintech.domain.bank.Repository.BankRepository;
 import com.blindfintech.domain.bank.entity.Bank;
+import com.blindfintech.domain.transction.config.handler.TransactionWebSocketHandler;
 import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
@@ -37,6 +38,8 @@ public class TransactionService {
     private final TransactionProducer producer;
     private final TransactionProcessor transactionProcessor;
     private final TransactionLogRepository transactionLogRepository;
+
+    private final TransactionWebSocketHandler transactionWebSocketHandler;
 
     public CheckAccountResultDto checkAccount(CheckAccountRequest checkAccountRequest) {
         Account account = accountRepository.findAccountByAccountNo(
@@ -76,13 +79,23 @@ public class TransactionService {
         // 메시지 처리
         try {
             transactionProcessor.performSendMoneyTransaction(transactionDto, transactionUuid);
-        }catch(Exception e){
-            TransactionLog transactionLog = TransactionLog.from(
-                    TransactionLogDto.from(transactionUuid, TransactionState.FAILED));
-            transactionLogRepository.save(transactionLog);
-        }
 
-        // TODO TransactionLog 땡기기 - 웹소켓 이용?
+            try{
+                // websocket을 통한 응답
+                transactionWebSocketHandler.sendTransactionResult(transactionUuid, "송금 성공! Transaction ID: " + transactionUuid);
+            } catch (Exception e) {
+                log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+            }
+        }catch(Exception e){
+            TransactionLog transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.FAILED));
+            transactionLogRepository.save(transactionLog);
+
+            try {
+                transactionWebSocketHandler.sendTransactionResult(transactionUuid, "송금 실패! Transaction ID: " + transactionUuid);
+            } catch (Exception ex) {
+                log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+            }
+        }
 
         // TransactoinLog 가 Completed인 경우 AccountTransaction 생성
         // TODO 송금인, 수신인 둘 다 생성돼야 함
