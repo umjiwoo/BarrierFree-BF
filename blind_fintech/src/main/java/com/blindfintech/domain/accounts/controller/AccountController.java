@@ -7,12 +7,14 @@ import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
 import com.blindfintech.domain.accounts.dto.AccountInputDto;
 import com.blindfintech.domain.accounts.dto.AccountListDto;
 import com.blindfintech.domain.accounts.dto.IsCorrectPwdDto;
+import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.service.AccountService;
 import com.blindfintech.domain.users.dto.SmsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,12 +50,18 @@ public class AccountController {
         return ResponseEntity.ok()
                 .body(ResponseDto.success(accountState));
     }
+
     @GetMapping("/search-ai-accountTransction")
-    public ResponseEntity<?> searchAiAccountTransction(@RequestParam Integer accountNo,
-                                                       @RequestParam String reponse) {
-        String aiResponsse = accountService.aiSearchAccountTransaction(accountNo, reponse);
-        System.out.println(aiResponsse);
-        return ResponseEntity.ok().body(aiResponsse);
+    public ResponseEntity<List<AccountTransaction>> searchAiAccountTransaction(
+            @RequestParam Integer accountNo,
+            @RequestParam String response) {
+        List<AccountTransaction> transactions = accountService.aiSearchAccountTransaction(accountNo, response);
+
+        if (transactions.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 데이터가 없을 경우 204 반환
+        }
+
+        return ResponseEntity.ok(transactions); // 데이터가 있으면 200 + JSON 반환
     }
 
     @PostMapping("{account_id}/check-pwd")

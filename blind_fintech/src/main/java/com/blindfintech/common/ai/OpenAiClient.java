@@ -29,7 +29,7 @@ public class OpenAiClient {
     private String apiKey;
 
     public String sendRequest(String prompt, String input) {
-        try {
+//        try {
             Map<String, Object> requestBody = buildRequest(prompt, input);
 
             HttpHeaders headers = createHeaders();
@@ -39,23 +39,23 @@ public class OpenAiClient {
             Map<String,Object> response = sendRequestToOpenAi(requestEntity);
 
             return extractSummary(response);
-        } catch (Exception e) {
-            throw new BadRequestException(AiStatusCode.API_COMMUNICATION_FAILURE);
-        }
+//        } catch (Exception e) {
+//            throw new BadRequestException(AiStatusCode.API_COMMUNICATION_FAILURE);
+//        }
     }
 
-//    private Map<String, Object> buildRequest(String prompt, String input) {
-//        return Map.of(
-//                "model", "gpt-4o-mini",
-//                "messages", List.of(
-//                        Map.of("role", "system", "content", prompt),
-//                        Map.of("role", "user", "content", "Input: " + input)
-//                ),
-//                "temperature", 0.7
-//        );
-//    }
-
     private Map<String, Object> buildRequest(String prompt, String input) {
+        return Map.of(
+                "model", "gpt-4o-mini",
+                "messages", List.of(
+                        Map.of("role", "system", "content", prompt),
+                        Map.of("role", "user", "content", "Input: " + input)
+                ),
+                "temperature", 0.7
+        );
+    }
+
+    /*private Map<String, Object> buildRequest(String prompt, String input) {
         return Map.of(
                 "model", "deepseek-chat",
                 "messages", List.of(
@@ -64,7 +64,7 @@ public class OpenAiClient {
                 ),
                 "temperature", 0.7
         );
-    }
+    }*/
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -74,11 +74,12 @@ public class OpenAiClient {
     }
 
     private Map<String, Object> sendRequestToOpenAi(HttpEntity<Map<String, Object>> requestEntity) {
-        try {
+//        try {
+        System.out.println("Sending request to OpenAi");
             return restTemplate.postForObject(baseUrl, requestEntity, Map.class);
-        } catch (Exception e) {
-            throw new BadRequestException(AiStatusCode.API_COMMUNICATION_FAILURE);
-        }
+//        } catch (Exception e) {
+//            throw new BadRequestException(AiStatusCode.API_COMMUNICATION_FAILURE);
+//        }
     }
 
     private String extractSummary(Map<String, Object> response) {

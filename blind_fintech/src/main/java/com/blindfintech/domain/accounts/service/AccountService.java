@@ -7,6 +7,7 @@ import com.blindfintech.domain.accounts.constants.BranchCode;
 import com.blindfintech.domain.accounts.constants.ProductCode;
 import com.blindfintech.domain.accounts.dto.*;
 import com.blindfintech.domain.accounts.entity.Account;
+import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
 import com.blindfintech.domain.users.entity.User;
@@ -95,11 +96,20 @@ public class AccountService {
 
     private final OpenAiClient openAiClient;
 
-    public String aiSearchAccountTransaction(Integer accountNo, String input) {
+    public List<AccountTransaction> aiSearchAccountTransaction(Integer accountNo, String input) {
 
-        String prompt = "Search Account";
+        String prompt = "사용자의 요청에 따라 MySQL 쿼리를 생성하세요.  \n" +
+                "- 테이블 이름: account_transaction  \n" +
+                "- 주요 컬럼: transaction_name (거래명), transaction_type (거래 유형: 'DEPOSIT', 'WITHDRAWAL'), transaction_date (거래 날짜), transaction_amount (거래 금액)  \n" +
+                "- 날짜 관련 요청이 있으면, 현재 날짜 기준으로 계산하여 적절한 `INTERVAL`을 사용하세요.  \n" +
+                "- 특정 거래명을 포함하는 내역을 찾을 때는 `LIKE '%검색어%'`를 사용.  \n" +
+                "- 사용자가 '최근'이라고 요청하면 가장 최신 거래 1건만 조회해야 하며, `ORDER BY transaction_date DESC LIMIT 1`을 사용하세요.  \n" +
+                "- 반드시 `WHERE account_id = " + accountNo + "` 조건 포함.  \n" +
+                "- 결과는 SQL 쿼리만 출력, 다른 설명은 하지 마세요.";
+        String sqlQuery = openAiClient.sendRequest(prompt, input);
+        System.out.println(sqlQuery);
 //        AccountTransactionRepository.findAiAccountTransactioon(Optional<AccountProjection>)
-        return openAiClient.sendRequest(prompt, input);
+        return accountTransactionRepository.findTransactionsByQuery(sqlQuery);
     }
 
 

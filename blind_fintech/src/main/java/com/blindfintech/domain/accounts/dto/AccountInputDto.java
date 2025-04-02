@@ -1,12 +1,11 @@
 package com.blindfintech.domain.accounts.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Builder
+@Data
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AccountInputDto {
     private String username;
