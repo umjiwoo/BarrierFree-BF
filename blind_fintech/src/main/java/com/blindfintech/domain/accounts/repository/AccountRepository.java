@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
+    Account findAccountById(int account_id);
     @Query("""
         SELECT a.id as id, a.bankId as bankId, a.accountNo as accountNo,
             a.username as username, a.accountBalance as accountBalance,

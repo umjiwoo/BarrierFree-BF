@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AccountTransactionRepository extends JpaRepository<AccountTransaction, Integer> {
@@ -23,4 +24,10 @@ public interface AccountTransactionRepository extends JpaRepository<AccountTrans
         ORDER BY at.transactionDate DESC
     """)
     List<AccountDetailsProjection> findByAccountId(@Param("accountId") Integer accountId);
+
+    @Query("SELECT at FROM AccountTransaction at WHERE at.transactionName LIKE %:transactionName% " +
+            "AND at.transactionType = 'WITHDRAWAL' " +
+            "AND at.transactionDate >= :threeMonthsAgo ORDER BY at.transactionDate DESC")
+    List<AccountTransaction> findAiAccountTransactioon(String transactionName, LocalDateTime threeMonthsAgo);
 }
+
