@@ -98,6 +98,7 @@ public class AccountService {
     public String aiSearchAccountTransaction(Integer accountNo, String input) {
 
         String prompt = "Search Account";
+        System.out.println("openAi");
 //        AccountTransactionRepository.findAiAccountTransactioon(Optional<AccountProjection>)
         return openAiClient.sendRequest(prompt, input);
     }

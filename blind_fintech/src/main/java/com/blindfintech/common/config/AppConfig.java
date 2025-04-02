@@ -13,9 +13,10 @@ public class AppConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    @Bean
+
+    /*@Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule()); // LocalDateTime 지원 추가
-    }
+    }*/
 }

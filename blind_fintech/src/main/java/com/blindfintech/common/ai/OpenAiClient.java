@@ -29,9 +29,10 @@ public class OpenAiClient {
     private String apiKey;
 
     public String sendRequest(String prompt, String input) {
-        try {
+//        try {
+            System.out.println("sendRequest");
             Map<String, Object> requestBody = buildRequest(prompt, input);
-
+            System.out.println("requestBody: " + requestBody);
             HttpHeaders headers = createHeaders();
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
@@ -39,9 +40,9 @@ public class OpenAiClient {
             Map<String,Object> response = sendRequestToOpenAi(requestEntity);
 
             return extractSummary(response);
-        } catch (Exception e) {
-            throw new BadRequestException(AiStatusCode.API_COMMUNICATION_FAILURE);
-        }
+//        } catch (Exception e) {
+//            throw new BadRequestException(AiStatusCode.API_COMMUNICATION_FAILURE);
+//        }
     }
 
 //    private Map<String, Object> buildRequest(String prompt, String input) {
@@ -62,7 +63,7 @@ public class OpenAiClient {
                         Map.of("role", "system", "content", prompt),
                         Map.of("role", "user", "content", "Input: " + input)
                 ),
-                "temperature", 0.7
+                "stream", false
         );
     }
     private HttpHeaders createHeaders() {
