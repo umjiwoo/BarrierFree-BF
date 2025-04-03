@@ -8,21 +8,31 @@ import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.bank.Repository.BankRepository;
 import com.blindfintech.domain.bank.entity.Bank;
-import com.blindfintech.domain.transction.config.handler.TransactionWebSocketHandler;
+import com.blindfintech.domain.transction.config.handler.RemittanceWebSocketHandler;
 import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
+import com.blindfintech.domain.transction.dto.RecentTransactionAccountDto;
 import com.blindfintech.domain.transction.dto.TransactionResponseDto;
+import com.blindfintech.domain.transction.entity.TransactionHistory;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.exception.TransactionExceptionCode;
 import com.blindfintech.domain.transction.kafka.TransactionProducer;
+import com.blindfintech.domain.transction.repository.TransactionHistoryRepository;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
+import com.blindfintech.domain.users.entity.User;
+import com.blindfintech.domain.users.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.*;
 
@@ -38,7 +48,9 @@ public class TransactionService {
     private final TransactionProcessor transactionProcessor;
     private final TransactionLogRepository transactionLogRepository;
 
-    private final TransactionWebSocketHandler transactionWebSocketHandler;
+    private final RemittanceWebSocketHandler remittanceWebSocketHandler;
+    private final TransactionHistoryRepository transactionHistoryRepository;
+    private final UserService userService;
 
     public CheckAccountResultDto checkAccount(CheckAccountRequest checkAccountRequest) {
         Account account = accountRepository.findAccountByAccountNo(
@@ -89,15 +101,13 @@ public class TransactionService {
                 // websocket을 통한 응답
                 TransactionResponseDto transactionResponseDto = TransactionResponseDto.from(senderAccountTransaction);
                 String transactionResponse = objectMapper.writeValueAsString(ResponseDto.success(transactionResponseDto));
-                transactionWebSocketHandler.sendTransactionResult(transactionResponse);
-
-                // TODO 입금 받은 유저에게 푸시 알림
+                remittanceWebSocketHandler.sendTransactionResult(transactionRequest.getTransactionWebSocketId(), transactionResponse);
             } catch (Exception e) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
                 String transactionResponse = objectMapper.writeValueAsString(
                         ResponseDto.error(new ExceptionResponse(SOCKET_RESPONSE_FAILED.getCode(),
                                                                 SOCKET_RESPONSE_FAILED.getMessage())));
-                transactionWebSocketHandler.sendTransactionResult(transactionResponse);
+                remittanceWebSocketHandler.sendTransactionResult(transactionRequest.getTransactionWebSocketId(), transactionResponse);
             }
         }catch(Exception e){
             TransactionLog transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.FAILED));
@@ -106,10 +116,22 @@ public class TransactionService {
             try {
                 String transactionResponse = objectMapper.writeValueAsString(
                         ResponseDto.error(new ExceptionResponse(SEND_MONEY_FAILED.getCode(), SEND_MONEY_FAILED.getMessage())));
-                transactionWebSocketHandler.sendTransactionResult(transactionResponse);
+                remittanceWebSocketHandler.sendTransactionResult(transactionRequest.getTransactionWebSocketId(), transactionResponse);
             } catch (Exception ex) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
             }
         }
+    }
+
+    public List<RecentTransactionAccountDto> getRecentTransactionAccounts(){
+        User user = userService.getCurrentUser();
+        log.info("userId: {}, username: {}", user.getId(), user.getUsername());
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTransactionHistoriesByUser(user);
+
+        return Optional.ofNullable(transactionHistories)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(RecentTransactionAccountDto::of)
+                .collect(Collectors.toList());
     }
 }
