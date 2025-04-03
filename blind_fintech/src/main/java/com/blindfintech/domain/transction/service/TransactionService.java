@@ -1,25 +1,24 @@
 package com.blindfintech.domain.transction.service;
 
+import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.common.exception.BadRequestException;
-import com.blindfintech.common.exception.BaseException;
+import com.blindfintech.common.exception.ExceptionResponse;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
-import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
 import com.blindfintech.domain.bank.Repository.BankRepository;
 import com.blindfintech.domain.bank.entity.Bank;
 import com.blindfintech.domain.transction.config.handler.TransactionWebSocketHandler;
 import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
-import com.blindfintech.domain.transction.dto.TransactionDto;
-import com.blindfintech.domain.transction.dto.TransactionResultDto;
+import com.blindfintech.domain.transction.dto.TransactionResponseDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.exception.TransactionExceptionCode;
 import com.blindfintech.domain.transction.kafka.TransactionProducer;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
-import jakarta.transaction.Transactional;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -64,25 +63,35 @@ public class TransactionService {
             throw new BadRequestException(INSUFFICIENT_BALANCE);
         }
 
-        // 메시지 발행
-        // 1. TransactionDto로 변경
-        TransactionDto transactionData = TransactionDto.from(transactionRequest);
+        // daily_transfer_limit, one_time_transfer_limit 확인
+        if(transactionRequest.getTransactionAmount() > sender.getOneTimeTransferLimit()){
+            throw new BadRequestException(OVER_ONETIME_TRANSFER_LIMIT);
+        }
 
-        // 2. Producer 이용해 메시지 전송
-        producer.sendTransaction(transactionData);
+        // TODO 1일 이체한도 초과 여부 확인
+        if(transactionRequest.getTransactionAmount() > sender.getDailyTransferLimit()){
+            throw new BadRequestException(OVER_DAILY_TRANSFER_LIMIT);
+        }
+
+        // 메시지 발행
+        producer.sendTransaction(transactionRequest);
     }
 
     @Async
-    public void consumeSendMoney(TransactionDto transactionDto, String transactionUuid){
-        log.info("🟢 Received TransactionDto: {}", transactionDto.toString());
+    public void consumeSendMoney(TransactionRequest transactionRequest, String transactionUuid){
+        log.info("🟢 Received TransactionRequest: {}", transactionRequest.toString());
 
         // 메시지 처리
         try {
-            transactionProcessor.performSendMoneyTransaction(transactionDto, transactionUuid);
+            AccountTransaction senderAccountTransaction = transactionProcessor.performSendMoneyTransaction(transactionRequest, transactionUuid);
 
             try{
                 // websocket을 통한 응답
-                transactionWebSocketHandler.sendTransactionResult(transactionUuid, "송금 성공! Transaction ID: " + transactionUuid);
+                TransactionResponseDto transactionResponseDto = TransactionResponseDto.from(senderAccountTransaction);
+                String transactionResponse = objectMapper.writeValueAsString(ResponseDto.success(transactionResponseDto));
+                transactionWebSocketHandler.sendTransactionResult(transactionResponse);
+
+                // TODO 입금 받은 유저에게 푸시 알림
             } catch (Exception e) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
                 String transactionResponse = objectMapper.writeValueAsString(

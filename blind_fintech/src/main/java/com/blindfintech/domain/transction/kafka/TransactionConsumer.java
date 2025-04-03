@@ -1,7 +1,6 @@
 package com.blindfintech.domain.transction.kafka;
 
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
-import com.blindfintech.domain.transction.dto.TransactionDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
@@ -34,7 +33,7 @@ public class TransactionConsumer {
             String transactionJson = record.value();
             log.info("📜 Extracted JSON: : {}", transactionJson);
 
-            TransactionDto transactionDto = objectMapper.readValue(transactionJson, TransactionDto.class);
+            TransactionRequest transactionRequest = objectMapper.readValue(transactionJson, TransactionRequest.class);
 
             long offset = record.offset();
             int partition = record.partition();
@@ -44,7 +43,7 @@ public class TransactionConsumer {
                     TransactionLogDto.from(transactionUuid, TransactionState.PROCESSING));
             transactionLogRepository.save(transactionLog);
 
-            transactionService.consumeSendMoney(transactionDto, transactionUuid);
+            transactionService.consumeSendMoney(transactionRequest, transactionUuid);
         } catch (Exception e) {
             System.err.println("❌ JSON 변환 실패: " + e.getMessage());
             throw new RuntimeException(e);

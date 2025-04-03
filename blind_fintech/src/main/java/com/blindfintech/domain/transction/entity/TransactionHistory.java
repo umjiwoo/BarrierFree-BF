@@ -1,20 +1,24 @@
 package com.blindfintech.domain.transction.entity;
 
+import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.users.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "transaction_history")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransactionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +47,15 @@ public class TransactionHistory {
 
     @NotNull
     @Column(name = "last_transaction", nullable = false)
-    private Instant lastTransaction;
+    private LocalDateTime lastTransaction;
 
+    public static TransactionHistory from(User user, AccountTransaction accountTransaction) {
+        return TransactionHistory.builder()
+                .user(user)
+                .transactionAccount(accountTransaction.getAccount().getAccountNo())
+                .transactionBankId(accountTransaction.getTransactionBankId())
+                .transactionName(accountTransaction.getTransactionName())
+                .lastTransaction(accountTransaction.getTransactionDate())
+                .build();
+    }
 }

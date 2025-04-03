@@ -1,6 +1,6 @@
 package com.blindfintech.domain.transction.kafka.config;
 
-import com.blindfintech.domain.transction.dto.TransactionDto;
+import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -31,7 +31,7 @@ public class KafkaConfig {
     private String group_id;
 
     @Bean
-    public ProducerFactory<String, TransactionDto> producerFactory() {
+    public ProducerFactory<String, TransactionRequest> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -42,7 +42,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, TransactionDto> consumerFactory() {
+    public ConsumerFactory<String, TransactionRequest> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, group_id);
@@ -55,7 +55,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, TransactionDto> kafkaTemplate() { // send message
+    public KafkaTemplate<String, TransactionRequest> kafkaTemplate() { // send message
         return new KafkaTemplate<>(producerFactory());
     }
 }
