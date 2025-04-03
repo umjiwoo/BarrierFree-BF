@@ -5,7 +5,6 @@ import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
-import com.blindfintech.domain.transction.config.handler.TransactionWebSocketHandler;
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.TransactionResultDto;
 import com.blindfintech.domain.transction.entity.TransactionHistory;
@@ -20,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.ACCOUNT_NOT_FOUND;
