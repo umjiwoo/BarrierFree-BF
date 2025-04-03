@@ -1,5 +1,6 @@
 package com.blindfintech.domain.transction.controller;
 
+import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
 import com.blindfintech.domain.transction.controller.request.TransactionRequest;
 import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
@@ -19,9 +20,10 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("/check_account")
-    public ResponseEntity<CheckAccountResultDto> checkAccount(
+    public ResponseEntity<ResponseDto<CheckAccountResultDto>> checkAccount(
             @RequestBody CheckAccountRequest accountInfo) {
-        return ResponseEntity.ok().body(transactionService.checkAccount(accountInfo)); // 계좌주 이름 반환
+        CheckAccountResultDto checkAccountResultDto= transactionService.checkAccount(accountInfo);
+        return ResponseEntity.ok().body(ResponseDto.success(checkAccountResultDto));
     }
 
     @PostMapping("/send_money")
