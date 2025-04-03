@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransactionController {
     private final TransactionService transactionService;
 
-    @GetMapping("/check_account")
+    @GetMapping("/check-account")
     public ResponseEntity<ResponseDto<CheckAccountResultDto>> checkAccount(
             @RequestBody CheckAccountRequest accountInfo) {
         CheckAccountResultDto checkAccountResultDto= transactionService.checkAccount(accountInfo);
         return ResponseEntity.ok().body(ResponseDto.success(checkAccountResultDto));
     }
 
-    @PostMapping("/send_money")
+    @PostMapping("/send-money")
     public ResponseEntity<?> sendMoney(
             @RequestBody TransactionRequest transactionRequest){
 
