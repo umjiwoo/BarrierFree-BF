@@ -31,7 +31,7 @@ import static com.blindfintech.domain.transction.exception.TransactionExceptionC
 @RequiredArgsConstructor
 @Service
 public class TransactionService {
-    private final AccountTransactionRepository accountTransactionRepository;
+    private final ObjectMapper objectMapper;
     private final AccountRepository accountRepository;
     private final BankRepository bankRepository;
 
@@ -85,24 +85,22 @@ public class TransactionService {
                 transactionWebSocketHandler.sendTransactionResult(transactionUuid, "송금 성공! Transaction ID: " + transactionUuid);
             } catch (Exception e) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+                String transactionResponse = objectMapper.writeValueAsString(
+                        ResponseDto.error(new ExceptionResponse(SOCKET_RESPONSE_FAILED.getCode(),
+                                                                SOCKET_RESPONSE_FAILED.getMessage())));
+                transactionWebSocketHandler.sendTransactionResult(transactionResponse);
             }
         }catch(Exception e){
             TransactionLog transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.FAILED));
             transactionLogRepository.save(transactionLog);
 
             try {
-                transactionWebSocketHandler.sendTransactionResult(transactionUuid, "송금 실패! Transaction ID: " + transactionUuid);
+                String transactionResponse = objectMapper.writeValueAsString(
+                        ResponseDto.error(new ExceptionResponse(SEND_MONEY_FAILED.getCode(), SEND_MONEY_FAILED.getMessage())));
+                transactionWebSocketHandler.sendTransactionResult(transactionResponse);
             } catch (Exception ex) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
             }
         }
-
-        // TransactoinLog 가 Completed인 경우 AccountTransaction 생성
-        // TODO 송금인, 수신인 둘 다 생성돼야 함
-//        AccountTransaction accountTransaction = new AccountTransaction();
-//        accountTransaction.setId();
-//        accountTransaction.setAccount();
-
-        // TODO 최근 거래 계좌 내역을 저장하는 TransactionHistory 테이블 데이터 생성
     }
 }

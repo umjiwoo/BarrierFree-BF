@@ -27,7 +27,7 @@ public class TransactionWebSocketHandler extends TextWebSocketHandler {
         System.out.println("❌ 클라이언트 연결 종료: " + session.getId());
     }
 
-    public void sendTransactionResult(String transactionUuid, String message) throws Exception {
+    public void sendTransactionResult(String message) throws Exception {
         for (WebSocketSession session : sessions) {
             if (session.isOpen()) {
                 session.sendMessage(new TextMessage(message));

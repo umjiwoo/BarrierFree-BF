@@ -17,5 +17,4 @@ public class WebSocketConfig implements WebSocketConfigurer { // websocket 구�
         registry.addHandler(transactionWebSocketHandler, "/ws")
                 .setAllowedOrigins("*");
     }
-    //TODO 웹소켓 연결 안됨 문제
 }
