@@ -12,4 +12,5 @@ public class TransactionRequest {
     private Integer receiverAccountId;
     private Integer transactionAmount;
     private String transactionName;
+    private String transactionWebSocketId;
 }
