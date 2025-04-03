@@ -17,17 +17,16 @@ public interface AccountTransactionRepository extends JpaRepository<AccountTrans
                at.transactionBalance as transactionBalance,
                at.transactionDate as transactionDate,
                at.transactionAccount as transactionAccount,
-               at.transactionBankId as transactionBankId,
-               at.transactionStatus as transactionStatus
+               at.transactionBankId as transactionBankId
         FROM AccountTransaction at
         WHERE at.account.id = :accountId
         ORDER BY at.transactionDate DESC
     """)
     List<AccountDetailsProjection> findByAccountId(@Param("accountId") Integer accountId);
 
-    @Query("SELECT at FROM AccountTransaction at WHERE at.transactionName LIKE %:transactionName% " +
-            "AND at.transactionType = 'WITHDRAWAL' " +
-            "AND at.transactionDate >= :threeMonthsAgo ORDER BY at.transactionDate DESC")
-    List<AccountTransaction> findAiAccountTransactioon(String transactionName, LocalDateTime threeMonthsAgo);
+//    @Query("SELECT at FROM AccountTransaction at WHERE at.transactionName LIKE %:transactionName% " +
+//            "AND at.transactionType = 'WITHDRAWAL' " +
+//            "AND at.transactionDate >= :threeMonthsAgo ORDER BY at.transactionDate DESC")
+//    List<AccountTransaction> findAiAccountTransactioon(String transactionName, LocalDateTime threeMonthsAgo);
 }
 
