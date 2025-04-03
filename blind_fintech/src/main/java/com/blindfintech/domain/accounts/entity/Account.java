@@ -37,7 +37,7 @@ public class Account {
     @NotNull
     @Builder.Default
     @Column(name = "bank_id", nullable = false)
-    private Integer bankId = 999;
+    private Integer bankId = 18;
 
     @NotNull
     @Column(name = "account_no", nullable = false)

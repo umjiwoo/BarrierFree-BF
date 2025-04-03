@@ -2,6 +2,7 @@ package com.blindfintech.common.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,8 @@ public class JwtUtil {
 
     private final SecretKey secretKey;
 
+    // 토큰 만료 시간 반환
+    @Getter
     @Value("${jwt.expiration-time:604800000}") // 7일 (7 * 24 * 60 * 60 * 1000)
     private long expirationTime;
 
@@ -62,8 +65,4 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // 토큰 만료 시간 반환
-    public long getExpirationTime() {
-        return expirationTime;
-    }
 }

@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.blindfintech.domain.accounts.exception.AccountExceptionCode.*;
 
@@ -67,7 +66,8 @@ public class AccountService {
         Account account = Account.builder()
                 .user(user)
                 .accountNo(newAccountNo)
-                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.getUsername())
+                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().isEmpty()
+                        ? accountInputDto.getUsername(): user.getUsername())
                 .dailyTransferLimit(accountInputDto.getDailyTransferLimit())
                 .oneTimeTransferLimit(accountInputDto.getOneTimeTransferLimit())
                 .accountPassword(encodedPassword)
@@ -107,7 +107,6 @@ public class AccountService {
                 "- 반드시 `WHERE account_id = " + accountNo + "` 조건 포함.  \n" +
                 "- 결과는 SQL 쿼리만 출력, 다른 설명은 하지 마세요.";
         String sqlQuery = openAiClient.sendRequest(prompt, input);
-        System.out.println(sqlQuery);
 //        AccountTransactionRepository.findAiAccountTransactioon(Optional<AccountProjection>)
         return accountTransactionRepository.findTransactionsByQuery(sqlQuery);
     }
