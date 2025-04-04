@@ -1,8 +1,6 @@
 package com.blindfintech.domain.accounts.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
-import com.blindfintech.common.exception.BadRequestException;
-import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
 import com.blindfintech.domain.accounts.dto.AccountInputDto;
 import com.blindfintech.domain.accounts.dto.AccountListDto;
