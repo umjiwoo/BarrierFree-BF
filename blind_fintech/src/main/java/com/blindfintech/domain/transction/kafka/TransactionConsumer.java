@@ -1,6 +1,6 @@
 package com.blindfintech.domain.transction.kafka;
 
-import com.blindfintech.domain.transction.controller.request.TransactionRequest;
+import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
@@ -13,8 +13,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,7 +31,7 @@ public class TransactionConsumer {
             String transactionJson = record.value();
             log.info("📜 Extracted JSON: : {}", transactionJson);
 
-            TransactionRequest transactionRequest = objectMapper.readValue(transactionJson, TransactionRequest.class);
+            TransactionRequestDto transactionRequestDto = objectMapper.readValue(transactionJson, TransactionRequestDto.class);
 
             long offset = record.offset();
             int partition = record.partition();
@@ -43,7 +41,7 @@ public class TransactionConsumer {
                     TransactionLogDto.from(transactionUuid, TransactionState.PROCESSING));
             transactionLogRepository.save(transactionLog);
 
-            transactionService.consumeSendMoney(transactionRequest, transactionUuid);
+            transactionService.consumeSendMoney(transactionRequestDto, transactionUuid);
         } catch (Exception e) {
             System.err.println("❌ JSON 변환 실패: " + e.getMessage());
             throw new RuntimeException(e);

@@ -1,10 +1,8 @@
 package com.blindfintech.domain.transction.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
-import com.blindfintech.domain.transction.controller.request.CheckAccountRequest;
-import com.blindfintech.domain.transction.controller.request.TransactionRequest;
-import com.blindfintech.domain.transction.dto.CheckAccountResultDto;
-import com.blindfintech.domain.transction.dto.RecentTransactionAccountDto;
+import com.blindfintech.domain.accounts.repository.AccountRepository;
+import com.blindfintech.domain.transction.dto.*;
 import com.blindfintech.domain.transction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +18,20 @@ import java.util.List;
 @RequestMapping("/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
+    private final AccountRepository accountRepository;
 
     @GetMapping("/check-account")
     public ResponseEntity<ResponseDto<CheckAccountResultDto>> checkAccount(
-            @RequestBody CheckAccountRequest accountInfo) {
+            @RequestBody CheckAccountRequestDto accountInfo) {
         CheckAccountResultDto checkAccountResultDto= transactionService.checkAccount(accountInfo);
         return ResponseEntity.ok().body(ResponseDto.success(checkAccountResultDto));
     }
 
     @PostMapping("/send-money")
     public ResponseEntity<?> sendMoney(
-            @RequestBody TransactionRequest transactionRequest){
+            @RequestBody TransactionRequestDto transactionRequestDto){
 
-        transactionService.produceSendMoney(transactionRequest);
+        transactionService.produceSendMoney(transactionRequestDto);
         return ResponseEntity.ok().body("ok");
     }
 

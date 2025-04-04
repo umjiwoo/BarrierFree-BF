@@ -5,7 +5,7 @@ import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
-import com.blindfintech.domain.transction.controller.request.TransactionRequest;
+import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import com.blindfintech.domain.transction.dto.TransactionResultDto;
 import com.blindfintech.domain.transction.entity.TransactionHistory;
 import com.blindfintech.domain.transction.entity.TransactionLog;
@@ -34,13 +34,13 @@ public class TransactionProcessor {
     private final TransactionHistoryRepository transactionHistoryRepository;
 
     @Transactional
-    public AccountTransaction performSendMoneyTransaction(TransactionRequest transactionRequest, String transactionUuid) {
+    public AccountTransaction performSendMoneyTransaction(TransactionRequestDto transactionRequestDto, String transactionUuid) {
         TransactionLog transactionLog = null;
-        long sendAmount = (long)transactionRequest.getTransactionAmount();
+        long sendAmount = (long) transactionRequestDto.getTransactionAmount();
 
-        Account sender = accountRepository.findAccountById(transactionRequest.getSenderAccountId())
+        Account sender = accountRepository.findAccountById(transactionRequestDto.getSenderAccountId())
                 .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
-        Account receiver = accountRepository.findAccountById(transactionRequest.getReceiverAccountId())
+        Account receiver = accountRepository.findAccountById(transactionRequestDto.getReceiverAccountId())
                 .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
 
         // 1. 보내는 계좌 amount 차액
@@ -61,7 +61,7 @@ public class TransactionProcessor {
 
         // 3. 송금한 유저, 입금 받은 유저 AccountTransaction 데이터 생성
         LocalDateTime transactionCompletedTime = transactionLog.getCreatedAt();
-        TransactionResultDto transactionResultDto = TransactionResultDto.from(transactionRequest, transactionUuid, transactionCompletedTime);
+        TransactionResultDto transactionResultDto = TransactionResultDto.from(transactionRequestDto, transactionUuid, transactionCompletedTime);
 
         AccountTransaction senderAccountTransaction = AccountTransaction.from(sender, receiver, transactionResultDto, TransactionType.WITHDRAWAL);
         AccountTransaction receiverAccountTransaction = AccountTransaction.from(receiver, sender, transactionResultDto, TransactionType.DEPOSIT);

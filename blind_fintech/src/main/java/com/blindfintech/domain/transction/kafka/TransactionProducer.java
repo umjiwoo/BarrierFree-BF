@@ -1,6 +1,6 @@
 package com.blindfintech.domain.transction.kafka;
 
-import com.blindfintech.domain.transction.controller.request.TransactionRequest;
+import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
@@ -11,7 +11,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.kafka.support.SendResult;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -19,18 +18,18 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class TransactionProducer {
     private final TransactionLogRepository transactionLogRepository;
-    private final KafkaTemplate<String, TransactionRequest> kafkaTemplate;
+    private final KafkaTemplate<String, TransactionRequestDto> kafkaTemplate;
 
     private static final int MAX_RETRY_COUNT = 3;
 
-    public void sendTransaction(TransactionRequest transactionRequest) {
-        sendWithRetry(transactionRequest, 0);
+    public void sendTransaction(TransactionRequestDto transactionRequestDto) {
+        sendWithRetry(transactionRequestDto, 0);
     }
 
-    private void sendWithRetry(TransactionRequest transactionRequest, int retryCount) {
+    private void sendWithRetry(TransactionRequestDto transactionRequestDto, int retryCount) {
         // Kafka에 메시지를 전송
-        CompletableFuture<SendResult<String, TransactionRequest>> future =
-                kafkaTemplate.send("send_money", transactionRequest);
+        CompletableFuture<SendResult<String, TransactionRequestDto>> future =
+                kafkaTemplate.send("send_money", transactionRequestDto);
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
@@ -50,14 +49,14 @@ public class TransactionProducer {
                 transactionLogRepository.save(transactionLog);
             } else {
                 if (retryCount < MAX_RETRY_COUNT) {
-                    log.warn("⚠️ Kafka 메시지 전송 실패 (재시도 {}/{}): {}", retryCount + 1, MAX_RETRY_COUNT, transactionRequest, ex);
+                    log.warn("⚠️ Kafka 메시지 전송 실패 (재시도 {}/{}): {}", retryCount + 1, MAX_RETRY_COUNT, transactionRequestDto, ex);
                     try {
                         Thread.sleep(1000L); // 재시도 간격
                     } catch (InterruptedException ignored) {}
 
-                    sendWithRetry(transactionRequest, retryCount + 1); // 재귀적으로 재시도
+                    sendWithRetry(transactionRequestDto, retryCount + 1); // 재귀적으로 재시도
                 } else {
-                    log.error("❌ Kafka 메시지 최종 실패 - DLQ로 전송: {}", transactionRequest, ex);
+                    log.error("❌ Kafka 메시지 최종 실패 - DLQ로 전송: {}", transactionRequestDto, ex);
                     //// 재시도 모두 실패 - Dead Letter Queue(DLQ)로 메시지 전송, DLQ 토픽 따로 생성 필요 ; 후순위
                     //kafkaTemplate.send("send_money_dlq", transactionDto);
                     //log.error("❌ Kafka 메시지 전송 최종 실패 (DLQ로 전송): {}", transactionDto);
