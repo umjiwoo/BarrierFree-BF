@@ -1,6 +1,6 @@
 package com.blindfintech.domain.accounts.service;
 
-import com.blindfintech.common.ai.OpenAiClient;
+//import com.blindfintech.common.ai.OpenAiClient;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.constants.BranchCode;
@@ -70,7 +70,8 @@ public class AccountService {
         Account account = Account.builder()
                 .user(user)
                 .accountNo(newAccountNo)
-                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().equals("") ? accountInputDto.getUsername(): user.getUsername())
+                .username(accountInputDto.getUsername() != null && !accountInputDto.getUsername().isEmpty()
+                        ? accountInputDto.getUsername(): user.getUsername())
                 .dailyTransferLimit(accountInputDto.getDailyTransferLimit())
                 .oneTimeTransferLimit(accountInputDto.getOneTimeTransferLimit())
                 .accountPassword(encodedPassword)
@@ -97,15 +98,15 @@ public class AccountService {
         return accountNumber.toString();
     }
 
-    private final OpenAiClient openAiClient;
+//    private final OpenAiClient openAiClient;
 
-    public String aiSearchAccountTransaction(Integer accountNo, String input) {
+   /* public String aiSearchAccountTransaction(Integer accountNo, String input) {
 
         String prompt = "Search Account";
         System.out.println("openAi");
 //        AccountTransactionRepository.findAiAccountTransactioon(Optional<AccountProjection>)
         return openAiClient.sendRequest(prompt, input);
-    }
+    }*/
 
 
     @Transactional
