@@ -1,4 +1,4 @@
-package com.blindfintech.domain.bank.repository;
+package com.blindfintech.domain.bank.Repository;
 
 import com.blindfintech.domain.bank.entity.Bank;
 import org.springframework.data.jpa.repository.JpaRepository;
