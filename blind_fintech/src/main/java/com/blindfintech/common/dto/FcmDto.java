@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FcmDto {
 
-    private Integer uid;
+    private Integer userId;
     private String fcmToken;
 }
