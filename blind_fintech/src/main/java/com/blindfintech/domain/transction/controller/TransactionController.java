@@ -40,4 +40,26 @@ public class TransactionController {
         List<RecentTransactionAccountDto> recentTransactionAccounts = transactionService.getRecentTransactionAccounts();
         return ResponseEntity.ok(ResponseDto.success(recentTransactionAccounts));
     }
+
+//    @PostMapping("/request-payment")
+//    public ResponseEntity<?> requestPayment(@RequestBody PaymentRequestDto paymentRequest){
+//        // push 알림 전 계좌 유무 확인
+//        CheckAccountResultDto checkAccount = transactionService.checkAccount(
+//                CheckAccountRequestDto.from(paymentRequest));
+//
+//        // TODO push 알림 보내기
+//        if(checkAccount != null){
+////            fcmService.sendPushNotification();
+//        }
+//
+//        return ResponseEntity.ok().body("ok");
+//    }
+//
+//    @PostMapping("/accept-payment")
+//    public ResponseEntity<?> acceptPayment(
+//            @RequestBody TransactionRequestDto transactionRequestDto){
+//        transactionService.produceSendMoney(transactionRequestDto);
+//
+//        return ResponseEntity.ok().body("ok");
+//    }
 }
