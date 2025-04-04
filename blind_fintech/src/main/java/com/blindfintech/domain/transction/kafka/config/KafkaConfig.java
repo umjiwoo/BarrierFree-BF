@@ -1,8 +1,7 @@
 package com.blindfintech.domain.transction.kafka.config;
 
-import com.blindfintech.domain.transction.controller.request.TransactionRequest;
+import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.*;
-import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.MessageListener;
-import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -31,7 +26,7 @@ public class KafkaConfig {
     private String group_id;
 
     @Bean
-    public ProducerFactory<String, TransactionRequest> producerFactory() {
+    public ProducerFactory<String, TransactionRequestDto> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -42,7 +37,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, TransactionRequest> consumerFactory() {
+    public ConsumerFactory<String, TransactionRequestDto> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, group_id);
@@ -55,7 +50,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, TransactionRequest> kafkaTemplate() { // send message
+    public KafkaTemplate<String, TransactionRequestDto> kafkaTemplate() { // send message
         return new KafkaTemplate<>(producerFactory());
     }
 }
