@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class FcmController {
     private final FcmService fcmService;
 
-    @GetMapping
-    public ResponseEntity<?> saveFcmToken(@RequestBody FcmDto fcmDto, HttpServletResponse httpServletResponse) {
+    @GetMapping("/send-token")
+    public ResponseEntity<?> saveFcmToken(@RequestBody FcmDto fcmDto) {
+        System.out.println(fcmDto);
         fcmService.saveFcmToken(fcmDto);
 
         return ResponseEntity.ok(ResponseDto.success(200, "토큰 저장 성공"));

@@ -12,6 +12,7 @@ public class FcmService {
     private final FcmRepository fcmRepository;
 
     public void saveFcmToken(FcmDto fcmDto) {
+        System.out.println("saveFcmToken");
         fcmRepository.save(fcmDto);
     }
 }

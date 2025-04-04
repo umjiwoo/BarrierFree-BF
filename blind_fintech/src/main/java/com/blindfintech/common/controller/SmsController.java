@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/sms")
 public class SmsController {
     private final SmsService smsService;
-
+    
     @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(@RequestBody SmsDto smsDto) {
-        System.out.println("send: " + smsDto);
-        smsService.sendMessage(smsDto.getPhoneNumber());
-        return ResponseEntity.ok(ResponseDto.success(200,"SMS 전송 성공"));
+    public ResponseEntity<?> sendMessage(@RequestParam String phoneNumber) {
+        System.out.println("send: " + phoneNumber);
+        smsService.sendMessage(phoneNumber);
+        return ResponseEntity.ok(ResponseDto.success(200, "SMS 전송 성공"));
     }
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyMessage(@RequestBody SmsDto smsDto) {
         smsService.verifyCode(smsDto.getPhoneNumber(), smsDto.getVerificationCode());
-        return ResponseEntity.ok(ResponseDto.success(200,"SMS 전송 성공"));
+        return ResponseEntity.ok(ResponseDto.success(200,"SMS 인증 성공"));
     }
 }

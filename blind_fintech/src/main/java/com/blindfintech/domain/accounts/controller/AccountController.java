@@ -1,8 +1,6 @@
 package com.blindfintech.domain.accounts.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
-import com.blindfintech.common.exception.BadRequestException;
-import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
 import com.blindfintech.domain.accounts.dto.AccountInputDto;
 import com.blindfintech.domain.accounts.dto.AccountListDto;
@@ -48,13 +46,13 @@ public class AccountController {
         return ResponseEntity.ok()
                 .body(ResponseDto.success(accountState));
     }
-    @GetMapping("/search-ai-accountTransction")
+/*    @GetMapping("/search-ai-accountTransction")
     public ResponseEntity<?> searchAiAccountTransction(@RequestParam Integer accountNo,
                                                        @RequestParam String reponse) {
         String aiResponsse = accountService.aiSearchAccountTransaction(accountNo, reponse);
         System.out.println(aiResponsse);
         return ResponseEntity.ok().body(aiResponsse);
-    }
+    }*/
 
     @PostMapping("{account_id}/check-pwd")
     public ResponseEntity<?> checkPassword(@PathVariable int account_id, String accountPassword) {
