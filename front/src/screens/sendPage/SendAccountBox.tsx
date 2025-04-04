@@ -1,59 +1,109 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import Carousel from './SendAccountCarousel';
-
-interface AccountItemProps {
-  name?: string;
-  date?: string;
-  accountBank: string;
-  accountNumber: string;
-  balance?: string;
-}
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
 
 interface SendAccountBoxProps {
-  accountData: AccountItemProps[];
-  onSelectAccount?: (account: AccountItemProps) => void;
+  accountData: Array<{
+    name: string;
+    date: string;
+    accountBank: string;
+    accountNumber: string;
+  }>;
+  onSelectAccount: (account: any) => void;
+  selectedAccount: any;
 }
 
-const SendAccountBox: React.FC<SendAccountBoxProps> = ({
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const ITEM_WIDTH = SCREEN_WIDTH * 0.9;
+
+const SendAccountBox = ({
   accountData,
   onSelectAccount,
-}) => {
-  const [containerWidth, setContainerWidth] = useState(0);
-
-  const handleLayout = (event: any) => {
-    const {width} = event.nativeEvent.layout;
-    if (width > 0) {
-      setContainerWidth(width);
+  selectedAccount,
+}: SendAccountBoxProps) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffset = event.nativeEvent.contentOffset;
+    const currentIndex = Math.round(contentOffset.x / SCREEN_WIDTH);
+    if (currentIndex >= 0 && currentIndex < accountData.length) {
+      onSelectAccount(accountData[currentIndex]);
     }
   };
 
   return (
-    <View style={styles.accountBoxContainer}>
-      <View style={styles.accountBox} onLayout={handleLayout}>
-        <Carousel accountData={accountData} onSelectAccount={onSelectAccount} />
-      </View>
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={handleScroll}
+        contentContainerStyle={styles.scrollContent}>
+        {accountData.map((item, index) => {
+          const isSelected =
+            selectedAccount &&
+            selectedAccount.accountNumber === item.accountNumber;
+
+          return (
+            <View
+              key={index}
+              style={[
+                styles.accountItem,
+                isSelected && styles.selectedAccount,
+              ]}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.bank}>{item.accountBank}</Text>
+              <Text style={styles.number}>{item.accountNumber}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  accountBoxContainer: {
-    marginVertical: 10,
+  container: {
     flex: 1,
-  },
-  accountBox: {
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 0,
+    width: '100%',
+  },
+  scrollContent: {
+    alignItems: 'center',
+  },
+  accountItem: {
+    width: ITEM_WIDTH,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: '#f0f0f0',
+    // marginHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedAccount: {
+    backgroundColor: '#e0e0ff',
     borderWidth: 2,
-    borderColor: '#373DCC',
-    borderRadius: 12,
-    backgroundColor: 'white',
-    elevation: 3,
+    borderColor: '#007AFF',
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  bank: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 5,
+  },
+  number: {
+    fontSize: 14,
+    color: '#999',
   },
 });
 

@@ -2,10 +2,8 @@ import {View, StyleSheet, Text} from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React from 'react';
-import Title from '../../components/Title';
-import BackButton from '../../components/BackButton';
 import {RootStackParamList} from '../../navigation/types';
-
+import DefaultPage from '../../components/DefaultPage';
 const CheckHistoryDetail = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
@@ -32,10 +30,10 @@ const CheckHistoryDetail = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
+      {/* <View style={styles.titleContainer}>
         <Title title="상세 내역" />
-      </View>
-      <View style={styles.historyContainer}>
+      </View> */}
+      {/* <View style={styles.historyContainer}>
         <View style={styles.historyDateContainer}>
           <Text style={styles.historyDate}>
             {formatDateManually(history.transactionDate).date}
@@ -59,16 +57,53 @@ const CheckHistoryDetail = () => {
             출금 {history.transactionAmount} 원
           </Text>
         )}
-      </View>
+      </View> */}
+      <DefaultPage
+        UpperLeftText="이전으로"
+        UpperRightText="홈  "
+        LowerLeftText="<"
+        LowerRightText=">"
+        MainText={
+          <View style={styles.historyContainer}>
+            <View style={styles.historyDateContainer}>
+              <Text style={styles.historyDate}>
+                {formatDateManually(history.transactionDate).date}
+              </Text>
+              <Text style={styles.historyTime}>
+                {formatDateManually(history.transactionDate).time}
+              </Text>
+            </View>
+            <Text style={styles.historyWhere}>{history.transactionName}</Text>
+            {history.transactionAccount && (
+              <Text style={styles.historyAccount}>
+                {history.transactionAccount}
+              </Text>
+            )}
+            {history.transactionType === 'DEPOSIT' ? (
+              <Text style={[styles.historyAmount, styles.plusAmount]}>
+                입금 {history.transactionAmount} 원
+              </Text>
+            ) : (
+              <Text style={[styles.historyAmount, styles.minusAmount]}>
+                출금 {history.transactionAmount} 원
+              </Text>
+            )}
+          </View>
+        }
+        onUpperLeftTextPress={() => navigation.goBack()}
+        onUpperRightTextPress={() => navigation.navigate('Main')}
+        onLowerLeftTextPress={() => {}}
+        onLowerRightTextPress={() => {}}
+      />
 
       {/* 버튼 */}
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <BackButton
           text="이전으로"
           onPress={() => navigation.goBack()}
           type="back"
         />
-      </View>
+      </View> */}
     </View>
   );
 };

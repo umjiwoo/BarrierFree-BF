@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     height: '100%',
     // marginRight: ITEM_SPACING, // 마진 제거
     padding: 30,
-    borderRadius: 12,
-    backgroundColor: '#f8f8f8',
+    // borderRadius: 12,
+    // backgroundColor: '#f8f8f8',
     // borderWidth: 1,
     // borderColor: '#24282B',
   },
