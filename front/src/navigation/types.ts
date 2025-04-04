@@ -9,10 +9,7 @@ export type RootStackParamList = {
   CheckAccount: {
     selectedAccount: AccountItemProps;
   };
-  CheckHistory: {
-    selectedAccount: AccountItemProps;
-    history: HistoryItemProps;
-  };
+  CheckHistory: undefined;
   CheckHistoryDetail: {
     history: HistoryItemProps;
   };
@@ -24,4 +21,5 @@ export type RootStackParamList = {
   RemittanceInformation: undefined;
   SendInputPage: undefined;
   ThreeBtn: undefined;
+  MyAccount: undefined;
 };
