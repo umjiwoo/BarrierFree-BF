@@ -1,10 +1,7 @@
-package com.blindfintech.domain.transction.service;
+package com.blindfintech.domain.transction.dto;
 
-import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.Transaction;
 
 @Getter
 @Setter

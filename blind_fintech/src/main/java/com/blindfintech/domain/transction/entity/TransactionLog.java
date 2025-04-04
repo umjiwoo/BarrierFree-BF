@@ -1,13 +1,11 @@
 package com.blindfintech.domain.transction.entity;
 
-import com.blindfintech.domain.transction.service.TransactionLogDto;
+import com.blindfintech.domain.transction.dto.TransactionLogDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter

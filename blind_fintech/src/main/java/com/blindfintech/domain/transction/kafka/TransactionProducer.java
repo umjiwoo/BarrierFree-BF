@@ -4,7 +4,7 @@ import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
-import com.blindfintech.domain.transction.service.TransactionLogDto;
+import com.blindfintech.domain.transction.dto.TransactionLogDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

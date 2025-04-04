@@ -5,6 +5,7 @@ import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.accounts.repository.AccountTransactionRepository;
+import com.blindfintech.domain.transction.dto.TransactionLogDto;
 import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import com.blindfintech.domain.transction.dto.TransactionResultDto;
 import com.blindfintech.domain.transction.entity.TransactionHistory;

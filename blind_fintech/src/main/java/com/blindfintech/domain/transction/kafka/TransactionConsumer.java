@@ -4,7 +4,7 @@ import com.blindfintech.domain.transction.dto.TransactionRequestDto;
 import com.blindfintech.domain.transction.entity.TransactionLog;
 import com.blindfintech.domain.transction.entity.TransactionState;
 import com.blindfintech.domain.transction.repository.TransactionLogRepository;
-import com.blindfintech.domain.transction.service.TransactionLogDto;
+import com.blindfintech.domain.transction.dto.TransactionLogDto;
 import com.blindfintech.domain.transction.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
