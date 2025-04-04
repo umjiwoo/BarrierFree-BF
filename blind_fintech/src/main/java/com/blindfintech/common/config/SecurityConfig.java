@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/**",
                                 "/accounts/**",
                                 "/swagger-ui/**",          // Swagger UI 허용
-                                "/v3/api-docs/**"    ).permitAll()  // 허용할 API 목록
+                                "/v3/api-docs/**").permitAll()  // 허용할 API 목록
                         .anyRequest().authenticated()  // 나머지는 인증 필요
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // JWT 필터 추가
@@ -50,7 +50,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost", "https://localhost"));
+        // configuration.setAllowedOrigins(List.of("http://localhost", "https://localhost", "ws://localhost",
+        //         "http://j12a208.p.ssafy.io", "https://j12a208.p.ssafy.io", "ws://j12a208.p.ssafy.io"));
+
+        configuration.addAllowedOriginPattern("*"); // 모든 origin 허용
+        
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

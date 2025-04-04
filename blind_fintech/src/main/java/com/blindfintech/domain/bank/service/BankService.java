@@ -2,7 +2,7 @@ package com.blindfintech.domain.bank.service;
 
 import com.blindfintech.domain.bank.dto.BankDto;
 import com.blindfintech.domain.bank.entity.Bank;
-import com.blindfintech.domain.bank.repository.BankRepository;
+import com.blindfintech.domain.bank.Repository.BankRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

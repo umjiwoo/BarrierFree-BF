@@ -1,5 +1,7 @@
 package com.blindfintech.domain.accounts.entity;
 
+import com.blindfintech.domain.transction.dto.TransactionResultDto;
+import com.blindfintech.domain.transction.entity.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,8 +14,8 @@ import java.time.*;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "account_transaction")
 public class AccountTransaction {
@@ -30,7 +32,7 @@ public class AccountTransaction {
 
     @NotNull
     @Column(name = "transaction_type", nullable = false)
-    private String transactionType;
+    private TransactionType transactionType;
 
     @Size(max = 32)
     @NotNull
@@ -47,9 +49,8 @@ public class AccountTransaction {
 
     @NotNull
     @CreatedDate
-    @Builder.Default
     @Column(name = "transaction_date", nullable = false)
-    private LocalDateTime transactionDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+    private LocalDateTime transactionDate;
 
     @Size(max = 32)
     @NotNull
@@ -60,14 +61,23 @@ public class AccountTransaction {
     @Column(name = "transaction_bank_id", nullable = false)
     private Integer transactionBankId;
 
-    @NotNull
-    @Builder.Default
-    @Column(name = "transaction_status", nullable = false)
-    private Boolean transactionStatus = false;
-
     @Size(max = 36)
     @NotNull
     @Column(name = "transaction_uuid", nullable = false, length = 36)
     private String transactionUuid;
 
+    public static AccountTransaction from(Account myAccount, Account oppositeAccount,
+                                          TransactionResultDto transactionResultDto, TransactionType transactionType) {
+        return AccountTransaction.builder()
+                .account(myAccount)
+                .transactionType(transactionType)
+                .transactionName(transactionResultDto.getTransactionName())
+                .transactionAmount(transactionResultDto.getAmount())
+                .transactionBalance(myAccount.getAccountBalance())
+                .transactionDate(transactionResultDto.getTransactionCompletedTime())
+                .transactionAccount(oppositeAccount.getAccountNo())
+                .transactionBankId(oppositeAccount.getBankId())
+                .transactionUuid(transactionResultDto.getTransactionUuid())
+                .build();
+    }
 }
