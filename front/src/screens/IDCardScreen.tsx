@@ -5,20 +5,20 @@ import {
   TouchableOpacity, 
   StyleSheet, 
   SafeAreaView, 
-  BackHandler,
   Alert,
-  Linking
+  Linking,
+  Dimensions
 } from 'react-native';
 import {
   Camera,
-  useFrameProcessor,
   useCameraDevice,
   useCameraFormat,
   useCameraPermission,
   useMicrophonePermission,
   CameraRuntimeError,
-  CameraDeviceFormat,
-  VisionCameraProxy
+  VisionCameraProxy,
+  useFrameProcessor,
+  CameraDeviceFormat
 } from 'react-native-vision-camera';
 import {Worklets} from 'react-native-worklets-core';
 import {useNavigation} from '@react-navigation/native';
@@ -26,23 +26,17 @@ import {useNavigation} from '@react-navigation/native';
 // idcard 플러그인 및 타입 정의 import
 import {IdCardPluginResult} from '../camera/plugins/idcard';
 
-// 글로벌 상태 타입 확장 - 초기화 안전성 보장
-declare global {
-  var _isProcessingFrame: boolean;
-  var _cameraInitialized: boolean;
-}
-
-// 안전하게 글로벌 변수 초기화
-if (global._isProcessingFrame === undefined) {
-  global._isProcessingFrame = false;
-}
-
-if (global._cameraInitialized === undefined) {
-  global._cameraInitialized = false;
-}
-
 // 네이티브 플러그인 초기화
 const idcardDetecterPlugin = VisionCameraProxy.initFrameProcessorPlugin('idcardDetecter', {});
+
+// 코너 점 색상 정의
+const CORNER_COLORS = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'];
+
+// 카메라가 현재 처리 중인지 추적하는 상태 변수
+let isProcessingFrame = false;
+
+// 화면 크기 구하기
+const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
 const IDCardScreen = () => {
   // 네비게이션
@@ -57,6 +51,8 @@ const IDCardScreen = () => {
   const [lastProcessingTime, setLastProcessingTime] = useState(0);
   const [debugInfo, setDebugInfo] = useState<string>('카메라 초기화 중...');
   const [initRetries, setInitRetries] = useState(0);
+  const [showDebug, setShowDebug] = useState(false); // 디버그 정보 표시 토글
+  const [detectionResults, setDetectionResults] = useState<IdCardPluginResult | null>(null);
 
   // 뒤로가기 처리
   const handleGoBack = useCallback(() => {
@@ -76,13 +72,10 @@ const IDCardScreen = () => {
   const device = useCameraDevice('back');
   
   // 포맷 설정 - 조건부 Hook 호출 방지
-  const cameraFormat = useCameraFormat(device || undefined, [
+  const format = useCameraFormat(device || undefined, [
     {videoResolution: {width: 640, height: 480}}, // 640x480 (4:3)
     {videoResolution: {width: 720, height: 480}}, // 720x480 (3:2)
   ]);
-  
-  // 조건부 할당
-  const format = device ? cameraFormat : undefined;
 
   // 포맷 정보 로깅 (디버깅용)
   useEffect(() => {
@@ -115,56 +108,6 @@ const IDCardScreen = () => {
     }
   }, [requestCameraPermission, requestMicPermission]);
 
-
-  // 카메라 초기화 시도 함수
-  const initializeCamera = useCallback(() => {
-    if (!hasCameraPermission || !device) {
-      return;
-    }
-
-    try {
-      setDebugInfo('카메라 초기화 중...');
-      global._cameraInitialized = true;
-      console.log('📷 카메라 초기화 시도 #', initRetries + 1);
-      
-      // 여기서 필요한 추가 초기화 작업 수행
-      // 예: 모델 초기화, 플러그인 준비 등
-    } catch (e) {
-      console.error('카메라 초기화 오류:', e);
-      global._cameraInitialized = false;
-
-      // 3회까지만 재시도
-      if (initRetries < 3) {
-        setInitRetries(prev => prev + 1);
-        setTimeout(initializeCamera, 500); // 500ms 후 재시도
-      } else {
-        setDebugInfo('카메라 초기화 실패');
-      }
-    }
-  }, [device, hasCameraPermission, initRetries]);
-
-  // 안드로이드 하드웨어 뒤로가기 처리
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleGoBack);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleGoBack);
-    };
-  }, [handleGoBack]);
-
-  // 권한 요청 처리
-  useEffect(() => {
-    if (!hasCameraPermission || !hasMicPermission) {
-      requestPermissions();
-    }
-  }, [hasCameraPermission, hasMicPermission, requestPermissions]);
-
-  // 카메라 초기화
-  useEffect(() => {
-    if (hasCameraPermission && device && !global._cameraInitialized) {
-      initializeCamera();
-    }
-  }, [hasCameraPermission, device, initializeCamera]);
-
   // 탐지 결과 처리 함수
   const onDetectionsReceived = useCallback((
     result: IdCardPluginResult
@@ -190,13 +133,27 @@ const IDCardScreen = () => {
       // 박스 정보 로깅
       console.log(`📦 감지된 박스: ${boxes.length}개`);
       
+      // 첫 번째 박스의 코너 좌표 로깅
+      if (boxes[0].corners && boxes[0].corners.length === 4) {
+        const corners = boxes[0].corners;
+        console.log(`📍 코너 좌표: 
+        - 좌상: (${corners[0].x.toFixed(1)}, ${corners[0].y.toFixed(1)})
+        - 우상: (${corners[1].x.toFixed(1)}, ${corners[1].y.toFixed(1)})
+        - 우하: (${corners[2].x.toFixed(1)}, ${corners[2].y.toFixed(1)})
+        - 좌하: (${corners[3].x.toFixed(1)}, ${corners[3].y.toFixed(1)})`);
+      }
+      
       // 디버그 정보 업데이트
       setDetectionCount(prev => prev + 1);
       setLastProcessingTime(result.processingTimeMs);
       setDebugInfo(`신분증 감지: ${boxes.length}개 (${result.processingTimeMs}ms)`);
+      
+      // 결과 저장
+      setDetectionResults(result);
     } else {
       console.log(`📦 감지된 박스 없음`);
       setDebugInfo('신분증을 화면에 비춰주세요');
+      setDetectionResults(null);
     }
   }, []);
 
@@ -207,104 +164,147 @@ const IDCardScreen = () => {
   const handleCameraError = useCallback((error: CameraRuntimeError) => {
     console.error('카메라 오류:', error.code, error.message);
     setDebugInfo(`카메라 오류: ${error.code}`);
-
-    // 카메라 초기화 상태 재설정
-    global._cameraInitialized = false;
     
     // 초기화 재시도 카운터 증가
     if (initRetries < 3) {
       setInitRetries(prev => prev + 1);
-      setTimeout(initializeCamera, 1000); // 1초 후 재시도
+      setTimeout(() => {
+        console.log('📷 카메라 초기화 재시도');
+        setDebugInfo('카메라 초기화 재시도 중...');
+      }, 1000); // 1초 후 재시도
     }
-  }, [initRetries, initializeCamera]);
+  }, [initRetries]);
 
-  // 프레임 프로세서
+  // temptodo.md 예제 코드 기반 프레임 프로세서
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
     
-    // 플러그인 또는 프레임 유효성 검사
-    if (!frame?.isValid) {
-      console.log('⚠️ 유효하지 않은 프레임 스킵');
-      return;
-    }
-    
     // 이미 처리 중이면 스킵
-    if (global._isProcessingFrame === true) {
+    if (isProcessingFrame) {
       return;
     }
     
-    // 픽셀 포맷 확인 (yuv 권장)
-    const pixelFormat = frame.pixelFormat;
-    const isYuvFormat = pixelFormat === 'yuv';
-    
-    // 프레임 정보 로깅 (픽셀 포맷 포함)
-    console.log(`📸 프레임 정보: ${frame.width}x${frame.height}, 포맷: ${pixelFormat} ${isYuvFormat ? '(권장)' : '(비권장)'}, 방향: ${frame.orientation}`);
+    // 프레임 정보 로깅
+    console.log(`📸 프레임 정보: ${frame.width}x${frame.height}, 포맷: ${frame.pixelFormat}, 방향: ${frame.orientation}`);
     
     // 처리 시작 표시
-    global._isProcessingFrame = true;
+    isProcessingFrame = true;
     
     try {
-      // 플러그인 유효성 검사
-      if (!idcardDetecterPlugin) {
-        console.log('❌ idcardDetecter 플러그인 초기화 실패');
-        global._isProcessingFrame = false;
-        return;
-      }
-      
-      // pixelFormat이 'yuv'가 아닌 경우 경고
-      if (!isYuvFormat) {
-        console.warn(`⚠️ 최적화되지 않은 픽셀 포맷: ${pixelFormat}. ML 모델은 'yuv' 포맷을 권장합니다.`);
-      }
-      
-      // 네이티브 플러그인 직접 호출
-      const result = idcardDetecterPlugin.call(frame) as any;
-      
-      if (result) {
-        // 결과 기본 타입 처리
-        const processedResult: IdCardPluginResult = {
-          boxes: Array.isArray(result.boxes) ? result.boxes : [],
-          processingTimeMs: result.processingTimeMs || 0,
-          imageInfo: result.imageInfo,
-          rawOutputs: result.rawOutputs,
-          orientation: result.orientation || (frame.orientation?.toString() || 'landscape-right')
-        };
+      // 네이티브 플러그인 호출
+      if (idcardDetecterPlugin) {
+        // 플러그인 호출 및 결과 가져오기
+        const rawResult = idcardDetecterPlugin.call(frame);
         
-        // 박스 탐지 결과 로깅
-        console.log(`📦 네이티브에서 반환된 박스: ${processedResult.boxes.length}개, 처리시간: ${processedResult.processingTimeMs}ms`);
-        
-        // 전체 result를 전달하여 처리
-        runOnJSHandleDetection(processedResult);
+        // 결과 확인 및 JS 스레드로 전달
+        if (rawResult) {
+          // 타입 변환 (unknown을 통해 안전하게 변환)
+          const result = rawResult as unknown as IdCardPluginResult;
+          runOnJSHandleDetection(result);
+        } else {
+          // 결과가 없을 경우 빈 결과 객체 전달
+          runOnJSHandleDetection({
+            boxes: [],
+            processingTimeMs: 0,
+            orientation: frame.orientation?.toString() || 'landscape-right'
+          });
+        }
       } else {
-        // 결과가 없는 경우
-        console.log('📦 탐지된 박스 없음');
-        runOnJSHandleDetection({
-          boxes: [],
-          processingTimeMs: 0,
-          orientation: frame.orientation?.toString() || 'landscape-right'
-        });
+        console.log('❌ idcardDetecter 플러그인 초기화 실패');
       }
     } catch (e) {
       console.error('FrameProcessor 오류:', e);
     } finally {
       // 처리 상태 초기화
-      global._isProcessingFrame = false;
-      
-      // React Native VisionCamera v3에서는 더 이상 frame.close()가 필요하지 않음
-      // frame이 자동으로 관리됨
+      isProcessingFrame = false;
     }
   }, [runOnJSHandleDetection]);
+
+  // ID 카드 시각화 컴포넌트 
+  const IDCardVisualization = useCallback(() => {
+    // 시각화할 데이터가 없으면 빈 컴포넌트 반환
+    if (!detectionResults || !detectionResults.boxes || detectionResults.boxes.length === 0) {
+      return null;
+    }
+    
+    // 첫 번째 감지된 박스만 사용
+    const box = detectionResults.boxes[0];
+    
+    // 코너 점이 없으면 빈 컴포넌트 반환
+    if (!box.corners || box.corners.length !== 4) {
+      return null;
+    }
+    
+    // 이미지 정보가 있으면 스케일링 계수 계산
+    const scaleX = detectionResults.imageInfo?.originalWidth 
+      ? screenWidth / detectionResults.imageInfo.originalWidth
+      : 1;
+    const scaleY = detectionResults.imageInfo?.originalHeight
+      ? screenHeight / detectionResults.imageInfo.originalHeight
+      : 1;
+    
+    // SVG를 이용한 시각화 (Skia 대신 간단한 방법으로 시각화)
+    return (
+      <View style={StyleSheet.absoluteFill}>
+        <View style={styles.boxOverlay}>
+          {/* 바운딩 박스 테두리 */}
+          <View style={[
+            styles.boxBorder,
+            {
+              left: box.corners[0].x * scaleX,
+              top: box.corners[0].y * scaleY,
+              width: box.width * scaleX,
+              height: box.height * scaleY,
+              transform: [{ rotate: `${box.angleDeg}deg` }]
+            }
+          ]} />
+          
+          {/* 코너 점 */}
+          {box.corners.map((corner, index) => (
+            <View 
+              key={index}
+              style={[
+                styles.cornerPoint,
+                {
+                  left: corner.x * scaleX - 5,
+                  top: corner.y * scaleY - 5,
+                  backgroundColor: CORNER_COLORS[index]
+                }
+              ]} 
+            />
+          ))}
+          
+          {/* 디버그 정보 (선택적) */}
+          {showDebug && (
+            <View style={styles.debugBox}>
+              <Text style={styles.debugText}>신뢰도: {(box.confidence * 100).toFixed(1)}%</Text>
+              <Text style={styles.debugText}>각도: {box.angleDeg.toFixed(1)}°</Text>
+              <Text style={styles.debugText}>
+                크기: {box.width.toFixed(0)}x{box.height.toFixed(0)}
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
+    );
+  }, [detectionResults, showDebug]);
 
   // 카메라 토글
   const toggleCamera = useCallback(() => {
     setIsActive(prev => !prev);
     setDebugInfo(prev => prev === '카메라 중지됨' ? '카메라 다시 시작됨' : '카메라 중지됨');
   }, []);
+  
+  // 디버그 모드 토글
+  const toggleDebug = useCallback(() => {
+    setShowDebug(prev => !prev);
+  }, []);
 
   // 컴포넌트 마운트/언마운트 처리
   useEffect(() => {
     // 상태 초기화
     setDebugInfo('카메라 초기화 중...');
-    global._isProcessingFrame = false;
+    isProcessingFrame = false;
     
     // 마운트 시 로그
     console.log('📷 IDCardScreen 마운트됨');
@@ -312,8 +312,7 @@ const IDCardScreen = () => {
     // 언마운트 시 정리
     return () => {
       console.log('📷 IDCardScreen 언마운트됨');
-      global._isProcessingFrame = false;
-      global._cameraInitialized = false;
+      isProcessingFrame = false;
       setIsActive(false);
     };
   }, []);
@@ -363,7 +362,7 @@ const IDCardScreen = () => {
         format={format}
         isActive={isActive}
         frameProcessor={frameProcessor}
-        fps={30}
+        fps={format?.maxFps || 30}
         resizeMode="contain"
         enableZoomGesture={false}
         onError={handleCameraError}
@@ -377,6 +376,10 @@ const IDCardScreen = () => {
         onPreviewStarted={() => console.log('카메라 프리뷰 시작')}
         onPreviewStopped={() => console.log('카메라 프리뷰 중지')}
       />
+      
+      {/* ID 카드 시각화 오버레이 */}
+      <IDCardVisualization />
+      
       <SafeAreaView style={styles.overlay}>
         <Text style={styles.overlayTitle}>신분증 인식</Text>
         <Text style={styles.debugInfo}>{debugInfo}</Text>
@@ -398,6 +401,11 @@ const IDCardScreen = () => {
           style={styles.button}
           onPress={handleGoBack}>
           <Text style={styles.text}>뒤로 가기</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.debugButton]}
+          onPress={toggleDebug}>
+          <Text style={styles.text}>{showDebug ? '디버그 끄기' : '디버그 켜기'}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -490,6 +498,42 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
+  },
+  debugButton: {
+    backgroundColor: '#9c27b0', // 보라색
+    width: '40%',
+  },
+  // ID 카드 시각화를 위한 스타일
+  boxOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'transparent',
+  },
+  boxBorder: {
+    position: 'absolute',
+    borderWidth: 3,
+    borderColor: '#00FF00',
+    backgroundColor: 'transparent',
+  },
+  cornerPoint: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'white',
+  },
+  debugBox: {
+    position: 'absolute',
+    top: 200,
+    left: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    padding: 10,
+    borderRadius: 5,
+  },
+  debugText: {
+    color: 'white',
+    fontSize: 12,
+    marginBottom: 3,
   },
 });
 

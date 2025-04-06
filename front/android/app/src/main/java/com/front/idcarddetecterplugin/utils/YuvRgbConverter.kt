@@ -9,6 +9,7 @@ import android.util.Log
 class YuvRgbConverter {
     companion object {
         private const val TAG = "YuvRgbConverter"
+        private const val LOG_PREFIX = "[YuvRgbConverter] "
     }
 
     fun yuv420ToBitmap(image: Image): Bitmap {
@@ -54,7 +55,7 @@ class YuvRgbConverter {
             }
         }
         val endTime = System.currentTimeMillis()
-        Log.d(TAG, "YUV -> RGB 변환 시간: ${endTime - startTime}ms")
+        Log.d(TAG, "${LOG_PREFIX}YUV -> RGB 변환 시간: ${endTime - startTime}ms")
         return Bitmap.createBitmap(output, width, height, Bitmap.Config.ARGB_8888)
     }
 }

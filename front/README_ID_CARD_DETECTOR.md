@@ -10,22 +10,41 @@ React Native Vision Camera 프레임워크를 기반으로 구현되었습니다
 
 ```bash
 npm install react-native-vision-camera
-npm install react-native-reanimated
+npm react-native-worklets-core
 ```
 
 `package.json`에 다음 의존성이 추가되어야 합니다:
 
 ```json
 "dependencies": {
-  "react-native-vision-camera": "^3.6.12",
-  "react-native-reanimated": "^3.17.2"
+  "react-native-vision-camera": "^4.6.4",
+  "react-native-worklets-core": "^1.5.0",
 }
 ```
 
 ## 모델 파일 추가 방법
 
-1. TensorFlow Lite 모델 파일 `b32.tflite`를 다음 경로에 배치해야 합니다:
-   - Android: `android/app/src/main/assets/b32.tflite`
+androidstudio를 이용해, 모델을 추가했습니다.
+
+```Using Android Studio
+In addition to the development libraries described above, Android Studio also provides support for integrating LiteRT models, as described below.
+
+Android Studio ML Model Binding
+The ML Model Binding feature of Android Studio 4.1 and later allows you to import .tflite model files into your existing Android app, and generate interface classes to make it easier to integrate your code with a model.
+
+To import a LiteRT model:
+
+Right-click on the module you would like to use the LiteRT model or click on File > New > Other > LiteRT Model.
+
+Select the location of your LiteRT file. Note that the tooling configures the module's dependency with ML Model binding and automatically adds all required dependencies to your Android module's build.gradle file.
+
+Note: Select the second checkbox for importing TensorFlow GPU if you want to use GPU acceleration.
+Click Finish to begin the import process. When the import is finished, the tool displays a screen describing the model, including its input and output tensors.
+
+To start using the model, select Kotlin or Java, copy and paste the code in the Sample Code section.
+
+You can return to the model information screen by double clicking the TensorFlow Lite model under the ml directory in Android Studio. For more information on using the Modle Binding feature of Android Studio, see the Android Studio release notes. For an overview of using model binding in Android Studio, see the code example instructions.```
+
 
 ## 사용 방법
 
@@ -35,6 +54,8 @@ npm install react-native-reanimated
 
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
+선택적으로 마이크 옵션도 추가 가능합니다
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
 
 ### 2. IDCardScreen 컴포넌트 사용
@@ -87,8 +108,7 @@ if (idCardData) {
 
 1. 이 모듈은 Android에서만 테스트되었습니다.
 2. TensorFlow Lite 모델은 신분증의 각도와 위치를 감지하여 올바른 방향으로 이미지를 회전합니다.
-3. 좋은 인식 결과를 위해 적절한 조명 환경에서 사용하세요.
-4. 필요한 경우 `CONFIDENCE_THRESHOLD` 값을 조정하여 인식 정확도를 조절할 수 있습니다.
+3. 필요한 경우 `CONFIDENCE_THRESHOLD` 값을 조정하여 인식 정확도를 조절할 수 있습니다.
 
 ## 문제 해결
 

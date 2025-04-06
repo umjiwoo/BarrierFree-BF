@@ -7,7 +7,9 @@ import kotlin.math.*
 class DetectionProcessor {
     companion object {
         private const val TAG = "DetectionProcessor"
+        private const val LOG_PREFIX = "[DetectionProcessor] "
         const val NMS_IOU_THRESHOLD = 0.45f
+        private const val IOU_THRESHOLD = 0.5f // NMS에 사용되는 IoU 임계값
     }
 
     fun calculateObbIoU(box1: DetectionBox, box2: DetectionBox): Float {

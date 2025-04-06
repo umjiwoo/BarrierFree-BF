@@ -12,6 +12,7 @@ class TfliteModelHandler private constructor(private val context: Context) {
 
     companion object {
         private const val TAG = "TfliteModelHandler"
+        private const val LOG_PREFIX = "[TfliteModelHandler] "
         private const val MODEL_FILENAME = "sadtearcat.tflite"
 
         @Volatile
@@ -38,9 +39,9 @@ class TfliteModelHandler private constructor(private val context: Context) {
             val options = Interpreter.Options().apply { setNumThreads(4) }
             _interpreter = Interpreter(modelFile, options)
             isInitialized = true
-            Log.d(TAG, "TFLite 모델 로드 성공: $MODEL_FILENAME")
+            Log.d(TAG, "${LOG_PREFIX}TFLite 모델 로드 성공: $MODEL_FILENAME")
         } catch (e: Exception) {
-            Log.e(TAG, "TFLite 모델 로드 실패: ${e.message}", e)
+            Log.e(TAG, "${LOG_PREFIX}TFLite 모델 로드 실패: ${e.message}", e)
             isInitialized = false
         }
     }
@@ -64,7 +65,7 @@ class TfliteModelHandler private constructor(private val context: Context) {
 
     fun runInference(bitmap: Bitmap, inputSize: Int): Array<FloatArray>? {
         if (!isInitialized || _interpreter == null) {
-            Log.e(TAG, "모델이 초기화되지 않았습니다.")
+            Log.e(TAG, "${LOG_PREFIX}모델이 초기화되지 않았습니다.")
             return null
         }
 
@@ -74,7 +75,8 @@ class TfliteModelHandler private constructor(private val context: Context) {
             
             // 출력 버퍼 준비 - 모델 출력 형태 [1, 6, 8400]에 맞게 생성
             val outputShape = _interpreter!!.getOutputTensor(0).shape()
-            Log.d(TAG, "모델 출력 형태: [${outputShape[0]}, ${outputShape[1]}, ${outputShape[2]}]")
+            Log.d(TAG, "${LOG_PREFIX}모델 출력 형태: [${outputShape[0]}, ${outputShape[1]}, ${outputShape[2]}]")
+            Log.d(TAG, "${LOG_PREFIX}모델 출력 텐서 타입: ${_interpreter!!.getOutputTensor(0).dataType()}")
             
             // 3차원 출력 버퍼 생성
             val outputBuffer = Array(outputShape[0]) { 
@@ -86,10 +88,19 @@ class TfliteModelHandler private constructor(private val context: Context) {
             // 추론 실행
             _interpreter!!.run(inputBuffer, outputBuffer)
             
+            // 모델 출력값 샘플 로깅 (첫 번째 배치, 첫 10개 항목만)
+            val firstBatch = outputBuffer[0]
+            Log.d(TAG, "${LOG_PREFIX}첫 번째 행(cx) 샘플: ${firstBatch[0].take(5).joinToString()}")
+            Log.d(TAG, "${LOG_PREFIX}두 번째 행(cy) 샘플: ${firstBatch[1].take(5).joinToString()}")
+            Log.d(TAG, "${LOG_PREFIX}세 번째 행(w) 샘플: ${firstBatch[2].take(5).joinToString()}")
+            Log.d(TAG, "${LOG_PREFIX}네 번째 행(h) 샘플: ${firstBatch[3].take(5).joinToString()}")
+            Log.d(TAG, "${LOG_PREFIX}다섯 번째 행(conf) 샘플: ${firstBatch[4].take(5).joinToString()}")
+            Log.d(TAG, "${LOG_PREFIX}여섯 번째 행(angle) 샘플: ${firstBatch[5].take(5).joinToString()}")
+            
             // 2차원 배열로 변환하여 반환 (첫 번째 배치만 사용)
             return outputBuffer[0]
         } catch (e: Exception) {
-            Log.e(TAG, "추론 실행 중 오류 발생: ${e.message}", e)
+            Log.e(TAG, "${LOG_PREFIX}추론 실행 중 오류 발생: ${e.message}", e)
             return null
         }
     }
@@ -99,9 +110,9 @@ class TfliteModelHandler private constructor(private val context: Context) {
             _interpreter?.close()
             _interpreter = null
             isInitialized = false
-            Log.d(TAG, "TFLite 인터프리터 정상 해제")
+            Log.d(TAG, "${LOG_PREFIX}TFLite 인터프리터 정상 해제")
         } catch (e: Exception) {
-            Log.e(TAG, "인터프리터 해제 중 오류", e)
+            Log.e(TAG, "${LOG_PREFIX}인터프리터 해제 중 오류", e)
         }
     }
 }

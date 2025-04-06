@@ -21,6 +21,7 @@ class IdcardDetecterPluginPlugin(
 
     companion object {
         private const val TAG = "IdcardDetecterPlugin"
+        private const val LOG_PREFIX = "[IdcardDetecterPluginPlugin] "
         private const val INPUT_SIZE = 640
         private const val MAX_DETECTIONS = 8400
         private const val CONFIDENCE_THRESHOLD = 0.90f
@@ -55,7 +56,7 @@ class IdcardDetecterPluginPlugin(
             try {
                 image.close()
             } catch (e: Exception) {
-                Log.w(TAG, "이미지 닫기 무시됨: ${e.message}")
+                Log.w(TAG, "${LOG_PREFIX}이미지 닫기 무시됨: ${e.message}")
             }
             
             val config = rgbBitmap.config ?: Bitmap.Config.ARGB_8888
@@ -77,10 +78,13 @@ class IdcardDetecterPluginPlugin(
             paddedBitmap.recycle()
 
             if (outputBuffer == null) {
-                Log.e(TAG, "추론 결과가 null입니다.")
+                Log.e(TAG, "${LOG_PREFIX}추론 결과가 null입니다.")
                 return null
             }
 
+            // 모델 출력 정보 로깅
+            Log.d(TAG, "${LOG_PREFIX}모델 출력 배열 크기: [${outputBuffer.size}, ${outputBuffer[0].size}]")
+            
             val rawOutputs = outputBuffer
             val detectionBoxes = mutableListOf<DetectionBox>()
             val filteredRawOutputs = mutableListOf<List<Double>>()
@@ -95,10 +99,31 @@ class IdcardDetecterPluginPlugin(
                     val angle = imageProcessor.normalizeAngle(rawOutputs[5][i])
                     filteredRawOutputs.add((0 until 6).map { rawOutputs[it][i].toDouble() })
                     detectionBoxes.add(DetectionBox(cx, cy, w, h, confidence, angle))
+                    
+                    // 높은 신뢰도의 첫 번째 감지 결과만 로깅
+                    if (detectionBoxes.size == 1) {
+                        Log.d(TAG, "${LOG_PREFIX}첫 번째 감지 결과: 좌표=(${cx.toInt()}, ${cy.toInt()}), " +
+                                "크기=${w.toInt()}x${h.toInt()}, " +
+                                "신뢰도=${String.format("%.2f", confidence)}, " +
+                                "각도=${String.format("%.2f", Math.toDegrees(angle.toDouble()))}°")
+                        
+                        // 원시 출력값 확인 (정규화된 값)
+                        Log.d(TAG, "${LOG_PREFIX}모델 원시 출력: " +
+                                "cx=${rawOutputs[0][i]}, cy=${rawOutputs[1][i]}, " +
+                                "w=${rawOutputs[2][i]}, h=${rawOutputs[3][i]}, " +
+                                "conf=${rawOutputs[4][i]}, angle=${rawOutputs[5][i]}")
+                    }
                 }
             }
-
+            
+            // 감지된 객체 수 로깅
+            Log.d(TAG, "${LOG_PREFIX}감지된 객체 수: ${detectionBoxes.size} (임계값: $CONFIDENCE_THRESHOLD)")
+            
             val nmsBoxes = detectionProcessor.applyNMS(detectionBoxes)
+            
+            // NMS 이후 남은 객체 수 로깅
+            Log.d(TAG, "${LOG_PREFIX}NMS 이후 남은 객체 수: ${nmsBoxes.size}")
+
             val resultBoxes = nmsBoxes.map { box ->
                 val unpadCx = ((box.cx - paddingInfo.paddingLeft) / paddingInfo.scale).toDouble()
                 val unpadCy = ((box.cy - paddingInfo.paddingTop) / paddingInfo.scale).toDouble()
@@ -115,7 +140,9 @@ class IdcardDetecterPluginPlugin(
                     )
                 }
                 val reordered = imageProcessor.reorderClockwiseTopLeftFirst(unpaddedCorners)
-                mapOf(
+                
+                // 결과 맵 생성
+                val resultMap = mapOf(
                     "modelCx" to box.cx.toDouble(),
                     "modelCy" to box.cy.toDouble(),
                     "modelWidth" to box.width.toDouble(),
@@ -129,6 +156,29 @@ class IdcardDetecterPluginPlugin(
                     "angleDeg" to Math.toDegrees(box.angle.toDouble()),
                     "corners" to reordered
                 )
+                
+                // 원본 이미지에서 실제 위치 로깅
+                Log.d(TAG, "${LOG_PREFIX}탐지 결과 (원본 이미지 좌표): " +
+                        "중심=(${unpadCx.toInt()}, ${unpadCy.toInt()}), " +
+                        "크기=${unpadW.toInt()}x${unpadH.toInt()}, " +
+                        "신뢰도=${String.format("%.2f", box.confidence)}, " +
+                        "각도=${String.format("%.2f", Math.toDegrees(box.angle.toDouble()))}°")
+                
+                // 코너 점 로깅
+                Log.d(TAG, "${LOG_PREFIX}코너 점: [" +
+                        "좌상=(${reordered[3]["x"]?.toInt()}, ${reordered[3]["y"]?.toInt()}), " +
+                        "우상=(${reordered[0]["x"]?.toInt()}, ${reordered[0]["y"]?.toInt()}), " +
+                        "우하=(${reordered[1]["x"]?.toInt()}, ${reordered[1]["y"]?.toInt()}), " +
+                        "좌하=(${reordered[2]["x"]?.toInt()}, ${reordered[2]["y"]?.toInt()})]")
+                
+                // 정렬된 코너 순서가 시계방향임을 명시적으로 로깅
+                Log.d(TAG, "${LOG_PREFIX}시계방향 코너 점(원시): [" +
+                        "${reordered[0]["x"]?.toInt()},${reordered[0]["y"]?.toInt()} → " +
+                        "${reordered[1]["x"]?.toInt()},${reordered[1]["y"]?.toInt()} → " +
+                        "${reordered[2]["x"]?.toInt()},${reordered[2]["y"]?.toInt()} → " +
+                        "${reordered[3]["x"]?.toInt()},${reordered[3]["y"]?.toInt()}]")
+                
+                resultMap
             }
 
             val croppedImageBase64 = resultBoxes.firstOrNull()?.let {
@@ -146,7 +196,7 @@ class IdcardDetecterPluginPlugin(
                         base64
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "이미지 크롭 처리 중 오류 발생: ${e.message}", e)
+                    Log.e(TAG, "${LOG_PREFIX}이미지 크롭 처리 중 오류 발생: ${e.message}", e)
                     null
                 }
             }
@@ -168,7 +218,7 @@ class IdcardDetecterPluginPlugin(
                 "imageData" to croppedImageBase64
             )
         } catch (e: Exception) {
-            Log.e(TAG, "프레임 처리 오류", e)
+            Log.e(TAG, "${LOG_PREFIX}프레임 처리 오류", e)
             return null
         } finally {
             try {
@@ -176,7 +226,7 @@ class IdcardDetecterPluginPlugin(
                     image.close()
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "이미지 리소스 해제 중 오류 무시: ${e.message}")
+                Log.w(TAG, "${LOG_PREFIX}이미지 리소스 해제 중 오류 무시: ${e.message}")
             }
         }
     }

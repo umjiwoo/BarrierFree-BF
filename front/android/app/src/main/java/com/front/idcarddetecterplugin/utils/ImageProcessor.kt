@@ -10,6 +10,7 @@ import kotlin.math.*
 class ImageProcessor {
     companion object {
         private const val TAG = "ImageProcessor"
+        private const val LOG_PREFIX = "[ImageProcessor] "
     }
 
     fun padToSquare(bitmap: Bitmap, targetSize: Int): PaddingInfo {
@@ -43,7 +44,14 @@ class ImageProcessor {
     }
 
     fun calculateObbCorners(cx: Double, cy: Double, w: Double, h: Double, theta: Double): List<Map<String, Double>> {
-        val offsets = listOf(Pair(w / 2, h / 2), Pair(-w / 2, h / 2), Pair(-w / 2, -h / 2), Pair(w / 2, -h / 2))
+        // 회전된 사각형의 코너 좌표 계산 (시계 방향으로 중심점에서부터의 offset)
+        // 코너 생성 순서: 우상 → 우하 → 좌하 → 좌상 (시계 방향)
+        val offsets = listOf(
+            Pair(w / 2, -h / 2),  // 우상 (오른쪽 위)
+            Pair(w / 2, h / 2),   // 우하 (오른쪽 아래)
+            Pair(-w / 2, h / 2),  // 좌하 (왼쪽 아래)
+            Pair(-w / 2, -h / 2)  // 좌상 (왼쪽 위)
+        )
         return offsets.map { (dx, dy) ->
             val rx = dx * cos(theta) - dy * sin(theta)
             val ry = dx * sin(theta) + dy * cos(theta)
@@ -53,7 +61,7 @@ class ImageProcessor {
 
     fun reorderClockwiseTopLeftFirst(points: List<Map<String, Double>>): List<Map<String, Double>> {
         if (points.size != 4) {
-            Log.e(TAG, "코너 개수가 4개가 아닙니다: ${points.size}개")
+            Log.e(TAG, "${LOG_PREFIX}코너 개수가 4개가 아닙니다: ${points.size}개")
             return points
         }
         return try {
@@ -66,10 +74,10 @@ class ImageProcessor {
             }
             val idx = clockwise.indexOfFirst { it == topLeft }
             val result = clockwise.drop(idx) + clockwise.take(idx)
-            Log.d(TAG, "코너 정렬: 원본=$points -> 결과=$result")
+            Log.d(TAG, "${LOG_PREFIX}코너 정렬: 원본=$points -> 결과=$result")
             result
         } catch (e: Exception) {
-            Log.e(TAG, "코너 정렬 중 오류 발생", e)
+            Log.e(TAG, "${LOG_PREFIX}코너 정렬 중 오류 발생", e)
             points
         }
     }
@@ -99,7 +107,7 @@ class ImageProcessor {
                 cropRotatedRectangle(bitmap, cx, cy, width, height, angle, paddingPercent)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "이미지 크롭 중 오류 발생", e)
+            Log.e(TAG, "${LOG_PREFIX}이미지 크롭 중 오류 발생", e)
             null
         }
     }
@@ -112,13 +120,13 @@ class ImageProcessor {
             val right = min(bitmap.width.toFloat(), cx + width / 2 + padding).toInt()
             val bottom = min(bitmap.height.toFloat(), cy + height / 2 + padding).toInt()
             if (right <= left || bottom <= top) {
-                Log.e(TAG, "유효하지 않은 크롭 영역: [$left, $top, $right, $bottom]")
+                Log.e(TAG, "${LOG_PREFIX}유효하지 않은 크롭 영역: [$left, $top, $right, $bottom]")
                 null
             } else {
                 Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "직사각형 크롭 오류", e)
+            Log.e(TAG, "${LOG_PREFIX}직사각형 크롭 오류", e)
             null
         }
     }
@@ -133,7 +141,7 @@ class ImageProcessor {
             val right = min(bitmap.width.toFloat(), cx + rotatedWidth / 2 + padding).toInt()
             val bottom = min(bitmap.height.toFloat(), cy + rotatedHeight / 2 + padding).toInt()
             if (right <= left || bottom <= top) {
-                Log.e(TAG, "유효하지 않은 회전 크롭 영역: [$left, $top, $right, $bottom]")
+                Log.e(TAG, "${LOG_PREFIX}유효하지 않은 회전 크롭 영역: [$left, $top, $right, $bottom]")
                 null
             } else {
                 val croppedBitmap = Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top)
@@ -143,7 +151,7 @@ class ImageProcessor {
                 Bitmap.createBitmap(croppedBitmap, 0, 0, croppedBitmap.width, croppedBitmap.height, matrix, true)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "회전 사각형 크롭 오류", e)
+            Log.e(TAG, "${LOG_PREFIX}회전 사각형 크롭 오류", e)
             null
         }
     }
