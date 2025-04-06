@@ -78,6 +78,11 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.front"
+        aaptOptions {
+        noCompress "tflite"
+        // or noCompress "lite"
+    }
+    
     defaultConfig {
         applicationId "com.front"
         minSdkVersion rootProject.ext.minSdkVersion
