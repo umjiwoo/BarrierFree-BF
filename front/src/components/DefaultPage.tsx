@@ -7,7 +7,6 @@ interface DefaultPageProps {
   LowerLeftText?: string; // 버튼 텍스트 (기본값: '뒤로')
   LowerRightText?: string; // 버튼 텍스트 (기본갸: '뒤로')
   MainText?: ReactNode;
-  onPress?: () => void;
   onUpperLeftTextPress?: () => void;
   onUpperRightTextPress?: () => void;
   onLowerLeftTextPress?: () => void;
@@ -20,7 +19,6 @@ export default function DefaultPage({
   LowerLeftText,
   LowerRightText,
   MainText,
-  onPress,
   onUpperLeftTextPress,
   onUpperRightTextPress,
   onLowerLeftTextPress,
@@ -36,13 +34,14 @@ export default function DefaultPage({
           <Text style={styles.buttonText}>{UpperRightText}</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.mainButton} onPress={onPress}>
+      <View style={styles.mainButton}>
+        {/* <View style={styles.mainButton} onPress={onPress}> */}
         {typeof MainText === 'string' ? (
           <Text style={styles.mainText}>{MainText}</Text>
         ) : (
           MainText
         )}
-      </TouchableOpacity>
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={onLowerLeftTextPress}>
           <Text style={styles.buttonText}>{LowerLeftText}</Text>
@@ -80,7 +79,8 @@ const styles = StyleSheet.create({
     // backgroundColor: 'blue',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: '#7F35D4',
+    backgroundColor: '#7F35D4',
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -88,10 +88,9 @@ const styles = StyleSheet.create({
   },
   mainButton: {
     flex: 2,
-    // backgroundColor: 'red',
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'black',
+    borderWidth: 2,
+    borderColor: '#7F35D4',
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -100,9 +99,11 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
+    color: 'white',
   },
   mainText: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#7F35D4',
   },
 });

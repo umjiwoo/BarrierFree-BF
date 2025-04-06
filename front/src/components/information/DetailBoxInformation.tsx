@@ -25,7 +25,7 @@ const DetailBoxInformation: React.FC<DetailBoxProps> = ({
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>계좌 정보</Text>
-          <View>
+          <View style={styles.detailValueContainer}>
             <Text style={styles.detailValue}>{bank}</Text>
             <Text style={styles.accountNumber}>{account}</Text>
           </View>
@@ -48,33 +48,43 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flex: 1,
     width: '100%',
+    height: '100%',
   },
   detailBox: {
     width: '100%',
     height: '100%',
     // borderWidth: 2,
     // borderColor: '#373DCC',
-    padding: 30,
+    paddingVertical: 30,
     // borderRadius: 12,
-    // marginBottom: 30,
+    marginBottom: 30,
     gap: 5,
   },
   detailRow: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 10,
     marginBottom: 10,
   },
   detailLabel: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#7F35D4',
   },
   detailValue: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#24282B',
   },
   accountNumber: {
     fontSize: 24,
-    color: '#333',
+    color: '#24282B',
+  },
+  detailValueContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
   },
 });
 

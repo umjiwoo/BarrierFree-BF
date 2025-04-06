@@ -21,7 +21,7 @@ interface SendAccountBoxProps {
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
-const ITEM_WIDTH = SCREEN_WIDTH * 0.9;
+const ITEM_WIDTH = SCREEN_WIDTH * 0.89;
 
 const SendAccountBox = ({
   accountData,
@@ -95,15 +95,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#7F35D4',
   },
   bank: {
     fontSize: 16,
-    color: '#666',
+    color: '#7F35D4',
     marginBottom: 5,
   },
   number: {
     fontSize: 14,
-    color: '#999',
+    color: '#7F35D4',
   },
 });
 

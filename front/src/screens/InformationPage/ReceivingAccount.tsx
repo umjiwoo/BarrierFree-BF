@@ -38,8 +38,8 @@ const ReceivingAccountScreen: React.FC = () => {
         LowerLeftText="취소하기"
         LowerRightText="송금하기"
         MainText={
-          <View>
-            <Text>받는 사람 정보를 확인하세요.</Text>
+          <View style={styles.mainTextContainer}>
+            <Text style={styles.mainText}>받는 사람 정보를 확인하세요.</Text>
             <DetailBox
               name={accountInfo.name}
               bank={accountInfo.accountBank}
@@ -62,9 +62,9 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    marginTop: 50,
+    // paddingHorizontal: 20,
+    // paddingVertical: 20,
+    // marginTop: 50,
   },
   buttonContainer: {
     width: '100%',
@@ -88,6 +88,19 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '800',
     fontSize: 20,
+  },
+  mainText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#7F35D4',
+  },
+  mainTextContainer: {
+    // flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingVertical: 20,
+    // justifyContent: 'center',
   },
 });
 

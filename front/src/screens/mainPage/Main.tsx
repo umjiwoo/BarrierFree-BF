@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {View, StyleSheet, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
@@ -7,6 +7,8 @@ import DefaultPage from '../../components/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
+import BarrierFree from '../../assets/BarrierFree.svg';
+// import {Image, View} from 'react-native-reanimated/lib/typescript/Animated';
 
 const Main = () => {
   const {user} = useUserStore();
@@ -61,7 +63,12 @@ const Main = () => {
         UpperRightText="송금"
         LowerLeftText="결제"
         LowerRightText="설정"
-        MainText="메인 텍스트 들어갈 자리"
+        MainText={
+          <View>
+            <BarrierFree width={350} height={400} title="메인페이지" />
+          </View>
+        }
+        // MainText="메인 텍스트 들어갈 자리"
         onUpperLeftTextPress={handleUpperLeftTextPress}
         onUpperRightTextPress={handleUpperRightTextPress}
         onLowerLeftTextPress={handleLowerLeftTextPress}
