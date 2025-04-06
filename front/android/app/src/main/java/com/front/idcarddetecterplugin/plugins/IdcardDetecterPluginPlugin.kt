@@ -35,44 +35,53 @@ class IdcardDetecterPluginPlugin(
     private val detectionProcessor = DetectionProcessor()
 
     override fun callback(frame: Frame, arguments: Map<String, Any>?): Any? {
+        var imageInfo: Pair<Int, Int>? = null
+        val image = frame.image
+        
         try {
             val tfliteHandler = TfliteModelHandler.getInstance(proxy.context)
             tfliteHandler.loadModel()
             if (!tfliteHandler.isInitialized) return null
 
-            val image = frame.image ?: return null
-            if (image.format != ImageFormat.YUV_420_888) return null
+            if (image == null || image.format != ImageFormat.YUV_420_888) return null
 
             val orientation = frame.orientation?.toString() ?: "landscape-right"
             val startTime = System.currentTimeMillis()
-
+            
+            imageInfo = Pair(image.width, image.height)
+            
             val rgbBitmap = yuvConverter.yuv420ToBitmap(image)
+            
+            try {
+                image.close()
+            } catch (e: Exception) {
+                Log.w(TAG, "이미지 닫기 무시됨: ${e.message}")
+            }
+            
             val config = rgbBitmap.config ?: Bitmap.Config.ARGB_8888
             val originalBitmap = Bitmap.createBitmap(rgbBitmap.width, rgbBitmap.height, config).apply {
                 Canvas(this).drawBitmap(rgbBitmap, 0f, 0f, null)
             }
-            val originalWidth = image.width
-            val originalHeight = image.height
+            
+            val originalWidth = imageInfo.first
+            val originalHeight = imageInfo.second
 
             val paddingInfo = imageProcessor.padToSquare(rgbBitmap, INPUT_SIZE)
             val paddedBitmap = paddingInfo.bitmap
             rgbBitmap.recycle()
 
-            val inputBuffer = tfliteHandler.prepareInputBuffer(paddedBitmap, INPUT_SIZE)
-            inputBuffer.rewind()
-
-            val outputShape = tfliteHandler.interpreter.getOutputTensor(0).shape()
-            val outputBuffer = Array(1) {
-                Array(outputShape[1]) { FloatArray(outputShape[2]) }
-            }
-
             val inferenceStartTime = SystemClock.elapsedRealtimeNanos()
-            tfliteHandler.interpreter.run(inputBuffer, outputBuffer)
+            val outputBuffer = tfliteHandler.runInference(paddedBitmap, INPUT_SIZE)
             val inferenceEndTime = SystemClock.elapsedRealtimeNanos()
-            val inferenceTime = (inferenceEndTime - inferenceStartTime) / 1_000_000
+            val inferenceTime = ((inferenceEndTime - inferenceStartTime) / 1_000_000).toDouble()
             paddedBitmap.recycle()
 
-            val rawOutputs = outputBuffer[0]
+            if (outputBuffer == null) {
+                Log.e(TAG, "추론 결과가 null입니다.")
+                return null
+            }
+
+            val rawOutputs = outputBuffer
             val detectionBoxes = mutableListOf<DetectionBox>()
             val filteredRawOutputs = mutableListOf<List<Double>>()
 
@@ -91,26 +100,26 @@ class IdcardDetecterPluginPlugin(
 
             val nmsBoxes = detectionProcessor.applyNMS(detectionBoxes)
             val resultBoxes = nmsBoxes.map { box ->
-                val unpadCx = (box.cx - paddingInfo.paddingLeft) / paddingInfo.scale
-                val unpadCy = (box.cy - paddingInfo.paddingTop) / paddingInfo.scale
-                val unpadW = box.width / paddingInfo.scale
-                val unpadH = box.height / paddingInfo.scale
+                val unpadCx = ((box.cx - paddingInfo.paddingLeft) / paddingInfo.scale).toDouble()
+                val unpadCy = ((box.cy - paddingInfo.paddingTop) / paddingInfo.scale).toDouble()
+                val unpadW = (box.width / paddingInfo.scale).toDouble()
+                val unpadH = (box.height / paddingInfo.scale).toDouble()
                 val modelCorners = imageProcessor.calculateObbCorners(
                     box.cx.toDouble(), box.cy.toDouble(),
                     box.width.toDouble(), box.height.toDouble(), box.angle.toDouble()
                 )
                 val unpaddedCorners = modelCorners.map {
                     mapOf(
-                        "x" to ((it["x"]!! - paddingInfo.paddingLeft) / paddingInfo.scale),
-                        "y" to ((it["y"]!! - paddingInfo.paddingTop) / paddingInfo.scale)
+                        "x" to ((it["x"]!! - paddingInfo.paddingLeft) / paddingInfo.scale).toDouble(),
+                        "y" to ((it["y"]!! - paddingInfo.paddingTop) / paddingInfo.scale).toDouble()
                     )
                 }
                 val reordered = imageProcessor.reorderClockwiseTopLeftFirst(unpaddedCorners)
                 mapOf(
-                    "modelCx" to box.cx,
-                    "modelCy" to box.cy,
-                    "modelWidth" to box.width,
-                    "modelHeight" to box.height,
+                    "modelCx" to box.cx.toDouble(),
+                    "modelCy" to box.cy.toDouble(),
+                    "modelWidth" to box.width.toDouble(),
+                    "modelHeight" to box.height.toDouble(),
                     "cx" to unpadCx,
                     "cy" to unpadCy,
                     "width" to unpadW,
@@ -123,10 +132,22 @@ class IdcardDetecterPluginPlugin(
             }
 
             val croppedImageBase64 = resultBoxes.firstOrNull()?.let {
-                imageProcessor.cropImageToBox(originalBitmap, it, 0.1f)?.let { cropped ->
-                    val base64 = imageProcessor.bitmapToBase64(cropped)
-                    cropped.recycle()
-                    base64
+                try {
+                    val boxForCrop = mapOf(
+                        "cx" to (it["cx"] as? Double ?: (it["cx"] as? Float) ?: 0f).toFloat(),
+                        "cy" to (it["cy"] as? Double ?: (it["cy"] as? Float) ?: 0f).toFloat(),
+                        "width" to (it["width"] as? Double ?: (it["width"] as? Float) ?: 0f).toFloat(),
+                        "height" to (it["height"] as? Double ?: (it["height"] as? Float) ?: 0f).toFloat(),
+                        "angle" to (it["angle"] as? Double ?: (it["angle"] as? Float) ?: 0f).toFloat()
+                    )
+                    imageProcessor.cropImageToBox(originalBitmap, boxForCrop, 0.1f)?.let { cropped ->
+                        val base64 = imageProcessor.bitmapToBase64(cropped)
+                        cropped.recycle()
+                        base64
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "이미지 크롭 처리 중 오류 발생: ${e.message}", e)
+                    null
                 }
             }
             originalBitmap.recycle()
@@ -135,10 +156,10 @@ class IdcardDetecterPluginPlugin(
             return mapOf(
                 "boxes" to resultBoxes,
                 "rawOutputs" to filteredRawOutputs,
-                "processingTimeMs" to totalTime,
+                "processingTimeMs" to totalTime.toDouble(),
                 "imageInfo" to mapOf(
-                    "originalWidth" to originalWidth,
-                    "originalHeight" to originalHeight,
+                    "originalWidth" to originalWidth.toDouble(),
+                    "originalHeight" to originalHeight.toDouble(),
                     "paddingLeft" to paddingInfo.paddingLeft.toDouble(),
                     "paddingTop" to paddingInfo.paddingTop.toDouble(),
                     "scale" to paddingInfo.scale.toDouble()
@@ -149,6 +170,14 @@ class IdcardDetecterPluginPlugin(
         } catch (e: Exception) {
             Log.e(TAG, "프레임 처리 오류", e)
             return null
+        } finally {
+            try {
+                if (image?.planes != null) {
+                    image.close()
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "이미지 리소스 해제 중 오류 무시: ${e.message}")
+            }
         }
     }
 }

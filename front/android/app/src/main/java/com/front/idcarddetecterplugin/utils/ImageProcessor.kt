@@ -86,13 +86,13 @@ class ImageProcessor {
         return min(width, height) * paddingPercent
     }
 
-    fun cropImageToBox(bitmap: Bitmap, box: Map<String, Any>, paddingPercent: Float = 0.1f): Bitmap? {
+    fun cropImageToBox(bitmap: Bitmap, box: Map<String, Float>, paddingPercent: Float = 0.1f): Bitmap? {
         return try {
-            val cx = (box["cx"] as Double).toFloat()
-            val cy = (box["cy"] as Double).toFloat()
-            val width = (box["width"] as Double).toFloat()
-            val height = (box["height"] as Double).toFloat()
-            val angle = (box["angle"] as Double).toFloat()
+            val cx = box["cx"]!!
+            val cy = box["cy"]!!
+            val width = box["width"]!!
+            val height = box["height"]!!
+            val angle = box["angle"]!!
             if (abs(angle) < 0.01f) {
                 cropRectangle(bitmap, cx, cy, width, height, paddingPercent)
             } else {

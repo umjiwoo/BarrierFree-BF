@@ -110,6 +110,9 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    buildFeatures {
+        mlModelBinding true
+    }
 }
 
 
@@ -117,22 +120,25 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     
-    // TensorFlow Lite 종속성 - 모든 필수 라이브러리 추가 (동일 버전 사용)
-    implementation 'org.tensorflow:tensorflow-lite:2.9.0'
-    implementation 'org.tensorflow:tensorflow-lite-api:2.9.0'
-    implementation 'org.tensorflow:tensorflow-lite-support:0.4.2'
-    
+    // TensorFlow Lite 종속성 - ML Model Binding 지원 라이브러리 추가
+    implementation 'org.tensorflow:tensorflow-lite:2.14.0'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.4.4'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.4.4'
+    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.4.4'
+    implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.14.0'
+
     // 클래스 중복 방지 설정
     configurations.all {
         resolutionStrategy {
-            force 'org.tensorflow:tensorflow-lite:2.9.0'
-            force 'org.tensorflow:tensorflow-lite-api:2.9.0'
+            force 'org.tensorflow:tensorflow-lite:2.14.0'
+            force 'org.tensorflow:tensorflow-lite-support:0.4.4'
+            force 'org.tensorflow:tensorflow-lite-metadata:0.4.4'
+            force 'org.tensorflow:tensorflow-lite-task-vision:0.4.4'
         }
         // 충돌하는 라이브러리 제외
         exclude group: 'com.google.ai.edge.litert', module: 'litert'
         exclude group: 'com.google.ai.edge.litert', module: 'litert-gpu'
-        exclude group: 'com.google.android.gms', module: 'play-services-tflite-java'
-        exclude group: 'com.google.android.gms', module: 'play-services-tflite-gpu'
     }
     
     if (hermesEnabled.toBoolean()) {

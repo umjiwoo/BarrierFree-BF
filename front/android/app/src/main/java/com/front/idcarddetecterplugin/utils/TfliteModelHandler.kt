@@ -12,7 +12,7 @@ class TfliteModelHandler private constructor(private val context: Context) {
 
     companion object {
         private const val TAG = "TfliteModelHandler"
-        private const val MODEL_FILENAME = "b32.tflite"
+        private const val MODEL_FILENAME = "sadtearcat.tflite"
 
         @Volatile
         private var instance: TfliteModelHandler? = null
@@ -60,6 +60,38 @@ class TfliteModelHandler private constructor(private val context: Context) {
         }
         inputBuffer.rewind()
         return inputBuffer
+    }
+
+    fun runInference(bitmap: Bitmap, inputSize: Int): Array<FloatArray>? {
+        if (!isInitialized || _interpreter == null) {
+            Log.e(TAG, "모델이 초기화되지 않았습니다.")
+            return null
+        }
+
+        try {
+            // 입력 버퍼 준비
+            val inputBuffer = prepareInputBuffer(bitmap, inputSize)
+            
+            // 출력 버퍼 준비 - 모델 출력 형태 [1, 6, 8400]에 맞게 생성
+            val outputShape = _interpreter!!.getOutputTensor(0).shape()
+            Log.d(TAG, "모델 출력 형태: [${outputShape[0]}, ${outputShape[1]}, ${outputShape[2]}]")
+            
+            // 3차원 출력 버퍼 생성
+            val outputBuffer = Array(outputShape[0]) { 
+                Array(outputShape[1]) { 
+                    FloatArray(outputShape[2]) 
+                } 
+            }
+            
+            // 추론 실행
+            _interpreter!!.run(inputBuffer, outputBuffer)
+            
+            // 2차원 배열로 변환하여 반환 (첫 번째 배치만 사용)
+            return outputBuffer[0]
+        } catch (e: Exception) {
+            Log.e(TAG, "추론 실행 중 오류 발생: ${e.message}", e)
+            return null
+        }
     }
 
     fun close() {

@@ -288,6 +288,9 @@ const IDCardScreen = () => {
     } finally {
       // 처리 상태 초기화
       global._isProcessingFrame = false;
+      
+      // React Native VisionCamera v3에서는 더 이상 frame.close()가 필요하지 않음
+      // frame이 자동으로 관리됨
     }
   }, [runOnJSHandleDetection]);
 
@@ -360,7 +363,7 @@ const IDCardScreen = () => {
         format={format}
         isActive={isActive}
         frameProcessor={frameProcessor}
-        fps={format ? format.maxFps > 15 ? 15 : format.maxFps : undefined}
+        fps={30}
         resizeMode="contain"
         enableZoomGesture={false}
         onError={handleCameraError}
