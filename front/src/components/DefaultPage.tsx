@@ -2,10 +2,10 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {ReactNode} from 'react';
 
 interface DefaultPageProps {
-  UpperLeftText?: string; // 버튼 텍스트 (기본값: '뒤로')
-  UpperRightText?: string; // 버튼 텍스트 (기본값: '뒤로')
-  LowerLeftText?: string; // 버튼 텍스트 (기본값: '뒤로')
-  LowerRightText?: string; // 버튼 텍스트 (기본갸: '뒤로')
+  UpperLeftText?: ReactNode; // 버튼 텍스트 (기본값: '뒤로')
+  UpperRightText?: ReactNode; // 버튼 텍스트 (기본값: '뒤로')
+  LowerLeftText?: ReactNode; // 버튼 텍스트 (기본값: '뒤로')
+  LowerRightText?: ReactNode; // 버튼 텍스트 (기본갸: '뒤로')
   MainText?: ReactNode;
   onUpperLeftTextPress?: () => void;
   onUpperRightTextPress?: () => void;
@@ -28,10 +28,20 @@ export default function DefaultPage({
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={onUpperLeftTextPress}>
-          <Text style={styles.buttonText}>{UpperLeftText}</Text>
+          {/* <Text style={styles.buttonText}>{UpperLeftText}</Text> */}
+          {typeof UpperLeftText === 'string' ? (
+            <Text style={styles.buttonText}>{UpperLeftText}</Text>
+          ) : (
+            UpperLeftText
+          )}
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onUpperRightTextPress}>
-          <Text style={styles.buttonText}>{UpperRightText}</Text>
+          {/* <Text style={styles.buttonText}>{UpperRightText}</Text> */}
+          {typeof UpperRightText === 'string' ? (
+            <Text style={styles.buttonText}>{UpperRightText}</Text>
+          ) : (
+            UpperRightText
+          )}
         </TouchableOpacity>
       </View>
       <View style={styles.mainButton}>
@@ -44,10 +54,20 @@ export default function DefaultPage({
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={onLowerLeftTextPress}>
-          <Text style={styles.buttonText}>{LowerLeftText}</Text>
+          {/* <Text style={styles.buttonText}>{LowerLeftText}</Text> */}
+          {typeof LowerLeftText === 'string' ? (
+            <Text style={styles.buttonText}>{LowerLeftText}</Text>
+          ) : (
+            LowerLeftText
+          )}
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onLowerRightTextPress}>
-          <Text style={styles.buttonText}>{LowerRightText}</Text>
+          {/* <Text style={styles.buttonText}>{LowerRightText}</Text> */}
+          {typeof LowerRightText === 'string' ? (
+            <Text style={styles.buttonText}>{LowerRightText}</Text>
+          ) : (
+            LowerRightText
+          )}
         </TouchableOpacity>
       </View>
     </View>

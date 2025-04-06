@@ -8,6 +8,11 @@ import {HistoryItemProps} from '../../components/types/CheckAccount';
 import DefaultPage from '../../components/DefaultPage';
 import {useAccountStore} from '../../stores/accountStore';
 import {RootStackParamList} from '../../navigation/types';
+import {useHandlePress} from '../../navigation/handlePress';
+// import GoBackIcon from '../../assets/GoBack.svg';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
+import ArrowRightIcon from '../../assets/ArrowRight.svg';
 
 // const histories: HistoryItemProps[] = [
 //   {
@@ -49,17 +54,10 @@ const CheckHistory = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {accounts} = useAccountStore();
+  const {handlePressBack, handlePressHome} = useHandlePress();
 
   const [histories, setHistories] = useState<HistoryItemProps[]>([]);
   const [_isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const fetchAccounts = async () => {
-  //     const data = await getHistories(accounts.id);
-  //     setHistories(data);
-  //   };
-  //   fetchAccounts();
-  // }, [accounts.id]);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -88,14 +86,6 @@ const CheckHistory = () => {
     });
   };
 
-  const handleUpperLeftTextPress = () => {
-    navigation.goBack();
-  };
-
-  const handleUpperRightTextPress = () => {
-    // navigation.navigate('CheckAccount');
-  };
-
   const handleLowerLeftTextPress = () => {
     if (carouselRef.current) {
       carouselRef.current.prev();
@@ -112,15 +102,15 @@ const CheckHistory = () => {
     return (
       <View style={styles.container}>
         <DefaultPage
-          UpperLeftText="이전으로"
-          UpperRightText="홈"
+          UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+          UpperRightText={<HomeIcon width={80} height={80} />}
           MainText={
             <View>
               <Text>등록된 계좌가 없습니다. 계좌를 먼저 생성해주세요.</Text>
             </View>
           }
-          onUpperLeftTextPress={handleUpperLeftTextPress}
-          onUpperRightTextPress={handleUpperRightTextPress}
+          onUpperLeftTextPress={handlePressBack}
+          onUpperRightTextPress={handlePressHome}
         />
       </View>
     );
@@ -129,10 +119,11 @@ const CheckHistory = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
-        LowerLeftText="<"
-        LowerRightText=">"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        // UpperLeftText={<GoBackIcon width={100} height={100} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
+        LowerLeftText={<ArrowLeftIcon width={80} height={80} />}
+        LowerRightText={<ArrowRightIcon width={80} height={80} />}
         MainText={
           histories.length === 0 ? (
             <Text>거래 내역이 없습니다.</Text>
@@ -144,8 +135,8 @@ const CheckHistory = () => {
             />
           )
         }
-        onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={handleUpperRightTextPress}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
         onLowerLeftTextPress={handleLowerLeftTextPress}
         onLowerRightTextPress={handleLowerRightTextPress}
       />

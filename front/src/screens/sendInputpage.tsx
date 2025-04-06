@@ -9,6 +9,7 @@ import {
 } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
 import {TestAccountItemProps} from '../components/types/CheckAccount';
+import {useHandlePress} from '../navigation/handlePress';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
@@ -25,6 +26,7 @@ type SendInputPageRouteProp = RouteProp<SendInputPageParams, 'SendInputPage'>;
 const SendInputPage = () => {
   // 네비게이션 객체 가져오기
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const {handlePressBack} = useHandlePress();
 
   // 상태 관리 임시 추가
   const [accountNumber, _setAccountNumber] = React.useState('');
@@ -84,9 +86,7 @@ const SendInputPage = () => {
             <BackButton
               text="뒤로 가기"
               type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={handlePressBack}
             />
           </View>
         </View>
@@ -104,7 +104,11 @@ const SendInputPage = () => {
                 navigation.navigate('SendInputPage', {type: 'money'});
               }}
             />
-            <BackButton text="뒤로 가기" type="back" />
+            <BackButton
+              text="뒤로 가기"
+              type="back"
+              onPress={handlePressBack}
+            />
           </View>
         </View>
       );
@@ -127,9 +131,7 @@ const SendInputPage = () => {
             <BackButton
               text="뒤로 가기"
               type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={handlePressBack}
             />
           </View>
         </View>
@@ -153,9 +155,7 @@ const SendInputPage = () => {
             <BackButton
               text="뒤로 가기"
               type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={handlePressBack}
             />
           </View>
         </View>

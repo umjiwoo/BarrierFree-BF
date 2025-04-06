@@ -4,8 +4,12 @@ import SendAccountBox from './SendAccountBox';
 import DefaultPage from '../../components/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useHandlePress} from '../../navigation/handlePress';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
 
 const SendFavoriteAccount = () => {
+  const {handlePressBack, handlePressHome} = useHandlePress();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const accountData = [
@@ -53,8 +57,8 @@ const SendFavoriteAccount = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="직접 입력"
         LowerRightText="선택 / 송금"
         MainText={
@@ -64,8 +68,8 @@ const SendFavoriteAccount = () => {
             selectedAccount={selectedAccount}
           />
         }
-        onUpperLeftTextPress={() => navigation.goBack()}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
         onLowerLeftTextPress={handleDirectInput}
         onLowerRightTextPress={handleSendMoney}
       />

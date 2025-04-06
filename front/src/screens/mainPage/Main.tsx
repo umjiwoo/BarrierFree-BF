@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
@@ -40,34 +40,12 @@ const Main = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.grid}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('CheckAccount')}>
-          <Text style={styles.text}>조회</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('SendFromWhere')}>
-          <Text style={styles.text}>송금</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>결제</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>마이 페이지</Text>
-        </TouchableOpacity>
-      </View> */}
       <DefaultPage
         UpperLeftText="조회"
         UpperRightText="송금"
         LowerLeftText="결제"
         LowerRightText="설정"
-        MainText={
-          <View>
-            <BarrierFree width={350} height={400} title="메인페이지" />
-          </View>
-        }
+        MainText={<BarrierFree width={350} height={400} title="메인페이지" />}
         // MainText="메인 텍스트 들어갈 자리"
         onUpperLeftTextPress={handleUpperLeftTextPress}
         onUpperRightTextPress={handleUpperRightTextPress}

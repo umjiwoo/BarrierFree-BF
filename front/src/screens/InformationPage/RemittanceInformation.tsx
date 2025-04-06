@@ -10,8 +10,13 @@ import {
 } from '@react-navigation/native';
 import DefaultPage from '../../components/DefaultPage';
 import {RootStackParamList} from '../../navigation/types';
+import {useHandlePress} from '../../navigation/handlePress';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
+
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const {handlePressBack, handlePressHome} = useHandlePress();
   const route =
     useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
   const money = route.params?.money;
@@ -26,16 +31,11 @@ const ReceivingInformationScreen: React.FC = () => {
     console.log('송금하기 버튼 클릭');
   };
 
-  const handleBack = () => {
-    navigation.goBack();
-    console.log('이전으로 버튼 클릭');
-  };
-
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="취소"
         LowerRightText="송금하기"
         MainText={
@@ -50,8 +50,8 @@ const ReceivingInformationScreen: React.FC = () => {
             />
           </View>
         }
-        onUpperLeftTextPress={handleBack}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
         onLowerLeftTextPress={handleSend}
         onLowerRightTextPress={handleSend}
       />

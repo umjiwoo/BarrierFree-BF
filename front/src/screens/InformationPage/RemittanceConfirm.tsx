@@ -9,8 +9,12 @@ import {
 import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/DefaultPage';
 import DetailBox from '../../components/information/DetailBoxInformation';
+import {useHandlePress} from '../../navigation/handlePress';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
 
 const ReceivingConfirmScreen: React.FC = () => {
+  const {handlePressBack, handlePressHome} = useHandlePress();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
@@ -21,16 +25,11 @@ const ReceivingConfirmScreen: React.FC = () => {
     navigation.navigate('SendSuccess');
   };
 
-  const handleBack = () => {
-    console.log('이전으로 버튼 클릭');
-    navigation.goBack();
-  };
-
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="취소"
         LowerRightText="송금하기"
         MainText={
@@ -42,14 +41,12 @@ const ReceivingConfirmScreen: React.FC = () => {
               remitter="박수연"
               amount={money}
             />
-            <Text style={{fontSize: 20, fontWeight: 'bold', margin: 20}}>
-              송금하시겠습니까?
-            </Text>
+            <Text style={styles.confirmText}>송금하시겠습니까?</Text>
           </View>
         }
-        onUpperLeftTextPress={handleBack}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
-        onLowerLeftTextPress={handleBack}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handlePressBack}
         onLowerRightTextPress={handleSend}
       />
     </View>
@@ -62,32 +59,17 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    marginTop: 50,
+    // paddingHorizontal: 20,
+    // paddingVertical: 20,
+    // marginTop: 50,
   },
-  buttonContainer: {
-    width: '100%',
-    bottom: 0,
-  },
-  sendButton: {
-    backgroundColor: '#373DCC',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  backButton: {
-    backgroundColor: '#B6010E',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 20,
+  confirmText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    margin: 20,
+    marginBottom: 50,
+    textAlign: 'center',
+    color: '#7F35D4',
   },
 });
 

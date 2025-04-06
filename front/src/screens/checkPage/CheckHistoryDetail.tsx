@@ -1,13 +1,15 @@
 import {View, StyleSheet, Text} from 'react-native';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RouteProp, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/DefaultPage';
+import {useHandlePress} from '../../navigation/handlePress';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
+import CheckIcon from '../../assets/Check.svg';
 
 const CheckHistoryDetail = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
+  const {handlePressBack, handlePressHome} = useHandlePress();
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
   const history = route.params?.history;
 
@@ -31,10 +33,10 @@ const CheckHistoryDetail = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈  "
-        LowerLeftText="<"
-        LowerRightText=">"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
+        LowerLeftText="돌아가기"
+        LowerRightText={<CheckIcon width={80} height={80} />}
         MainText={
           <View style={styles.historyContainer}>
             {/* 날짜 */}
@@ -90,10 +92,10 @@ const CheckHistoryDetail = () => {
             </View>
           </View>
         }
-        onUpperLeftTextPress={() => navigation.goBack()}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
-        onLowerLeftTextPress={() => {}}
-        onLowerRightTextPress={() => {}}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handlePressBack}
+        onLowerRightTextPress={handlePressBack}
       />
     </View>
   );
