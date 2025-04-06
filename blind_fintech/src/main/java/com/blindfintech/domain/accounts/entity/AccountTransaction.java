@@ -31,6 +31,7 @@ public class AccountTransaction {
     private Account account;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
     private TransactionType transactionType;
 
