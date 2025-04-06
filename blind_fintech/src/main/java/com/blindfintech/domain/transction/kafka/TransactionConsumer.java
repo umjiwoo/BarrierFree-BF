@@ -23,7 +23,7 @@ public class TransactionConsumer {
     private final ObjectMapper objectMapper;
     private final TransactionLogRepository transactionLogRepository;
 
-    @KafkaListener(topics = "send_money", groupId = "blind-fintech-group", concurrency = "3")
+    @KafkaListener(topics = "send_money", groupId = "blind-fintech-group", concurrency = "2")
     public void listen(ConsumerRecord<String, String> record) {
         try {
             log.info("📥 Received DTO: {}", record);
