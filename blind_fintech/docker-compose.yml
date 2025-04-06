@@ -9,6 +9,11 @@ services:
     restart: always
     env_file:
       - .env
+    networks:
+      - backend_network
     ports:
       - "8080:8080"
-    network_mode: host
+
+networks:
+  backend_network:
+    driver: bridge
