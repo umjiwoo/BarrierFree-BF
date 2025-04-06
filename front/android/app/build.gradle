@@ -107,10 +107,29 @@ android {
     }
 }
 
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
+    
+    // TensorFlow Lite 종속성 - 모든 필수 라이브러리 추가 (동일 버전 사용)
+    implementation 'org.tensorflow:tensorflow-lite:2.9.0'
+    implementation 'org.tensorflow:tensorflow-lite-api:2.9.0'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.4.2'
+    
+    // 클래스 중복 방지 설정
+    configurations.all {
+        resolutionStrategy {
+            force 'org.tensorflow:tensorflow-lite:2.9.0'
+            force 'org.tensorflow:tensorflow-lite-api:2.9.0'
+        }
+        // 충돌하는 라이브러리 제외
+        exclude group: 'com.google.ai.edge.litert', module: 'litert'
+        exclude group: 'com.google.ai.edge.litert', module: 'litert-gpu'
+        exclude group: 'com.google.android.gms', module: 'play-services-tflite-java'
+        exclude group: 'com.google.android.gms', module: 'play-services-tflite-gpu'
+    }
+    
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

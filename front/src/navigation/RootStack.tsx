@@ -14,6 +14,7 @@ import RemittanceInformation from '../screens/InformationPage/RemittanceInformat
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
 import DefaultButton from '../components/DefaultPage';
+import  IDCardScreen from '../screens/IDCardScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
@@ -121,6 +122,14 @@ const RootStack = () => {
         component={ThreeBtn}
         options={{
           title: '금액을 입력하세요.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="IDCardScreen"
+        component={IDCardScreen}
+        options={{
+          title: '신분증 인식',
           headerShown: false,
         }}
       />

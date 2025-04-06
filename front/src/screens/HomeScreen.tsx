@@ -24,14 +24,19 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
 
     navigation.navigate('Main');
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
-          // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
           onPress={handleTestButtonPress}>
           <Text style={styles.text}>test</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('IDCardScreen')}>
+          <Text style={styles.text}>신분증 인식</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -55,11 +60,15 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '45%',
-    height: '45%',
+    height: 120,
     backgroundColor: 'blue',
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
+    borderRadius: 10,
+  },
+  idCardButton: {
+    backgroundColor: '#e74c3c',
   },
   text: {
     fontSize: 24,

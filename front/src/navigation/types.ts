@@ -38,4 +38,5 @@ export type RootStackParamList = {
     money?: number;
   };
   ThreeBtn: undefined;
+  IDCardScreen: undefined;
 };
