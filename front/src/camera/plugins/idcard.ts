@@ -1,5 +1,3 @@
-import { VisionCameraProxy } from 'react-native-vision-camera'
-
 // 코너 좌표 인터페이스
 export interface Corner {
   x: number;
@@ -24,11 +22,15 @@ export interface Box {
 
 // 이미지 정보 인터페이스
 export interface ImageInfo {
-  originalWidth: number;
-  originalHeight: number;
-  paddingLeft: number;
-  paddingTop: number;
-  scale: number;
+  width: number;   // 원본 이미지 너비
+  height: number;  // 원본 이미지 높이
+  format: string;  // 이미지 포맷
+  rotation: number; // 회전 정보
+  originalWidth?: number;  // 원본 이미지 너비
+  originalHeight?: number; // 원본 이미지 높이
+  paddingLeft?: number;    // 왼쪽 패딩 값
+  paddingTop?: number;     // 위쪽 패딩 값
+  scale?: number;          // 스케일 값
 }
 
 // 반환 타입 정의
@@ -39,17 +41,4 @@ export interface IdCardPluginResult {
   imageInfo?: ImageInfo;
   orientation: string;      // 프레임 방향 ('landscape-right', 'landscape-left', 'portrait', 'portrait-upside-down')
   imageData?: string;       // 옵셔널: 디버깅용 이미지 데이터 (base64 인코딩)
-}
-
-// 네이티브 플러그인 초기화
-export const idcardDetecterPlugin = VisionCameraProxy.initFrameProcessorPlugin('idcardDetecter', {})
-
-// 대체 플러그인 초기화 함수 (idcardDetecterPlugin이 작동하지 않을 경우 사용)
-export const initIdCardDetecterPlugin = () => {
-  try {
-    return VisionCameraProxy.initFrameProcessorPlugin('idcardDetecter', {});
-  } catch (e) {
-    console.error('idcardDetecter 플러그인 초기화 실패:', e);
-    return null;
-  }
 } 

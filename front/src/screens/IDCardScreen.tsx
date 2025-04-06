@@ -17,12 +17,14 @@ import {
   useCameraPermission,
   useMicrophonePermission,
   CameraRuntimeError,
+  CameraDeviceFormat,
+  VisionCameraProxy
 } from 'react-native-vision-camera';
 import {Worklets} from 'react-native-worklets-core';
 import {useNavigation} from '@react-navigation/native';
 
 // idcard 플러그인 및 타입 정의 import
-import {IdCardPluginResult, idcardDetecterPlugin, initIdCardDetecterPlugin} from '../camera/plugins/idcard';
+import {IdCardPluginResult} from '../camera/plugins/idcard';
 
 // 글로벌 상태 타입 확장 - 초기화 안전성 보장
 declare global {
@@ -38,6 +40,9 @@ if (global._isProcessingFrame === undefined) {
 if (global._cameraInitialized === undefined) {
   global._cameraInitialized = false;
 }
+
+// 네이티브 플러그인 초기화
+const idcardDetecterPlugin = VisionCameraProxy.initFrameProcessorPlugin('idcardDetecter', {});
 
 const IDCardScreen = () => {
   // 네비게이션
@@ -79,6 +84,24 @@ const IDCardScreen = () => {
   // 조건부 할당
   const format = device ? cameraFormat : undefined;
 
+  // 포맷 정보 로깅 (디버깅용)
+  useEffect(() => {
+    if (format) {
+      console.log(`📊 카메라 포맷 정보: 
+      해상도: ${format.videoWidth}x${format.videoHeight}
+      FPS 범위: ${format.minFps} ~ ${format.maxFps}
+      HDR 지원: ${format.supportsVideoHdr ? '예' : '아니오'}`);
+      
+      // 사용 가능한 모든 포맷 로깅 (디버깅용)
+      if (device && device.formats) {
+        console.log(`📷 사용 가능한 카메라 포맷 총 ${device.formats.length}개:`);
+        device.formats.forEach((fmt: CameraDeviceFormat, index: number) => {
+          console.log(`[${index}] ${fmt.videoWidth}x${fmt.videoHeight}, FPS: ${fmt.minFps}-${fmt.maxFps}`);
+        });
+      }
+    }
+  }, [format, device]);
+
   // 권한 요청 함수
   const requestPermissions = useCallback(async () => {
     const cameraGranted = await requestCameraPermission();
@@ -101,25 +124,6 @@ const IDCardScreen = () => {
 
     try {
       setDebugInfo('카메라 초기화 중...');
-      
-      // 플러그인 사용 전 초기화 상태 확인
-      try {
-        if (idcardDetecterPlugin) {
-          console.log('✅ idcardDetecter 플러그인 사용 가능');
-        } else {
-          console.warn('⚠️ idcardDetecter 플러그인을 찾을 수 없음');
-          // 대체 초기화 메서드 시도
-          const altPlugin = initIdCardDetecterPlugin();
-          if (altPlugin) {
-            console.log('✅ 대체 메서드로 플러그인 초기화 성공');
-          } else {
-            console.error('❌ 플러그인 초기화 실패');
-          }
-        }
-      } catch (pluginError) {
-        console.error('❌ 플러그인 초기화 오류:', pluginError);
-      }
-      
       global._cameraInitialized = true;
       console.log('📷 카메라 초기화 시도 #', initRetries + 1);
       
@@ -174,7 +178,7 @@ const IDCardScreen = () => {
     // 이미지 정보 저장
     if (result.imageInfo) {
       console.log(`ℹ️ 이미지 정보:
-원본크기: ${result.imageInfo.originalWidth}x${result.imageInfo.originalHeight}
+원본크기: ${result.imageInfo.originalWidth || result.imageInfo.width}x${result.imageInfo.originalHeight || result.imageInfo.height}
 패딩(L:${result.imageInfo.paddingLeft?.toFixed(1) || 0}, T:${result.imageInfo.paddingTop?.toFixed(1) || 0})
 스케일: ${result.imageInfo.scale?.toFixed(3) || 0}`);
     }
@@ -252,37 +256,27 @@ const IDCardScreen = () => {
         console.warn(`⚠️ 최적화되지 않은 픽셀 포맷: ${pixelFormat}. ML 모델은 'yuv' 포맷을 권장합니다.`);
       }
       
-      try {
-        // 네이티브 플러그인 직접 호출 - try/catch로 감싸서 오류 처리 강화
-        const result = idcardDetecterPlugin.call(frame) as Record<string, any>;
+      // 네이티브 플러그인 직접 호출
+      const result = idcardDetecterPlugin.call(frame) as any;
+      
+      if (result) {
+        // 결과 기본 타입 처리
+        const processedResult: IdCardPluginResult = {
+          boxes: Array.isArray(result.boxes) ? result.boxes : [],
+          processingTimeMs: result.processingTimeMs || 0,
+          imageInfo: result.imageInfo,
+          rawOutputs: result.rawOutputs,
+          orientation: result.orientation || (frame.orientation?.toString() || 'landscape-right')
+        };
         
-        if (result) {
-          // 결과 기본 타입 처리
-          const processedResult: IdCardPluginResult = {
-            boxes: Array.isArray(result.boxes) ? result.boxes : [],
-            processingTimeMs: result.processingTimeMs || 0,
-            imageInfo: result.imageInfo,
-            rawOutputs: result.rawOutputs,
-            orientation: result.orientation || (frame.orientation?.toString() || 'landscape-right')
-          };
-          
-          // 박스 탐지 결과 로깅
-          console.log(`📦 네이티브에서 반환된 박스: ${processedResult.boxes.length}개, 처리시간: ${processedResult.processingTimeMs}ms`);
-          
-          // 전체 result를 전달하여 처리
-          runOnJSHandleDetection(processedResult);
-        } else {
-          // 결과가 없는 경우
-          console.log('📦 탐지된 박스 없음');
-          runOnJSHandleDetection({
-            boxes: [],
-            processingTimeMs: 0,
-            orientation: frame.orientation?.toString() || 'landscape-right'
-          });
-        }
-      } catch (pluginError) {
-        // 플러그인 호출 오류 처리
-        console.error('플러그인 호출 오류:', JSON.stringify(pluginError));
+        // 박스 탐지 결과 로깅
+        console.log(`📦 네이티브에서 반환된 박스: ${processedResult.boxes.length}개, 처리시간: ${processedResult.processingTimeMs}ms`);
+        
+        // 전체 result를 전달하여 처리
+        runOnJSHandleDetection(processedResult);
+      } else {
+        // 결과가 없는 경우
+        console.log('📦 탐지된 박스 없음');
         runOnJSHandleDetection({
           boxes: [],
           processingTimeMs: 0,
@@ -290,7 +284,7 @@ const IDCardScreen = () => {
         });
       }
     } catch (e) {
-      console.error('FrameProcessor 오류:', JSON.stringify(e));
+      console.error('FrameProcessor 오류:', e);
     } finally {
       // 처리 상태 초기화
       global._isProcessingFrame = false;
@@ -366,34 +360,19 @@ const IDCardScreen = () => {
         format={format}
         isActive={isActive}
         frameProcessor={frameProcessor}
-        frameProcessorFps={5}
+        fps={format ? format.maxFps > 15 ? 15 : format.maxFps : undefined}
         resizeMode="contain"
         enableZoomGesture={false}
         onError={handleCameraError}
         onInitialized={() => {
           console.log('📷 카메라 초기화 완료');
           setDebugInfo('카메라 준비 완료');
-          
-          // 카메라 초기화 후 일정 시간 지연 후 프레임 처리 활성화
-          setTimeout(() => {
-            global._isProcessingFrame = false;
-            console.log('📷 프레임 처리 준비 완료');
-          }, 1000);
         }}
         pixelFormat="yuv"
         outputOrientation="preview"
         androidPreviewViewType="texture-view"
-        onPreviewStarted={() => {
-          console.log('카메라 프리뷰 시작');
-          // 프리뷰가 시작되면 일정 시간 후에 프레임 처리 시작
-          setTimeout(() => {
-            global._isProcessingFrame = false;
-          }, 500);
-        }}
-        onPreviewStopped={() => {
-          console.log('카메라 프리뷰 중지');
-          global._isProcessingFrame = true; // 프리뷰 중지 시 프레임 처리 중지
-        }}
+        onPreviewStarted={() => console.log('카메라 프리뷰 시작')}
+        onPreviewStopped={() => console.log('카메라 프리뷰 중지')}
       />
       <SafeAreaView style={styles.overlay}>
         <Text style={styles.overlayTitle}>신분증 인식</Text>
