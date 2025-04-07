@@ -1,7 +1,7 @@
 package com.blindfintech.domain.accounts.entity;
 
-import com.blindfintech.domain.transction.dto.TransactionResultDto;
-import com.blindfintech.domain.transction.entity.TransactionType;
+import com.blindfintech.domain.transaction.dto.TransactionResultDto;
+import com.blindfintech.domain.transaction.entity.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,6 +31,7 @@ public class AccountTransaction {
     private Account account;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
     private TransactionType transactionType;
 

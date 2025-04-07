@@ -61,11 +61,4 @@ public class SmsService {
         }
         return savedCode;
     }
-
-    /*private void validateCodeMatch(String storedCode, String inputCode) {
-        if(!storedCode.equals(inputCode)) {
-            throw new UserException(UserErrorCode.USER_OTP_MISMATCH);
-        }
-    }
-*/
 }
