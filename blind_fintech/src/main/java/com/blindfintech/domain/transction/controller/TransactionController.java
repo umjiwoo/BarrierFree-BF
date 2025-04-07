@@ -41,27 +41,29 @@ public class TransactionController {
         return ResponseEntity.ok(ResponseDto.success(recentTransactionAccounts));
     }
 
-//    @PostMapping("/request-payment")
-//    public ResponseEntity<?> requestPayment(@RequestBody PaymentRequestDto paymentRequest){
-//        // push 알림 전 계좌 유무 확인
-//        CheckAccountResultDto checkAccount = transactionService.checkAccount(
-//                CheckAccountRequestDto.from(paymentRequest));
-//
-//        // TODO push 알림 보내기
+    @PostMapping("/request-payment")
+    public ResponseEntity<?> requestPayment(@RequestBody PaymentRequestDto paymentRequest){
+        // push 알림 전 계좌 유무 확인
+        CheckAccountResultDto checkAccount = transactionService.checkAccount(
+                CheckAccountRequestDto.from(paymentRequest));
+
+        // TODO push 알림 보내기
+        // TODO 받을 사람 게좌 id/이름, transactionWebSocketId, transactionAmount 포함
 //        if(checkAccount != null){
-////            fcmService.sendPushNotification();
+//            fcmService.sendPushNotification();
 //        }
-//
-//        return ResponseEntity.ok().body("ok");
-//    }
-//
-//    @PostMapping("/accept-payment")
-//    public ResponseEntity<?> acceptPayment(
-//            @RequestBody TransactionRequestDto transactionRequestDto){
-//        transactionService.produceSendMoney(transactionRequestDto);
-//
-//        return ResponseEntity.ok().body("ok");
-//    }
+
+        return ResponseEntity.ok().body(ResponseDto.success(null));
+    }
+
+    @PostMapping("/accept-payment")
+    public ResponseEntity<?> acceptPayment(
+            @RequestBody TransactionRequestDto transactionRequestDto){
+        // TODO 선택된 계좌, 비밀번호 매칭 확인
+        transactionService.produceSendMoney(transactionRequestDto);
+
+        return ResponseEntity.ok().body(ResponseDto.success(null));
+    }
 
     @GetMapping("/buyer-info")
     public ResponseEntity<ResponseDto<BuyerInfoDto>> getBuyerInfo(){
