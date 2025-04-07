@@ -2,11 +2,15 @@ import {
   // AccountItemProps,
   HistoryItemProps,
   TestAccountItemProps,
+  GoodsItemProps,
 } from '../components/types/CheckAccount';
 
 export type RootStackParamList = {
   HomeScreen: undefined;
   CreateAccountScreen: undefined;
+  CreateAccountGoodsDetail: {
+    goods: GoodsItemProps;
+  };
   Main: undefined;
   DefaultButton: undefined;
   // CheckAccount: {
