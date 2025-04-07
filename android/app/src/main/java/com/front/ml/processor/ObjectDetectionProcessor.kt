@@ -91,13 +91,14 @@ class ObjectDetectionProcessor(
                 // 결과 변환
                 val labels = modelFactory.getLabels(labelName)
                 val detectionResults = processDetectionResults(
-                    outputLocations,
-                    outputClasses,
-                    outputScores,
-                    numDetections,
+                    outputLocations[0],
+                    outputClasses[0],
+                    outputScores[0],
+                    numDetections[0].toInt(),
                     labels,
                     image.width,
-                    image.height
+                    image.height,
+                    inputSize
                 )
                 
                 // 성능 통계 업데이트
@@ -118,65 +119,82 @@ class ObjectDetectionProcessor(
     }
     
     /**
-     * 입력 버퍼 준비
-     */
-    private fun prepareInputBuffer(bitmap: Bitmap, inputSize: Int): ByteBuffer {
-        val inputBuffer = ByteBuffer.allocateDirect(1 * inputSize * inputSize * 3 * 4)
-        inputBuffer.order(ByteOrder.nativeOrder())
-        inputBuffer.rewind()
-        
-        // 비트맵을 ByteBuffer로 변환
-        val pixels = IntArray(inputSize * inputSize)
-        bitmap.getPixels(pixels, 0, inputSize, 0, 0, inputSize, inputSize)
-        
-        for (pixel in pixels) {
-            // RGB 채널별로 정규화 (0~1)
-            inputBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
-            inputBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
-            inputBuffer.putFloat((pixel and 0xFF) / 255.0f)
-        }
-        
-        return inputBuffer
-    }
-    
-    /**
-     * 감지 결과 처리
+     * 객체 감지 결과 처리
      */
     private fun processDetectionResults(
-        outputLocations: Array<Array<FloatArray>>,
-        outputClasses: Array<FloatArray>,
-        outputScores: Array<FloatArray>,
-        numDetections: FloatArray,
+        locations: Array<FloatArray>,
+        classes: FloatArray,
+        scores: FloatArray,
+        numDetections: Int,
         labels: List<String>,
         imageWidth: Int,
-        imageHeight: Int
+        imageHeight: Int,
+        inputSize: Int
     ): List<DetectionResult> {
         val detectionResults = mutableListOf<DetectionResult>()
-        val numDetected = numDetections[0].toInt()
         
-        for (i in 0 until numDetected) {
-            val score = outputScores[0][i]
-            // 임계값 이상인 결과만 선택
-            if (score >= 0.5f) {
-                val classIndex = outputClasses[0][i].toInt()
-                val label = if (classIndex < labels.size) labels[classIndex] else "Unknown"
-                
-                // 위치 변환 (좌표 변환)
-                val location = outputLocations[0][i]
-                val boundingBox = RectF(
-                    location[1] * imageWidth,
-                    location[0] * imageHeight,
-                    location[3] * imageWidth,
-                    location[2] * imageHeight
-                )
-                
-                detectionResults.add(
-                    DetectionResult(score, label, boundingBox)
-                )
-            }
+        for (i in 0 until numDetections) {
+            // 신뢰도가 너무 낮으면 스킵
+            if (scores[i] < 0.5f) continue
+            
+            // 바운딩 박스 좌표 변환
+            val bbox = locations[i]
+            val top = bbox[0] * imageHeight
+            val left = bbox[1] * imageWidth
+            val bottom = bbox[2] * imageHeight
+            val right = bbox[3] * imageWidth
+            
+            // 클래스 인덱스 및 레이블
+            val classIndex = classes[i].toInt()
+            val label = if (classIndex < labels.size) labels[classIndex] else "Unknown"
+            
+            // 결과 객체 생성
+            val result = DetectionResult(
+                score = scores[i],
+                label = label,
+                boundingBox = RectF(left, top, right, bottom)
+            )
+            
+            detectionResults.add(result)
         }
         
         return detectionResults
+    }
+    
+    /**
+     * 입력 버퍼 준비
+     */
+    private fun prepareInputBuffer(bitmap: Bitmap, inputSize: Int): ByteBuffer {
+        val byteBuffer = ByteBuffer.allocateDirect(4 * inputSize * inputSize * 3)
+        byteBuffer.order(ByteOrder.nativeOrder())
+        
+        val pixels = IntArray(inputSize * inputSize)
+        bitmap.getPixels(pixels, 0, inputSize, 0, 0, inputSize, inputSize)
+        
+        var pixel = 0
+        for (i in 0 until inputSize) {
+            for (j in 0 until inputSize) {
+                val pixelValue = pixels[pixel++]
+                
+                // BGR 순서로 변환 (모델에 따라 다를 수 있음)
+                byteBuffer.putFloat(((pixelValue shr 16) and 0xFF) / 255.0f)
+                byteBuffer.putFloat(((pixelValue shr 8) and 0xFF) / 255.0f)
+                byteBuffer.putFloat((pixelValue and 0xFF) / 255.0f)
+            }
+        }
+        
+        return byteBuffer
+    }
+    
+    /**
+     * 메모리 재사용을 위한 비트맵 캐시
+     */
+    private fun getCachedBitmap(width: Int, height: Int): Bitmap {
+        if (cachedBitmap == null || cachedBitmap!!.width != width || cachedBitmap!!.height != height) {
+            cachedBitmap?.recycle()
+            cachedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        }
+        return cachedBitmap!!
     }
     
     /**
@@ -184,6 +202,9 @@ class ObjectDetectionProcessor(
      */
     private fun updatePerformanceStats() {
         val inferenceTime = System.currentTimeMillis() - frameStartTime
+        
+        // 추론 시간 기록
+        modelFactory.recordInferenceTime(modelName, inferenceTime)
         
         // 평균 추론 시간 계산 (이동 평균)
         if (frameCount == 0) {
@@ -196,27 +217,6 @@ class ObjectDetectionProcessor(
     }
     
     /**
-     * 성능 지표 가져오기
-     */
-    fun getPerformanceStats(): PerformanceStats {
-        return PerformanceStats(averageInferenceTime)
-    }
-    
-    /**
-     * 비트맵 재사용을 위한 캐싱 기법
-     */
-    private fun getCachedBitmap(width: Int, height: Int): Bitmap {
-        return cachedBitmap?.let {
-            if (it.width == width && it.height == height) it
-            else Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { newBitmap ->
-                cachedBitmap = newBitmap
-            }
-        } ?: Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also {
-            cachedBitmap = it
-        }
-    }
-    
-    /**
      * 리소스 해제
      */
     override fun shutdown() {
@@ -224,9 +224,4 @@ class ObjectDetectionProcessor(
         cachedBitmap?.recycle()
         cachedBitmap = null
     }
-    
-    /**
-     * 성능 통계 데이터 클래스
-     */
-    data class PerformanceStats(val averageInferenceTime: Long)
 } 

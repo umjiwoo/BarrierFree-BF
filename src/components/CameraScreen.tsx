@@ -11,7 +11,10 @@ import {
   Alert,
   PermissionsAndroid,
   ScrollView,
+  NativeEventEmitter,
+  Dimensions,
 } from 'react-native';
+import Svg, { Rect, Polygon, Text as SvgText } from 'react-native-svg';
 
 // 네이티브 모듈 가져오기
 const { CameraPreviewModule } = NativeModules;
@@ -38,6 +41,23 @@ interface PerformanceInfo {
   sampleCount: number;
 }
 
+// 감지 결과 타입 정의
+interface DetectionResult {
+  score: number;
+  label: string;
+  boundingBox: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+    width: number;
+    height: number;
+  };
+  angle?: number;
+  angleDegrees?: number;
+  corners?: Array<{x: number, y: number}>;
+}
+
 const CameraScreen: React.FC = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,6 +66,37 @@ const CameraScreen: React.FC = () => {
   const [modelLoading, setModelLoading] = useState<boolean>(false);
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const [performanceInfo, setPerformanceInfo] = useState<PerformanceInfo | null>(null);
+  const [isDetecting, setIsDetecting] = useState<boolean>(false);
+  const [detectionResults, setDetectionResults] = useState<DetectionResult[]>([]);
+  const [detectionError, setDetectionError] = useState<string | null>(null);
+
+  // 이벤트 리스너 등록
+  useEffect(() => {
+    console.log('이벤트 리스너 등록 시작');
+    const eventEmitter = new NativeEventEmitter(CameraPreviewModule);
+    
+    // 사용 가능한 이벤트 리스너 로깅
+    console.log('CameraPreviewModule 확인:', CameraPreviewModule);
+    
+    // DETECTION_EVENT의 실제 이름인 'onDetectionResults' 구독
+    const subscription = eventEmitter.addListener('onDetectionResults', (results) => {
+      console.log('감지 결과 수신:', JSON.stringify(results));
+      setDetectionResults(results);
+    });
+    
+    console.log('이벤트 리스너 등록 완료');
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 해제
+    return () => {
+      console.log('이벤트 리스너 해제');
+      if (isDetecting) {
+        CameraPreviewModule.stopObjectDetection()
+          .then(() => console.log('객체 감지 중지됨'))
+          .catch((err: any) => console.error('감지 중지 오류:', err));
+      }
+      subscription.remove();
+    };
+  }, [isDetecting]);
 
   // 성능 정보 정기적 업데이트
   useEffect(() => {
@@ -124,6 +175,32 @@ const CameraScreen: React.FC = () => {
       setModelLoading(false);
     }
   }, []);
+
+  // 감지 시작/중지 처리
+  const toggleDetection = useCallback(() => {
+    if (isDetecting) {
+      CameraPreviewModule.stopObjectDetection()
+        .then(() => {
+          setIsDetecting(false);
+          setDetectionResults([]);
+          setDetectionError(null);
+        })
+        .catch((err: any) => {
+          console.error('감지 중지 오류:', err);
+          setDetectionError('감지 중지 오류: ' + err);
+        });
+    } else {
+      CameraPreviewModule.startObjectDetection(MODEL_FILE_NAME)
+        .then(() => {
+          setIsDetecting(true);
+          setDetectionError(null);
+        })
+        .catch((err: any) => {
+          console.error('감지 시작 오류:', err);
+          setDetectionError('감지 시작 오류: ' + err);
+        });
+    }
+  }, [isDetecting]);
 
   // 권한 요청 함수
   const requestCameraPermission = async () => {
@@ -300,6 +377,81 @@ const CameraScreen: React.FC = () => {
     );
   };
 
+  // 바운딩 박스 렌더링
+  const renderDetections = () => {
+    if (!isDetecting || detectionResults.length === 0) return null;
+
+    return (
+      <View style={styles.detectionOverlay}>
+        <Svg height="100%" width="100%" viewBox={`0 0 ${SCREEN_WIDTH} ${SCREEN_HEIGHT}`}>
+          {detectionResults.map((detection, index) => {
+            const { boundingBox, score, label, corners } = detection;
+            const color = getColorForLabel(label);
+            
+            if (corners) {
+              // 회전된 바운딩 박스 (OBB)
+              const pointsStr = corners.map(p => `${p.x},${p.y}`).join(' ');
+              return (
+                <React.Fragment key={index}>
+                  <Polygon
+                    points={pointsStr}
+                    stroke={color}
+                    strokeWidth="2"
+                    fill="transparent"
+                  />
+                  <SvgText
+                    x={corners[0].x}
+                    y={corners[0].y - 10}
+                    fill={color}
+                    fontSize="12"
+                    fontWeight="bold"
+                  >
+                    {`${label} ${Math.round(score * 100)}%`}
+                  </SvgText>
+                </React.Fragment>
+              );
+            } else {
+              // 일반 바운딩 박스 (AABB)
+              return (
+                <React.Fragment key={index}>
+                  <Rect
+                    x={boundingBox.left}
+                    y={boundingBox.top}
+                    width={boundingBox.width}
+                    height={boundingBox.height}
+                    stroke={color}
+                    strokeWidth="2"
+                    fill="transparent"
+                  />
+                  <SvgText
+                    x={boundingBox.left}
+                    y={boundingBox.top - 10}
+                    fill={color}
+                    fontSize="12"
+                    fontWeight="bold"
+                  >
+                    {`${label} ${Math.round(score * 100)}%`}
+                  </SvgText>
+                </React.Fragment>
+              );
+            }
+          })}
+        </Svg>
+      </View>
+    );
+  };
+
+  // 레이블별 고유한 색상 생성
+  const getColorForLabel = (label: string) => {
+    // 간단한 해시 함수로 레이블에 따른 색상 생성
+    const hash = label.split('').reduce((acc, char) => {
+      return char.charCodeAt(0) + ((acc << 5) - acc);
+    }, 0);
+    
+    // HSL 색상 생성 (일관된 채도와 밝기로 색상만 다양하게)
+    return `hsl(${Math.abs(hash) % 360}, 80%, 60%)`;
+  };
+
   return (
     <View style={styles.container}>
       {loading || modelLoading ? (
@@ -337,8 +489,26 @@ const CameraScreen: React.FC = () => {
           <Text style={styles.title}>카메라 프리뷰</Text>
           <Text style={styles.text}>카메라를 열어 사진을 촬영하세요</Text>
           {modelLoaded && (
-            <Text style={styles.modelStatus}>TF Lite 모델 로드 완료</Text>
+            <View>
+              <Text style={styles.modelStatus}>TF Lite 모델 로드 완료</Text>
+              <TouchableOpacity 
+                style={[styles.button, isDetecting ? styles.buttonStop : styles.buttonStart]}
+                onPress={toggleDetection}
+                disabled={!modelLoaded}
+              >
+                <Text style={styles.buttonText}>
+                  {isDetecting ? "객체 감지 중지" : "객체 감지 시작"}
+                </Text>
+              </TouchableOpacity>
+            </View>
           )}
+          {detectionError && <Text style={styles.errorText}>{detectionError}</Text>}
+          {renderDetections()}
+          <View style={styles.statsContainer}>
+            {isDetecting && (
+              <Text style={styles.statsText}>감지된 객체: {detectionResults.length}</Text>
+            )}
+          </View>
           {renderModelInfo()}
           {renderPerformanceInfo()}
           <TouchableOpacity 
@@ -354,6 +524,9 @@ const CameraScreen: React.FC = () => {
     </View>
   );
 };
+
+// 화면 크기
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -463,7 +636,40 @@ const styles = StyleSheet.create({
     color: '#cccccc',
     fontSize: 14,
     marginBottom: 5,
-  }
+  },
+  detectionOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 10,
+  },
+  statsContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  statsText: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 5,
+    borderRadius: 5,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  buttonStart: {
+    backgroundColor: '#4682B4',
+  },
+  buttonStop: {
+    backgroundColor: '#FF6347',
+  },
 });
 
 export default CameraScreen; 
