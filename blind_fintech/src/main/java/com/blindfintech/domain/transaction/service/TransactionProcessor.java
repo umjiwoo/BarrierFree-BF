@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.ACCOUNT_NOT_FOUND;
-import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.INSUFFICIENT_BALANCE;
+import static com.blindfintech.domain.transaction.exception.TransactionExceptionCode.ACCOUNT_NOT_FOUND;
+import static com.blindfintech.domain.transaction.exception.TransactionExceptionCode.INSUFFICIENT_BALANCE;
 
 @Slf4j
 @AllArgsConstructor

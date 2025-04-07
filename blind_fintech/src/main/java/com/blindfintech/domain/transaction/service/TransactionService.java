@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.blindfintech.domain.transction.exception.TransactionExceptionCode.*;
+import static com.blindfintech.domain.transaction.exception.TransactionExceptionCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
