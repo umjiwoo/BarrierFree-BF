@@ -1,19 +1,8 @@
 package com.blindfintech.domain.transaction.config.handler;
 
-import com.blindfintech.common.jwt.JwtUtil;
-import com.blindfintech.domain.users.entity.User;
-import com.blindfintech.domain.users.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
