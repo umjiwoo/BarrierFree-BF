@@ -72,6 +72,10 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+// CameraX 버전
+def camerax_version = "1.3.0"
+def tensorflow_version = "2.9.0"
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -105,6 +109,16 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    // aaptOptions를 통해 .tflite 파일을 noCompress 리스트에 추가
+    aaptOptions {
+        noCompress "tflite"
+    }
+    
+    // dataBinding 사용 설정
+    buildFeatures {
+        dataBinding true
+    }
 }
 
 dependencies {
@@ -116,4 +130,21 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // CameraX Core 라이브러리
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    // CameraX Camera2 구현
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    // CameraX 라이프사이클 지원
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    // CameraX View 클래스
+    implementation "androidx.camera:camera-view:${camerax_version}"
+
+    // TensorFlow Lite
+    implementation "org.tensorflow:tensorflow-lite:${tensorflow_version}"
+    // TensorFlow Lite Support 라이브러리
+    implementation "org.tensorflow:tensorflow-lite-support:0.4.2"
+    
+    // cameraPreview 모듈 의존성 추가
+    implementation project(':cameraPreview')
 }
