@@ -45,7 +45,7 @@ dependencies {
     // encrypt
 	implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
 	//FCM
-	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '6.8.1'
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
 
 
 	// websocket
