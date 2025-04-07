@@ -14,6 +14,8 @@ import RemittanceInformation from '../screens/InformationPage/RemittanceInformat
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
 import DefaultButton from '../components/DefaultPage';
+import PaymentScreen from '../components/qrPage/PaymentMainScreen';
+import PaymentConfirmScreen from '../components/qrPage/PaymentConfirmScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
@@ -121,6 +123,22 @@ const RootStack = () => {
         component={ThreeBtn}
         options={{
           title: '금액을 입력하세요.',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{
+          title: '결제',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentConfirm"
+        component={PaymentConfirmScreen}
+        options={{
+          title: '결제',
           headerShown: false,
         }}
       />

@@ -38,4 +38,10 @@ export type RootStackParamList = {
     money?: number;
   };
   ThreeBtn: undefined;
+  Payment: undefined;
+  PaymentConfirm: {
+    accountNumber: string;
+    amount: number;
+    sessionId: string;
+  };
 };

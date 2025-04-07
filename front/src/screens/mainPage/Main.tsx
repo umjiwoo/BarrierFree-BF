@@ -29,7 +29,7 @@ const Main = () => {
   };
 
   const handleLowerLeftTextPress = () => {
-    // navigation.navigate('Payment');
+    navigation.navigate('Payment');
   };
 
   const handleLowerRightTextPress = () => {
