@@ -7,9 +7,12 @@ import {
   NavigationProp,
   ParamListBase,
 } from '@react-navigation/native';
-import BackButton from '../components/BackButton';
-import {TestAccountItemProps} from '../components/types/CheckAccount';
-import {useHandlePress} from '../navigation/handlePress';
+import BackButton from '../components/utils/BackButton';
+import {
+  TestAccountItemProps,
+  GoodsItemProps,
+} from '../components/types/CheckAccount';
+import {useHandlePress} from '../components/utils/handlePress';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
@@ -17,6 +20,7 @@ type SendInputPageParams = {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
     selectedAccount?: TestAccountItemProps;
     money?: number;
+    goods?: GoodsItemProps;
   };
 };
 
@@ -39,6 +43,7 @@ const SendInputPage = () => {
     selectedAccount: null,
   }; // 기본값 설정
   const money = route.params?.money;
+  const goods = route.params?.goods;
 
   // 타입에 따라 헤더 타이틀 설정
   useEffect(() => {
@@ -146,10 +151,16 @@ const SendInputPage = () => {
               text="확인"
               type="input"
               onPress={() => {
-                navigation.navigate('RemittanceConfirm', {
-                  selectedAccount: selectedAccount,
-                  money: money,
-                });
+                if (selectedAccount) {
+                  navigation.navigate('RemittanceConfirm', {
+                    selectedAccount: selectedAccount,
+                    money: money,
+                  });
+                } else {
+                  navigation.navigate('CreateAccountSuccess', {
+                    goods: goods,
+                  });
+                }
               }}
             />
             <BackButton

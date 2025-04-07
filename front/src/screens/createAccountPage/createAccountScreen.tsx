@@ -3,11 +3,12 @@ import {View, StyleSheet} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
-import {useHandlePress} from '../../navigation/handlePress';
+import {useHandlePress} from '../../components/utils/handlePress';
 import {useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import CreateAccountGoods from './CreateAccountGoods';
+import ArrowRightIcon from '../../assets/ArrowRight.svg';
 
 interface GoodsItemProps {
   id: number;
@@ -98,7 +99,6 @@ const CreateAccountScreen = () => {
   const handleSelectGoods = (item: GoodsItemProps) => {
     // 상품 선택 시 처리할 로직
     navigation.navigate('CreateAccountGoodsDetail', {goods: item});
-    console.log('item', item);
   };
 
   const handleLowerLeftTextPress = () => {
@@ -118,8 +118,8 @@ const CreateAccountScreen = () => {
       <DefaultPage
         UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
         UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="취소"
-        LowerRightText="완료"
+        LowerLeftText={<ArrowLeftIcon width={80} height={80} />}
+        LowerRightText={<ArrowRightIcon width={80} height={80} />}
         MainText={
           <CreateAccountGoods
             data={accountGoods}

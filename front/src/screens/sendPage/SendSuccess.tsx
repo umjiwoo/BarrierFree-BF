@@ -3,7 +3,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import DefaultPage from '../../components/utils/DefaultPage';
-import {useHandlePress} from '../../navigation/handlePress';
+import {useHandlePress} from '../../components/utils/handlePress';
 import CheckCircle from '../../assets/CheckCircle.svg';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';

@@ -31,7 +31,7 @@ const CreateAccountGoods = ({
         width={SCREEN_WIDTH}
         // height={'100%'}
         data={data}
-        renderItem={({item}: {item: GoodsItemProps}) => {
+        renderItem={({item}) => {
           return (
             <TouchableOpacity
               onPress={() => onSelect(item)}

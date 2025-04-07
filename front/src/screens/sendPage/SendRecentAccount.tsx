@@ -4,7 +4,7 @@ import SendAccountBox from './SendAccountBox';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useHandlePress} from '../../navigation/handlePress';
+import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
 import {getTransactionsHistory} from '../../api/axiosAccount';

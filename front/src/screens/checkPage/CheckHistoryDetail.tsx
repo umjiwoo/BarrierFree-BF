@@ -3,7 +3,7 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage';
-import {useHandlePress} from '../../navigation/handlePress';
+import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
 import CheckIcon from '../../assets/Check.svg';

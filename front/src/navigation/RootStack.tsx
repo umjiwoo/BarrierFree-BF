@@ -16,6 +16,8 @@ import DefaultButton from '../components/utils/DefaultPage';
 import SendRecentAccount from '../screens/sendPage/SendRecentAccount';
 import CreateAccountScreen from '../screens/createAccountPage/CreateAccountScreen';
 import CreateAccountGoodsDetail from '../screens/createAccountPage/CreateAccountGoodsDetail';
+import CreateAccountCheck from '../screens/createAccountPage/CreateAccountCheck';
+import CreateAccountSuccess from '../screens/createAccountPage/CreateAccountSuccess';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
@@ -42,6 +44,22 @@ const RootStack = () => {
         component={CreateAccountGoodsDetail}
         options={{
           title: 'CreateAccountGoodsDetail',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateAccountCheck"
+        component={CreateAccountCheck}
+        options={{
+          title: 'CreateAccountCheck',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateAccountSuccess"
+        component={CreateAccountSuccess}
+        options={{
+          title: 'CreateAccountSuccess',
           headerShown: false,
         }}
       />

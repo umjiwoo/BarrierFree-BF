@@ -11,6 +11,12 @@ export type RootStackParamList = {
   CreateAccountGoodsDetail: {
     goods: GoodsItemProps;
   };
+  CreateAccountCheck: {
+    goods: GoodsItemProps;
+  };
+  CreateAccountSuccess: {
+    goods: GoodsItemProps;
+  };
   Main: undefined;
   DefaultButton: undefined;
   // CheckAccount: {
@@ -41,6 +47,7 @@ export type RootStackParamList = {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
     selectedAccount?: TestAccountItemProps;
     money?: number;
+    goods?: GoodsItemProps;
   };
   ThreeBtn: undefined;
 };
