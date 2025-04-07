@@ -1,5 +1,11 @@
-import React from 'react';
-import {StyleSheet, SafeAreaView, View, Text} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  NativeModules,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
@@ -8,34 +14,43 @@ import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
 import BarrierFree from '../../assets/BarrierFree.svg';
-// import {Image, View} from 'react-native-reanimated/lib/typescript/Animated';
 
 const Main = () => {
   const {user} = useUserStore();
   const {accounts} = useAccountStore();
+  const {CustomVibration} = NativeModules;
+  const [lastTap, setLastTap] = useState(0);
+  const tapTimeout = useRef<NodeJS.Timeout | null>(null);
+
   console.log(user);
   console.log(accounts);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleUpperLeftTextPress = async () => {
-    const data = await getAccounts();
-    console.log(data);
+  const handleDefaultPress = async (
+    page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
+  ) => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
 
-    navigation.navigate('CheckHistory');
-  };
-
-  const handleUpperRightTextPress = () => {
-    navigation.navigate('SendMain');
-  };
-
-  const handleLowerLeftTextPress = () => {
-    // navigation.navigate('Payment');
-  };
-
-  const handleLowerRightTextPress = () => {
-    // navigation.navigate('Setting');
+    if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
+      // 더블 탭
+      if (tapTimeout.current) {
+        clearTimeout(tapTimeout.current);
+      }
+      CustomVibration.vibrateCustomSequence('double_tick');
+      const data = await getAccounts();
+      console.log(data);
+      navigation.navigate(page);
+    } else {
+      // 싱글 탭
+      CustomVibration.vibrateCustomSequence('tick');
+      tapTimeout.current = setTimeout(() => {
+        setLastTap(0);
+      }, DOUBLE_TAP_DELAY);
+    }
+    setLastTap(now);
   };
 
   return (
@@ -52,10 +67,12 @@ const Main = () => {
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={handleLowerLeftTextPress}
-        onLowerRightTextPress={handleLowerRightTextPress}
+        onUpperLeftTextPress={() => handleDefaultPress('CheckHistory')}
+        // onUpperLeftTextPress={handleUpperLeftTextPress}
+        onUpperRightTextPress={() => handleDefaultPress('SendMain')}
+        // onUpperRightTextPress={handleUpperRightTextPress}
+        onLowerLeftTextPress={() => handleDefaultPress('PayMain')}
+        onLowerRightTextPress={() => handleDefaultPress('SettingsMain')}
       />
     </SafeAreaView>
   );

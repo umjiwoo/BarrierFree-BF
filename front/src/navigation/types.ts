@@ -1,5 +1,4 @@
 import {
-  // AccountItemProps,
   HistoryItemProps,
   TestAccountItemProps,
   GoodsItemProps,
@@ -19,13 +18,7 @@ export type RootStackParamList = {
   };
   Main: undefined;
   DefaultButton: undefined;
-  // CheckAccount: {
-  //   selectedAccount: AccountItemProps;
-  // };
   CheckHistory: undefined;
-  // CheckHistory: {
-  //   history: HistoryItemProps;
-  // };
   CheckHistoryDetail: {
     history: HistoryItemProps;
   };
@@ -49,5 +42,6 @@ export type RootStackParamList = {
     money?: number;
     goods?: GoodsItemProps;
   };
-  ThreeBtn: undefined;
+  PayMain: undefined;
+  SettingsMain: undefined;
 };
