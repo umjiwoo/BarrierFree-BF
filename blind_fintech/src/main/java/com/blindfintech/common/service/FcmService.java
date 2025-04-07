@@ -21,8 +21,6 @@ public class FcmService {
     private final FcmRepository fcmRepository;
     private final UserRepository userRepository;
 
-    private final String FCM_SERVER_KEY = "FCM_SERVER_KEY";
-
     @Transactional
     public void saveFcmToken(FcmDto fcmDto) {
         User user = userRepository.findById(fcmDto.getUserId())
@@ -47,7 +45,6 @@ public class FcmService {
         Fcm fcm = fcmRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("FCM Token을 찾을 수 없습니다."));
         System.out.println(fcm.getFcmToken());
-        System.out.println("fcm");
         sendToFcmWithAdminSdk(fcm.getFcmToken(), fcmMesssageDto.getTitle(),fcmMesssageDto.getMessage());
     }
 
