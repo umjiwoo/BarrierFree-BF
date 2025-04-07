@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/native';
 import DetailBox from '../../components/information/DetailBoxAccount';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../navigation/handlePress';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
@@ -41,9 +41,8 @@ const ReceivingAccountScreen: React.FC = () => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.mainText}>받는 사람 정보를 확인하세요.</Text>
             <DetailBox
-              name={accountInfo.name}
-              bank={accountInfo.accountBank}
-              account={accountInfo.accountNumber}
+              receiverName={accountInfo.receiverName}
+              receiverAccount={accountInfo.receiverAccount}
             />
           </View>
         }
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   mainText: {
-    fontSize: 25,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#7F35D4',
   },

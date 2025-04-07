@@ -2,24 +2,25 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
 interface DetailBoxProps {
-  name: string;
-  bank: string;
-  account: string;
+  receiverName: string;
+  receiverAccount: string;
 }
 
-const DetailBoxAccount: React.FC<DetailBoxProps> = ({name, bank, account}) => {
+const DetailBoxAccount: React.FC<DetailBoxProps> = ({
+  receiverName,
+  receiverAccount,
+}) => {
   return (
     <View style={styles.detailContainer}>
       <View style={styles.detailBox}>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>받는사람</Text>
-          <Text style={styles.detailValue}>{name}</Text>
+          <Text style={styles.detailValue}>{receiverName}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>계좌 정보</Text>
           <View style={styles.detailValueContainer}>
-            <Text style={styles.detailValue}>{bank}</Text>
-            <Text style={styles.accountNumber}>{account}</Text>
+            <Text style={styles.accountNumber}>{receiverAccount}</Text>
           </View>
         </View>
       </View>
@@ -55,17 +56,18 @@ const styles = StyleSheet.create({
     // gap: 10,
   },
   detailLabel: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#7F35D4',
   },
   detailValue: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#24282B',
   },
   accountNumber: {
-    fontSize: 24,
+    fontSize: 30,
+    fontWeight: 'bold',
     color: '#24282B',
   },
   detailValueContainer: {

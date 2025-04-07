@@ -22,18 +22,19 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
     console.log(accountData);
     setAccounts(accountData[0]);
 
-    navigation.navigate('Main');
+    navigation.navigate('CreateAccountScreen');
   };
   return (
     <View style={styles.container}>
-      <View style={styles.grid}>
-        <TouchableOpacity
-          style={styles.button}
-          // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
-          onPress={handleTestButtonPress}>
-          <Text style={styles.text}>test</Text>
-        </TouchableOpacity>
-      </View>
+      {/* <View style={styles.grid}> */}
+      <TouchableOpacity
+        style={styles.button}
+        // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
+        onPress={handleTestButtonPress}>
+        <Text style={styles.text}>시작하기</Text>
+        <Text style={styles.touchText}>화면을 터치하세요!</Text>
+      </TouchableOpacity>
+      {/* </View> */}
     </View>
   );
 };
@@ -43,6 +44,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -54,16 +56,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    width: '45%',
-    height: '45%',
-    backgroundColor: 'blue',
+    width: '100%',
+    height: '100%',
+    gap: 30,
+    // backgroundColor: '#7F35D4',
+    borderWidth: 2,
+    borderColor: '#7F35D4',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
   },
   text: {
-    fontSize: 24,
-    color: 'white',
+    fontSize: 40,
+    color: '#7F35D4',
+    fontWeight: 'bold',
+  },
+  touchText: {
+    fontSize: 35,
+    color: '#7F35D4',
     fontWeight: 'bold',
   },
 });

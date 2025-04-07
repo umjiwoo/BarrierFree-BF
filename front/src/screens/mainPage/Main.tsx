@@ -1,9 +1,9 @@
 import React from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
@@ -45,7 +45,12 @@ const Main = () => {
         UpperRightText="송금"
         LowerLeftText="결제"
         LowerRightText="설정"
-        MainText={<BarrierFree width={350} height={400} title="메인페이지" />}
+        MainText={
+          <View style={styles.mainTextContainer}>
+            <BarrierFree width={350} height={100} title="메인페이지" />
+            <Text style={styles.userName}>{user.username} 님, 환영합니다.</Text>
+          </View>
+        }
         // MainText="메인 텍스트 들어갈 자리"
         onUpperLeftTextPress={handleUpperLeftTextPress}
         onUpperRightTextPress={handleUpperRightTextPress}
@@ -64,26 +69,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  grid: {
-    // flex: 1,
-    width: '100%',
-    height: '90%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  button: {
-    width: '45%', // 2x2 그리드 배치
-    height: '50%',
-    backgroundColor: 'blue',
+  mainTextContainer: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
   },
-  text: {
+  userName: {
     fontSize: 40,
-    color: 'white',
+    color: '#7F35D4',
     fontWeight: 'bold',
+    marginTop: 20,
   },
 });
 

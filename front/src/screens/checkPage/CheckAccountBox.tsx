@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {HistoryItemProps} from '../../components/types/CheckAccount';
+import formatDateManually from '../../components/utils/makeDate';
 
 interface CheckAccountBoxProps {
   data: HistoryItemProps[];
@@ -16,21 +17,6 @@ interface CheckAccountBoxProps {
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
-
-const formatDateTime = (dateString: string) => {
-  const newDate = new Date(dateString);
-  const year = newDate.getFullYear();
-  const month = String(newDate.getMonth() + 1).padStart(2, '0');
-  const day = String(newDate.getDate()).padStart(2, '0');
-  const hours = String(newDate.getHours()).padStart(2, '0');
-  const minutes = String(newDate.getMinutes()).padStart(2, '0');
-  const seconds = String(newDate.getSeconds()).padStart(2, '0');
-
-  const date = `${year}년 ${month}월 ${day}일`;
-  const time = `${hours}:${minutes}:${seconds}`;
-
-  return {date, time};
-};
 
 const CheckAccountBox = ({
   data,
@@ -51,23 +37,30 @@ const CheckAccountBox = ({
             <TouchableOpacity
               onPress={() => onSelect(item)}
               style={styles.accountItem}>
-              <Text style={styles.name}>{item.transactionName}</Text>
               <View style={styles.dateContainer}>
                 <Text style={styles.date}>
-                  {formatDateTime(item.transactionDate).date}
+                  {formatDateManually(item.transactionDate).date}
                 </Text>
                 <Text style={styles.time}>
-                  {formatDateTime(item.transactionDate).time}
+                  {formatDateManually(item.transactionDate).time}
                 </Text>
               </View>
-              <View style={styles.bankContainer}>
-                {item.transactionType === 'WITHDRAWAL' ? (
+              <Text style={styles.name}>{item.transactionName}</Text>
+              {item.transactionType === 'WITHDRAWAL' ? (
+                <View style={styles.bankContainer}>
                   <Text style={[styles.bank, styles.withdrawal]}>출금</Text>
-                ) : (
+                  <Text style={[styles.number, styles.withdrawal]}>
+                    {item.transactionAmount} 원
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.bankContainer}>
                   <Text style={[styles.bank, styles.deposit]}>입금</Text>
-                )}
-                <Text style={styles.number}>{item.transactionAmount} 원</Text>
-              </View>
+                  <Text style={[styles.number, styles.deposit]}>
+                    {item.transactionAmount} 원
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
           );
         }}
@@ -84,7 +77,7 @@ const styles = StyleSheet.create({
   },
   accountItem: {
     flex: 1,
-    gap: 10,
+    gap: 20,
     width: '100%',
     height: '100%',
     // padding: 20,
@@ -105,14 +98,16 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   date: {
-    fontSize: 25,
-    color: '#666',
+    fontSize: 35,
+    color: '#24282B',
     marginBottom: 10,
+    fontWeight: 'bold',
   },
   time: {
-    fontSize: 25,
-    color: '#666',
+    fontSize: 30,
+    color: '#24282B',
     marginBottom: 10,
+    fontWeight: 'bold',
   },
   bankContainer: {
     flexDirection: 'row',
@@ -121,13 +116,14 @@ const styles = StyleSheet.create({
   },
   bank: {
     fontSize: 35,
-    color: '#666',
+    color: '#24282B',
     marginBottom: 10,
     fontWeight: 'bold',
   },
   number: {
     fontSize: 35,
-    color: '#999',
+    color: '#24282B',
+    fontWeight: 'bold',
     flexShrink: 1,
     textAlign: 'right',
   },

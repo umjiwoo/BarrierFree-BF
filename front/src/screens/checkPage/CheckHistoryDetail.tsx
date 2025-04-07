@@ -2,33 +2,17 @@ import {View, StyleSheet, Text} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../navigation/handlePress';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
 import CheckIcon from '../../assets/Check.svg';
+import formatDateManually from '../../components/utils/makeDate';
 
 const CheckHistoryDetail = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
   const history = route.params?.history;
-
-  const formatDateManually = (isoString: string): any => {
-    const date = new Date(isoString);
-    const pad = (n: number) => n.toString().padStart(2, '0');
-
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1); // 0부터 시작
-    const day = pad(date.getDate());
-    const hour = pad(date.getHours());
-    const minute = pad(date.getMinutes());
-    const second = pad(date.getSeconds());
-
-    return {
-      date: `${year}년 ${month}월 ${day}일`,
-      time: `${hour}:${minute}:${second}`,
-    };
-  };
 
   return (
     <View style={styles.container}>
@@ -55,7 +39,7 @@ const CheckHistoryDetail = () => {
             {/* 거래 계좌 */}
             {history.transactionAccount && (
               <View style={styles.historyAccountContainer}>
-                <Text style={styles.historyAccountTitle}>거래 계좌</Text>
+                <Text style={styles.historyAccountTitle}>내 계좌</Text>
                 <Text style={styles.historyAccount}>
                   {history.transactionAccount}
                 </Text>
@@ -112,13 +96,18 @@ const styles = StyleSheet.create({
   historyContainer: {
     width: '100%',
     height: '100%',
+    justifyContent: 'center',
     flex: 1,
-    padding: 20,
+    // padding: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   historyDateContainer: {
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
+    alignItems: 'baseline',
+    gap: 10,
     marginBottom: 20,
   },
   historyDate: {
@@ -169,7 +158,7 @@ const styles = StyleSheet.create({
   },
   historyAccountContainer: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginBottom: 20,
@@ -177,7 +166,7 @@ const styles = StyleSheet.create({
   historyAccountTitle: {
     fontSize: 25,
     fontWeight: 'bold',
-    alignSelf: 'flex-start',
+    // alignSelf: 'flex-start',
     color: '#24282B',
   },
   historyAccount: {

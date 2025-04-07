@@ -6,6 +6,7 @@ import {
 
 export type RootStackParamList = {
   HomeScreen: undefined;
+  CreateAccountScreen: undefined;
   Main: undefined;
   DefaultButton: undefined;
   // CheckAccount: {
@@ -19,7 +20,7 @@ export type RootStackParamList = {
     history: HistoryItemProps;
   };
   SendMain: undefined;
-  SendFavoriteAccount: undefined;
+  SendRecentAccount: undefined;
   SendSuccess: undefined;
   ReceivingAccountScreen: {
     selectedAccount: TestAccountItemProps;

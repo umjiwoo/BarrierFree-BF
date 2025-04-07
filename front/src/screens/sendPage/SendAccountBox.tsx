@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,14 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
+import formatDateManually from '../../components/utils/makeDate';
 
 interface SendAccountBoxProps {
   accountData: Array<{
-    name: string;
-    date: string;
-    accountBank: string;
-    accountNumber: string;
+    // name: string;
+    transactionDate: string;
+    // accountBank: string;
+    receiverAccount: string;
   }>;
   onSelectAccount: (account: any) => void;
   selectedAccount: any;
@@ -28,6 +29,12 @@ const SendAccountBox = ({
   onSelectAccount,
   selectedAccount,
 }: SendAccountBoxProps) => {
+  useEffect(() => {
+    if (accountData.length > 0) {
+      onSelectAccount(accountData[0]);
+    }
+  }, [accountData, onSelectAccount]);
+
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = event.nativeEvent.contentOffset;
     const currentIndex = Math.round(contentOffset.x / SCREEN_WIDTH);
@@ -47,7 +54,9 @@ const SendAccountBox = ({
         {accountData.map((item, index) => {
           const isSelected =
             selectedAccount &&
-            selectedAccount.accountNumber === item.accountNumber;
+            selectedAccount.receiverAccount === item.receiverAccount;
+
+          const {date, time} = formatDateManually(item.transactionDate);
 
           return (
             <View
@@ -56,9 +65,12 @@ const SendAccountBox = ({
                 styles.accountItem,
                 isSelected && styles.selectedAccount,
               ]}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.bank}>{item.accountBank}</Text>
-              <Text style={styles.number}>{item.accountNumber}</Text>
+              {/* <Text style={styles.name}>{item.name}</Text> */}
+              <View style={styles.transactionDateContainer}>
+                <Text style={styles.number}>{date}</Text>
+                <Text style={styles.number}>{time}</Text>
+              </View>
+              <Text style={styles.bank}>{item.receiverAccount}</Text>
             </View>
           );
         })}
@@ -79,17 +91,20 @@ const styles = StyleSheet.create({
   },
   accountItem: {
     width: ITEM_WIDTH,
+    height: '100%',
     padding: 20,
     borderRadius: 10,
     backgroundColor: '#f0f0f0',
+    gap: 10,
     // marginHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   selectedAccount: {
+    height: '100%',
     backgroundColor: '#e0e0ff',
-    borderWidth: 2,
-    borderColor: '#007AFF',
+    // borderWidth: 2,
+    // borderColor: '#007AFF',
   },
   name: {
     fontSize: 18,
@@ -98,13 +113,21 @@ const styles = StyleSheet.create({
     color: '#7F35D4',
   },
   bank: {
-    fontSize: 16,
+    fontSize: 30,
     color: '#7F35D4',
+    fontWeight: 'bold',
     marginBottom: 5,
   },
   number: {
-    fontSize: 14,
+    fontSize: 25,
     color: '#7F35D4',
+    fontWeight: 'bold',
+  },
+  transactionDateContainer: {
+    flexDirection: 'column',
+    // justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
   },
 });
 

@@ -5,7 +5,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import CheckAccountBox from './CheckAccountBox';
 import {getHistories} from '../../api/axiosAccount';
 import {HistoryItemProps} from '../../components/types/CheckAccount';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useAccountStore} from '../../stores/accountStore';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../navigation/handlePress';

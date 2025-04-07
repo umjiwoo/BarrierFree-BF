@@ -3,7 +3,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types';
 import Main from '../screens/mainPage/Main';
 import SendMain from '../screens/sendPage/SendMain';
-import SendFavoriteAccount from '../screens/sendPage/SendFavoriteAccount';
 import HomeScreen from '../screens/HomeScreen';
 import SendSuccess from '../screens/sendPage/SendSuccess';
 import ReceivingAccountScreen from '../screens/InformationPage/ReceivingAccount';
@@ -13,7 +12,9 @@ import ThreeBtn from '../screens/threebtn';
 import RemittanceInformation from '../screens/InformationPage/RemittanceInformation';
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
-import DefaultButton from '../components/DefaultPage';
+import DefaultButton from '../components/utils/DefaultPage';
+import SendRecentAccount from '../screens/sendPage/SendRecentAccount';
+import CreateAccountScreen from '../screens/createAccountPage/createAccountScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
@@ -24,6 +25,14 @@ const RootStack = () => {
         component={HomeScreen}
         options={{
           title: 'Home',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateAccountScreen"
+        component={CreateAccountScreen}
+        options={{
+          title: 'CreateAccountScreen',
           headerShown: false,
         }}
       />
@@ -64,15 +73,15 @@ const RootStack = () => {
         name="SendMain"
         component={SendMain}
         options={{
-          title: '누구에게 보낼까요?',
+          title: '송금 페이지',
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="SendFavoriteAccount"
-        component={SendFavoriteAccount}
+        name="SendRecentAccount"
+        component={SendRecentAccount}
         options={{
-          title: '자주 보낸 계좌',
+          title: '최근 보낸 계좌',
           headerShown: false,
         }}
       />

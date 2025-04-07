@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useHandlePress} from '../../navigation/handlePress';
@@ -16,9 +16,9 @@ const SendMain = () => {
     console.log('직접 입력 버튼 클릭');
   };
 
-  const handleFavoriteAccount = () => {
-    navigation.navigate('SendFavoriteAccount');
-    console.log('자주 보낸 계좌 버튼 클릭');
+  const handleRecentAccount = () => {
+    navigation.navigate('SendRecentAccount');
+    console.log('최근 보낸 계좌 버튼 클릭');
   };
 
   return (
@@ -27,12 +27,12 @@ const SendMain = () => {
         UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
         UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="직접 입력"
-        LowerRightText="자주 보낸 계좌"
+        LowerRightText="최근 보낸 계좌"
         MainText="송금하실 계좌를 선택해주세요."
         onUpperLeftTextPress={handlePressBack}
         onUpperRightTextPress={handlePressHome}
         onLowerLeftTextPress={handleDirectInput}
-        onLowerRightTextPress={handleFavoriteAccount}
+        onLowerRightTextPress={handleRecentAccount}
       />
     </View>
   );

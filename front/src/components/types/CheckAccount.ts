@@ -1,8 +1,6 @@
 export interface TestAccountItemProps {
-  name: string;
-  date: string;
-  accountBank: string;
-  accountNumber: string;
+  receiverName: string;
+  receiverAccount: string;
 }
 
 export interface AccountItemProps {

@@ -7,14 +7,16 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import DetailBox from '../../components/information/DetailBoxInformation';
 import {useHandlePress} from '../../navigation/handlePress';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
+import {useUserStore} from '../../stores/userStore';
 
 const ReceivingConfirmScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
@@ -33,12 +35,11 @@ const ReceivingConfirmScreen: React.FC = () => {
         LowerLeftText="취소"
         LowerRightText="송금하기"
         MainText={
-          <View>
+          <View style={styles.mainTextContainer}>
             <DetailBox
-              recipient={selectedAccount.name}
-              bank={selectedAccount.accountBank}
-              account={selectedAccount.accountNumber}
-              remitter="박수연"
+              recipient={selectedAccount.receiverName}
+              receiverAccount={selectedAccount.receiverAccount}
+              remitter={user.username}
               amount={money}
             />
             <Text style={styles.confirmText}>송금하시겠습니까?</Text>
@@ -56,6 +57,7 @@ const ReceivingConfirmScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // height: '100%',
     // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -66,10 +68,16 @@ const styles = StyleSheet.create({
   confirmText: {
     fontSize: 40,
     fontWeight: 'bold',
-    margin: 20,
-    marginBottom: 50,
+    // marginTop: 20,
+    marginBottom: 30,
     textAlign: 'center',
     color: '#7F35D4',
+  },
+  mainTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
 });
 

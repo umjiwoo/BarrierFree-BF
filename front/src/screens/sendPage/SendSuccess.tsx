@@ -2,7 +2,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../navigation/handlePress';
 import CheckCircle from '../../assets/CheckCircle.svg';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     color: '#7F35D4',
   },
   mainText: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: '800',
     color: '#7F35D4',
   },

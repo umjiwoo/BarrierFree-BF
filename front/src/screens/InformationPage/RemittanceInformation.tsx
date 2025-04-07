@@ -8,11 +8,12 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../navigation/handlePress';
 import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
 import HomeIcon from '../../assets/Home.svg';
+import {useUserStore} from '../../stores/userStore';
 
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -21,6 +22,7 @@ const ReceivingInformationScreen: React.FC = () => {
     useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+  const {user} = useUserStore();
 
   const handleSend = () => {
     navigation.navigate('SendInputPage', {
@@ -42,17 +44,16 @@ const ReceivingInformationScreen: React.FC = () => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.mainText}>송금 정보를 확인하세요.</Text>
             <DetailBox
-              recipient={selectedAccount.name}
-              bank={selectedAccount.accountBank}
-              account={selectedAccount.accountNumber}
-              remitter="박수연"
+              recipient={selectedAccount.receiverName}
+              receiverAccount={selectedAccount.receiverAccount}
+              remitter={user.username}
               amount={money}
             />
           </View>
         }
         onUpperLeftTextPress={handlePressBack}
         onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handleSend}
+        onLowerLeftTextPress={handlePressBack}
         onLowerRightTextPress={handleSend}
       />
     </View>
@@ -70,12 +71,12 @@ const styles = StyleSheet.create({
     // marginTop: 50,
   },
   mainText: {
-    fontSize: 25,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#7F35D4',
   },
   mainTextContainer: {
-    // flex: 1,
+    flex: 1,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
