@@ -136,7 +136,9 @@ public class TransactionService {
         return Optional.ofNullable(transactionHistories)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(RecentTransactionAccountDto::of)
+                .map(history -> accountRepository.findAccountByAccountNo(history.getTransactionAccount())
+                        .map(account -> RecentTransactionAccountDto.of(history, account))
+                                    .orElseThrow(()-> new BadRequestException(ACCOUNT_NOT_FOUND)))
                 .collect(Collectors.toList());
     }
 

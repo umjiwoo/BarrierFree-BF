@@ -70,10 +70,10 @@ public class TransactionProcessor {
         accountTransactionRepository.save(receiverAccountTransaction);
 
         // 4. 송금한 유저 TransactionHistory 갱신
-        transactionHistoryRepository.findTransactionHistoryByTransactionAccount(sender.getAccountNo())
+        transactionHistoryRepository.findTransactionHistoryByUser_IdAndTransactionAccount(sender.getUser().getId(), receiver.getAccountNo())
                 .ifPresentOrElse(
-                        transactionHistory1 -> updateTransactionHistory(transactionHistory1, transactionCompletedTime),
-                        () -> createTransactionHistory(sender, senderAccountTransaction));
+                        transactionHistory1 -> updateTransactionHistory(transactionHistory1, transactionResultDto.getTransactionName(), transactionCompletedTime),
+                        () -> createTransactionHistory(sender, receiverAccountTransaction));
 
         return senderAccountTransaction;
     }
@@ -97,7 +97,8 @@ public class TransactionProcessor {
         receiver.setAccountBalance(receiverAccountBalance + sendAmount);
     }
 
-    private void updateTransactionHistory(TransactionHistory transactionHistory, LocalDateTime transactionCompletedTime) {
+    private void updateTransactionHistory(TransactionHistory transactionHistory, String transactionName, LocalDateTime transactionCompletedTime) {
+        transactionHistory.setTransactionName(transactionName);
         transactionHistory.setLastTransaction(transactionCompletedTime);
     }
 

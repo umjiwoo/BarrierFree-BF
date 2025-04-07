@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionHistoryRepository  extends JpaRepository<TransactionHistory, Integer> {
-    Optional<TransactionHistory> findTransactionHistoryByTransactionAccount(String transactionAccountNo);
+    Optional<TransactionHistory> findTransactionHistoryByUser_IdAndTransactionAccount(Long userId, String transactionAccountNo);
 
     List<TransactionHistory> findTransactionHistoriesByUser(User user);
 }
