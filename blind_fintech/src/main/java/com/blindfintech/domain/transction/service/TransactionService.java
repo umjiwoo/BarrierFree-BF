@@ -8,6 +8,7 @@ import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
 import com.blindfintech.domain.bank.Repository.BankRepository;
 import com.blindfintech.domain.bank.entity.Bank;
+import com.blindfintech.domain.transction.config.handler.BasicWebSocketHandler;
 import com.blindfintech.domain.transction.config.handler.RemittanceWebSocketHandler;
 import com.blindfintech.domain.transction.dto.*;
 import com.blindfintech.domain.transction.entity.TransactionHistory;
@@ -47,6 +48,8 @@ public class TransactionService {
     private final RemittanceWebSocketHandler remittanceWebSocketHandler;
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final UserService userService;
+
+    private final List<BasicWebSocketHandler> webSocketHandlers;
 
     public CheckAccountResultDto checkAccount(CheckAccountRequestDto checkAccountRequestDto) {
         Account account = accountRepository.findAccountByAccountNo(
@@ -97,13 +100,17 @@ public class TransactionService {
                 // websocket을 통한 응답
                 TransactionResponseDto transactionResponseDto = TransactionResponseDto.from(senderAccountTransaction);
                 String transactionResponse = objectMapper.writeValueAsString(ResponseDto.success(transactionResponseDto));
-                remittanceWebSocketHandler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
+                for(BasicWebSocketHandler handler : webSocketHandlers){
+                    handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
+                }
             } catch (Exception e) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
                 String transactionResponse = objectMapper.writeValueAsString(
                         ResponseDto.error(new ExceptionResponse(SOCKET_RESPONSE_FAILED.getCode(),
                                                                 SOCKET_RESPONSE_FAILED.getMessage())));
-                remittanceWebSocketHandler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
+                for(BasicWebSocketHandler handler : webSocketHandlers){
+                    handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
+                }
             }
         }catch(Exception e){
             TransactionLog transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.FAILED));
@@ -112,7 +119,9 @@ public class TransactionService {
             try {
                 String transactionResponse = objectMapper.writeValueAsString(
                         ResponseDto.error(new ExceptionResponse(SEND_MONEY_FAILED.getCode(), SEND_MONEY_FAILED.getMessage())));
-                remittanceWebSocketHandler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
+                for(BasicWebSocketHandler handler : webSocketHandlers){
+                    handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
+                }
             } catch (Exception ex) {
                 log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
             }

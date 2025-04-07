@@ -12,16 +12,18 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class BasicWebSocketHandler extends TextWebSocketHandler {
     protected final ObjectMapper objectMapper = new ObjectMapper();
-    protected final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<String, List<WebSocketSession>> sessions = new ConcurrentHashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -39,8 +41,9 @@ public class BasicWebSocketHandler extends TextWebSocketHandler {
         User user = (User)authentication.getPrincipal();
         String transactionWebSocketId = user.getId() + "-" + UUID.randomUUID();
 
-        sessions.put(transactionWebSocketId, session);
         session.getAttributes().put("transactionWebSocketId", transactionWebSocketId);
+        sessions.computeIfAbsent(transactionWebSocketId,
+                            key -> new CopyOnWriteArrayList<>()).add(session);
 
         String transactionIdResponse = objectMapper.writeValueAsString(Map.of("transactionWebSocketId", transactionWebSocketId));
         session.sendMessage(new TextMessage(transactionIdResponse));
@@ -48,14 +51,26 @@ public class BasicWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        sessions.remove(session);
+        String transactionWebSocketId = (String) session.getAttributes().get("transactionWebSocketId");
+        List<WebSocketSession> sessionList = sessions.get(transactionWebSocketId);
+
+        if (sessionList != null) {
+            sessionList.remove(session);
+            if (sessionList.isEmpty()) {
+                sessions.remove(transactionWebSocketId);
+            }
+        }
     }
 
     public void sendTransactionResult(String transactionWebSocketId, String message) throws Exception {
-        WebSocketSession session = sessions.get(transactionWebSocketId);
+        List<WebSocketSession> sessionList = sessions.get(transactionWebSocketId);
 
-        if (session != null && session.isOpen()) {
-            session.sendMessage(new TextMessage(message));
+        if (sessionList != null) {
+            for (WebSocketSession session : sessionList) {
+                if (session != null && session.isOpen()) {
+                    session.sendMessage(new TextMessage(message));
+                }
+            }
         }
     }
 }
