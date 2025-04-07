@@ -1,3 +1,10 @@
+export interface TestAccountItemProps {
+  name: string;
+  date: string;
+  accountBank: string;
+  accountNumber: string;
+}
+
 export interface AccountItemProps {
   accountBalance: number;
   accountNo: string;
@@ -9,7 +16,6 @@ export interface AccountItemProps {
   id: number;
   oneTimeTransferLimit: number;
   updatedAt: string;
-  username: string;
 }
 
 export interface HistoryItemProps {

@@ -1,21 +1,27 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {
   NavigationProp,
   ParamListBase,
+  RouteProp,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
-// import Title from '../../components/information/Title';
-import Title from '../../components/Title';
 import DetailBox from '../../components/information/DetailBoxAccount';
-import BackButton from '../../components/BackButton';
-
+import {RootStackParamList} from '../../navigation/types';
+import DefaultPage from '../../components/DefaultPage';
 const ReceivingAccountScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const route =
+    useRoute<RouteProp<RootStackParamList, 'ReceivingAccountScreen'>>();
+  const accountInfo = route.params?.selectedAccount;
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
-    navigation.navigate('SendInputPage', {type: 'money'}); // 금액 입력 페이지로 이동
+    navigation.navigate('SendInputPage', {
+      type: 'money',
+      selectedAccount: accountInfo,
+    }); // 금액 입력 페이지로 이동
     // alert('송금하기 버튼 클릭됨!');
   };
 
@@ -26,24 +32,26 @@ const ReceivingAccountScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Title title="받는 사람 정보를 확인하세요." />
-      <DetailBox name="엄지우" bank="신한" account="123-456-789000" />
-
-      {/* 버튼 */}
-      <View style={styles.buttonContainer}>
-        <BackButton
-          text="송금하기"
-          onPress={handleSend}
-          style={styles.sendButton}
-          textStyle={styles.buttonText}
-        />
-        <BackButton
-          text="이전으로"
-          onPress={handleBack}
-          style={styles.backButton}
-          textStyle={styles.buttonText}
-        />
-      </View>
+      <DefaultPage
+        UpperLeftText="이전으로"
+        UpperRightText="홈"
+        LowerLeftText="취소하기"
+        LowerRightText="송금하기"
+        MainText={
+          <View>
+            <Text>받는 사람 정보를 확인하세요.</Text>
+            <DetailBox
+              name={accountInfo.name}
+              bank={accountInfo.accountBank}
+              account={accountInfo.accountNumber}
+            />
+          </View>
+        }
+        onUpperLeftTextPress={handleBack}
+        onUpperRightTextPress={() => navigation.navigate('Main')}
+        onLowerLeftTextPress={handleBack}
+        onLowerRightTextPress={handleSend}
+      />
     </View>
   );
 };

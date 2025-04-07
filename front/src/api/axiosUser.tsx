@@ -71,9 +71,15 @@ const loginUser = async (user: {
   password: string;
 }): Promise<ApiResponse> => {
   try {
+    console.log('로그인 시도: ', user);
     const response: AxiosResponse<ApiResponse> = await axiosInstance.post(
-      '/api/users/login',
+      '/api/users/login?isAutoLogin=false',
       user,
+      {
+        params: {
+          isAutoLogin: false,
+        },
+      },
     );
     console.log('결과 상태 조회 : ', response.data.result.code);
     if (response.data.result.code === 200) {

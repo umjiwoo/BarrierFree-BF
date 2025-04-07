@@ -1,51 +1,47 @@
-import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-} from 'react-native';
+import React from 'react';
+import {StyleSheet, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
+import DefaultPage from '../../components/DefaultPage';
+import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
+
 const Main = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const {selectedAccount, setSelectedAccount} = useAccountStore();
+  const {user} = useUserStore();
+  const {accounts} = useAccountStore();
+  console.log(user);
+  console.log(accounts);
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      const response = await getAccounts();
-      console.log('response', response[0]);
-      setSelectedAccount(response[0]);
-    };
-    fetchAccounts();
-  }, [setSelectedAccount]);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  useEffect(() => {
-    console.log('selectedAccount', selectedAccount);
-  }, [selectedAccount]);
+  const handleUpperLeftTextPress = async () => {
+    const data = await getAccounts();
+    console.log(data);
 
-  const handleCheckHistoryPress = async () => {
-    if (!selectedAccount) {
-      console.log('계좌 생성 필요');
-      navigation.navigate('CheckAccount');
-    } else {
-      navigation.navigate('CheckHistory');
-    }
+    navigation.navigate('CheckHistory');
   };
 
-  const handleMyPagePress = () => {
-    navigation.navigate('MyAccount');
+  const handleUpperRightTextPress = () => {
+    navigation.navigate('SendMain');
+  };
+
+  const handleLowerLeftTextPress = () => {
+    // navigation.navigate('Payment');
+  };
+
+  const handleLowerRightTextPress = () => {
+    // navigation.navigate('Setting');
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.grid}>
+      {/* <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
-          onPress={handleCheckHistoryPress}>
+          onPress={() => navigation.navigate('CheckAccount')}>
           <Text style={styles.text}>조회</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -56,10 +52,21 @@ const Main = () => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>결제</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleMyPagePress}>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>마이 페이지</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
+      <DefaultPage
+        UpperLeftText="조회"
+        UpperRightText="송금"
+        LowerLeftText="결제"
+        LowerRightText="설정"
+        MainText="메인 텍스트 들어갈 자리"
+        onUpperLeftTextPress={handleUpperLeftTextPress}
+        onUpperRightTextPress={handleUpperRightTextPress}
+        onLowerLeftTextPress={handleLowerLeftTextPress}
+        onLowerRightTextPress={handleLowerRightTextPress}
+      />
     </SafeAreaView>
   );
 };

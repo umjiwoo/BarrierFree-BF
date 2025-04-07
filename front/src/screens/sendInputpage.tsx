@@ -8,11 +8,14 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
+import {TestAccountItemProps} from '../components/types/CheckAccount';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
   SendInputPage: {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
+    selectedAccount?: TestAccountItemProps;
+    money?: number;
   };
 };
 
@@ -24,12 +27,16 @@ const SendInputPage = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   // 상태 관리 임시 추가
-  const [accountNumber, setAccountNumber] = React.useState('');
+  const [accountNumber, _setAccountNumber] = React.useState('');
   // const [bankName, setBankName] = React.useState('');
 
   // 라우트 파라미터에서 type 가져오기
   const route = useRoute<SendInputPageRouteProp>();
-  const {type} = route.params || {type: 'direct'}; // 기본값 설정
+  const {type, selectedAccount} = route.params || {
+    type: 'directMyAccount',
+    selectedAccount: null,
+  }; // 기본값 설정
+  const money = route.params?.money;
 
   // 타입에 따라 헤더 타이틀 설정
   useEffect(() => {
@@ -111,7 +118,10 @@ const SendInputPage = () => {
               text="확인"
               type="input"
               onPress={() => {
-                navigation.navigate('RemittanceInformation');
+                navigation.navigate('RemittanceInformation', {
+                  money: 0,
+                  selectedAccount: selectedAccount,
+                });
               }}
             />
             <BackButton
@@ -134,7 +144,10 @@ const SendInputPage = () => {
               text="확인"
               type="input"
               onPress={() => {
-                navigation.navigate('RemittanceConfirm');
+                navigation.navigate('RemittanceConfirm', {
+                  selectedAccount: selectedAccount,
+                  money: money,
+                });
               }}
             />
             <BackButton

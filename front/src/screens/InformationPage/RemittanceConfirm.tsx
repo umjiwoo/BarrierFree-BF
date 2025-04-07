@@ -1,14 +1,20 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-// import Title from '../../components/information/Title';
-import Title from '../../components/Title';
-import DetailBox from '../../components/information/DetailBoxConfirm';
-import BackButton from '../../components/BackButton';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {View, StyleSheet, Text} from 'react-native';
+import {
+  NavigationProp,
+  useNavigation,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
+import DefaultPage from '../../components/DefaultPage';
+import DetailBox from '../../components/information/DetailBoxInformation';
 
 const ReceivingConfirmScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
+  const money = route.params?.money;
+  const selectedAccount = route.params?.selectedAccount;
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
@@ -22,24 +28,30 @@ const ReceivingConfirmScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Title title="이체 재확인." />
-      <DetailBox name="엄지우" amount={50000} />
-
-      {/* 버튼 */}
-      <View style={styles.buttonContainer}>
-        <BackButton
-          text="송금하기"
-          onPress={handleSend}
-          style={styles.sendButton}
-          textStyle={styles.buttonText}
-        />
-        <BackButton
-          text="이전으로"
-          onPress={handleBack}
-          style={styles.backButton}
-          textStyle={styles.buttonText}
-        />
-      </View>
+      <DefaultPage
+        UpperLeftText="이전으로"
+        UpperRightText="홈"
+        LowerLeftText="취소"
+        LowerRightText="송금하기"
+        MainText={
+          <View>
+            <DetailBox
+              recipient={selectedAccount.name}
+              bank={selectedAccount.accountBank}
+              account={selectedAccount.accountNumber}
+              remitter="박수연"
+              amount={money}
+            />
+            <Text style={{fontSize: 20, fontWeight: 'bold', margin: 20}}>
+              송금하시겠습니까?
+            </Text>
+          </View>
+        }
+        onUpperLeftTextPress={handleBack}
+        onUpperRightTextPress={() => navigation.navigate('Main')}
+        onLowerLeftTextPress={handleBack}
+        onLowerRightTextPress={handleSend}
+      />
     </View>
   );
 };

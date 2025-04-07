@@ -1,14 +1,36 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
+import {loginUser} from '../api/axiosUser';
+import {useUserStore} from '../stores/userStore';
+import {useAccountStore} from '../stores/accountStore';
+import {getAccounts} from '../api/axiosAccount';
+// import {UserItemProps} from '../components/types/UserInfo';
 
 const HomeScreen = ({navigation}: {navigation: any}) => {
+  // const [user, setUser] = useState<UserItemProps>({} as UserItemProps);
+  const {setUser} = useUserStore();
+  const {setAccounts} = useAccountStore();
+  const handleTestButtonPress = async () => {
+    const data = await loginUser({
+      phoneNumber: '01011111111',
+      password: '1111',
+    });
+    console.log(data);
+    setUser(data.body);
+
+    const accountData = await getAccounts();
+    console.log(accountData);
+    setAccounts(accountData[0]);
+
+    navigation.navigate('Main');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
           // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
-          onPress={() => navigation.navigate('Main')}>
+          onPress={handleTestButtonPress}>
           <Text style={styles.text}>test</Text>
         </TouchableOpacity>
       </View>

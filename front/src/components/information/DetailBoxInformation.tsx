@@ -52,10 +52,10 @@ const styles = StyleSheet.create({
   detailBox: {
     width: '100%',
     height: '100%',
-    borderWidth: 2,
-    borderColor: '#373DCC',
+    // borderWidth: 2,
+    // borderColor: '#373DCC',
     padding: 30,
-    borderRadius: 12,
+    // borderRadius: 12,
     // marginBottom: 30,
     gap: 5,
   },
