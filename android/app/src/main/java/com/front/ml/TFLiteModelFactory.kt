@@ -32,6 +32,10 @@ class TFLiteModelFactory private constructor(private val context: Context) {
     private val modelFilePathCache = ConcurrentHashMap<String, String>()
     private val labelFilePathCache = ConcurrentHashMap<String, String>()
     
+    // 성능 모니터링
+    private val inferenceTimeCache = ConcurrentHashMap<String, MutableList<Long>>()
+    private val MAX_INFERENCE_TIME_SAMPLES = 50
+    
     // 백그라운드 작업 실행기
     private val executor = Executors.newCachedThreadPool()
     
@@ -67,7 +71,10 @@ class TFLiteModelFactory private constructor(private val context: Context) {
                 }
                 
                 // 모델 인터프리터 생성
-                val interpreter = Interpreter(modelFile)
+                val options = Interpreter.Options().apply {
+                    setNumThreads(4) // 병렬 처리를 위한 스레드 수 설정
+                }
+                val interpreter = Interpreter(modelFile, options)
                 modelCache[modelName] = interpreter
                 
                 // 라벨 로드
@@ -80,6 +87,9 @@ class TFLiteModelFactory private constructor(private val context: Context) {
                 // 경로 캐싱
                 modelFilePathCache[modelName] = modelFile.absolutePath
                 labelFilePathCache[labelName] = labelFile.absolutePath
+                
+                // 성능 모니터링 초기화
+                inferenceTimeCache[modelName] = mutableListOf()
                 
                 Handler(Looper.getMainLooper()).post {
                     callback(true, modelFile.absolutePath, labelFile.absolutePath)
@@ -106,9 +116,51 @@ class TFLiteModelFactory private constructor(private val context: Context) {
     fun getInterpreter(modelName: String): Interpreter? = modelCache[modelName]
     
     /**
+     * 모델 파일 경로 가져오기
+     */
+    fun getModelPath(modelName: String): String? = modelFilePathCache[modelName]
+    
+    /**
      * 라벨 리스트 가져오기
      */
     fun getLabels(labelName: String): List<String> = labelCache[labelName] ?: emptyList()
+    
+    /**
+     * 추론 시간 기록
+     */
+    fun recordInferenceTime(modelName: String, inferenceTimeMs: Long) {
+        inferenceTimeCache[modelName]?.let { times ->
+            synchronized(times) {
+                times.add(inferenceTimeMs)
+                if (times.size > MAX_INFERENCE_TIME_SAMPLES) {
+                    times.removeAt(0)
+                }
+            }
+        }
+    }
+    
+    /**
+     * 평균 추론 시간 가져오기
+     */
+    fun getAverageInferenceTime(modelName: String): Long {
+        return inferenceTimeCache[modelName]?.let { times ->
+            if (times.isEmpty()) 0L
+            else times.average().toLong()
+        } ?: 0L
+    }
+    
+    /**
+     * 성능 정보 가져오기
+     */
+    fun getPerformanceInfo(modelName: String): Map<String, Any> {
+        val times = inferenceTimeCache[modelName] ?: mutableListOf()
+        return mapOf(
+            "averageInferenceTime" to (if (times.isEmpty()) 0L else times.average().toLong()),
+            "minInferenceTime" to (times.minOrNull() ?: 0L),
+            "maxInferenceTime" to (times.maxOrNull() ?: 0L),
+            "sampleCount" to times.size
+        )
+    }
     
     /**
      * 특정 모델 해제
@@ -117,6 +169,7 @@ class TFLiteModelFactory private constructor(private val context: Context) {
         modelCache[modelName]?.close()
         modelCache.remove(modelName)
         modelFilePathCache.remove(modelName)
+        inferenceTimeCache.remove(modelName)
     }
     
     /**
@@ -128,6 +181,7 @@ class TFLiteModelFactory private constructor(private val context: Context) {
         labelCache.clear()
         modelFilePathCache.clear()
         labelFilePathCache.clear()
+        inferenceTimeCache.clear()
         executor.shutdown()
     }
     

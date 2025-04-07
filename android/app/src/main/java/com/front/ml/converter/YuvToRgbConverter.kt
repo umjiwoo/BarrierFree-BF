@@ -80,12 +80,18 @@ class YuvToRgbConverter(private val context: Context) : ImageConverter {
                 
                 // 이미지 회전 처리 (필요시)
                 if (image.imageInfo.rotationDegrees != 0) {
+                    // 회전된 비트맵 생성
                     val rotatedBitmap = Bitmap.createBitmap(
                         output, 0, 0, output.width, output.height,
                         getTransformationMatrix(image), true
                     )
-                    output.recycle()
-                    output = rotatedBitmap
+                    
+                    // 회전된 비트맵의 픽셀을 원본 비트맵에 복사
+                    val canvas = android.graphics.Canvas(output)
+                    canvas.drawBitmap(rotatedBitmap, 0f, 0f, null)
+                    
+                    // 임시 비트맵 해제
+                    rotatedBitmap.recycle()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "이미지 변환 실패", e)

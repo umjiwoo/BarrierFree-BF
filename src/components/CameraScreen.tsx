@@ -10,14 +10,33 @@ import {
   ActivityIndicator,
   Alert,
   PermissionsAndroid,
+  ScrollView,
 } from 'react-native';
 
 // 네이티브 모듈 가져오기
 const { CameraPreviewModule } = NativeModules;
 
-// TFLite 모델 및 라벨 파일 이름 (assets 폴더에 저장해야 함)
-const MODEL_FILE_NAME = 'model.tflite';
-const LABELS_FILE_NAME = 'labels.txt';
+// TFLite 모델 및 라벨 파일 이름 (assets 폴더에 저장된 실제 파일명)
+const MODEL_FILE_NAME = 'sadtearsmallcat.tflite';
+const LABELS_FILE_NAME = 'sadtearsmallcatlabel.txt';
+
+// 모델 정보 타입 정의
+interface ModelInfo {
+  modelName: string;
+  inputWidth: number;
+  inputHeight: number;
+  outputTensors: number;
+  isQuantized: boolean;
+  modelPath: string;
+}
+
+// 성능 정보 타입 정의
+interface PerformanceInfo {
+  averageInferenceTime: number;
+  minInferenceTime: number;
+  maxInferenceTime: number;
+  sampleCount: number;
+}
 
 const CameraScreen: React.FC = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -25,14 +44,64 @@ const CameraScreen: React.FC = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [modelLoaded, setModelLoaded] = useState<boolean>(false);
   const [modelLoading, setModelLoading] = useState<boolean>(false);
+  const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
+  const [performanceInfo, setPerformanceInfo] = useState<PerformanceInfo | null>(null);
+
+  // 성능 정보 정기적 업데이트
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+    
+    if (modelLoaded) {
+      // 5초마다 성능 정보 업데이트
+      intervalId = setInterval(async () => {
+        try {
+          const perfInfo = await CameraPreviewModule.getModelPerformance(MODEL_FILE_NAME);
+          setPerformanceInfo(perfInfo);
+        } catch (error: any) {
+          console.error('성능 정보 가져오기 오류:', error);
+        }
+      }, 5000);
+      
+      // 초기 성능 정보 가져오기
+      CameraPreviewModule.getModelPerformance(MODEL_FILE_NAME)
+        .then(setPerformanceInfo)
+        .catch((error: any) => console.error('초기 성능 정보 가져오기 오류:', error));
+    }
+    
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [modelLoaded]);
+
+  // 모델 정보 가져오기
+  const getModelInfo = useCallback(async () => {
+    if (!modelLoaded) return;
+    
+    try {
+      const info = await CameraPreviewModule.getModelInfo(MODEL_FILE_NAME);
+      console.log('모델 정보:', info);
+      setModelInfo(info);
+    } catch (error) {
+      console.error('모델 정보 가져오기 오류:', error);
+    }
+  }, [modelLoaded]);
+
+  // 모델 로드 완료 후 모델 정보 가져오기
+  useEffect(() => {
+    if (modelLoaded) {
+      getModelInfo();
+    }
+  }, [modelLoaded, getModelInfo]);
 
   // 모델 로드 함수
   const loadTFLiteModel = useCallback(async () => {
     try {
       setModelLoading(true);
       
-      // 모델이 이미 로드되었는지 확인
-      const isLoaded = await CameraPreviewModule.isModelLoaded();
+      // 모델이 이미 로드되었는지 확인 (모델 파일명 전달)
+      const isLoaded = await CameraPreviewModule.isModelLoaded(MODEL_FILE_NAME);
       if (isLoaded) {
         setModelLoaded(true);
         setModelLoading(false);
@@ -188,6 +257,49 @@ const CameraScreen: React.FC = () => {
     </View>
   );
 
+  // 성능 정보 표시 컴포넌트
+  const renderPerformanceInfo = () => {
+    if (!performanceInfo) return null;
+    
+    return (
+      <View style={styles.performanceContainer}>
+        <Text style={styles.performanceTitle}>성능 정보</Text>
+        <View style={styles.performanceContent}>
+          <Text style={styles.performanceText}>
+            평균 추론 시간: {performanceInfo.averageInferenceTime.toFixed(2)} ms
+          </Text>
+          <Text style={styles.performanceText}>
+            최소 추론 시간: {performanceInfo.minInferenceTime.toFixed(2)} ms
+          </Text>
+          <Text style={styles.performanceText}>
+            최대 추론 시간: {performanceInfo.maxInferenceTime.toFixed(2)} ms
+          </Text>
+          <Text style={styles.performanceText}>
+            측정 샘플 수: {performanceInfo.sampleCount}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  // 모델 정보 표시 컴포넌트
+  const renderModelInfo = () => {
+    if (!modelInfo) return null;
+    
+    return (
+      <View style={styles.modelInfoContainer}>
+        <Text style={styles.modelInfoTitle}>모델 정보</Text>
+        <ScrollView style={styles.modelInfoScroll}>
+          <Text style={styles.modelInfoText}>모델명: {modelInfo.modelName}</Text>
+          <Text style={styles.modelInfoText}>입력 크기: {modelInfo.inputWidth}x{modelInfo.inputHeight}</Text>
+          <Text style={styles.modelInfoText}>출력 텐서 수: {modelInfo.outputTensors}</Text>
+          <Text style={styles.modelInfoText}>양자화 모델: {modelInfo.isQuantized ? 'Yes' : 'No'}</Text>
+          <Text style={styles.modelInfoText}>모델 경로: {modelInfo.modelPath}</Text>
+        </ScrollView>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {loading || modelLoading ? (
@@ -227,6 +339,8 @@ const CameraScreen: React.FC = () => {
           {modelLoaded && (
             <Text style={styles.modelStatus}>TF Lite 모델 로드 완료</Text>
           )}
+          {renderModelInfo()}
+          {renderPerformanceInfo()}
           <TouchableOpacity 
             style={styles.button}
             onPress={openCamera}
@@ -303,6 +417,52 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginVertical: 5,
+  },
+  modelInfoContainer: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
+    maxWidth: 350,
+  },
+  modelInfoTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modelInfoScroll: {
+    maxHeight: 150,
+  },
+  modelInfoText: {
+    color: '#cccccc',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  performanceContainer: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
+    maxWidth: 350,
+  },
+  performanceTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  performanceContent: {
+    maxHeight: 150,
+  },
+  performanceText: {
+    color: '#cccccc',
+    fontSize: 14,
+    marginBottom: 5,
   }
 });
 

@@ -130,6 +130,76 @@ class CameraPreviewModule(private val reactContext: ReactApplicationContext) : R
         promise.resolve(modelFactory.isModelLoaded(modelName))
     }
 
+    @ReactMethod
+    fun getModelInfo(modelName: String, promise: Promise) {
+        try {
+            if (!modelFactory.isModelLoaded(modelName)) {
+                promise.reject("E_MODEL_NOT_LOADED", "모델이 로드되지 않았습니다")
+                return
+            }
+            
+            val interpreter = modelFactory.getInterpreter(modelName)
+            if (interpreter == null) {
+                promise.reject("E_MODEL_ERROR", "모델 인터프리터를 가져올 수 없습니다")
+                return
+            }
+            
+            // 모델 정보 구성
+            val inputShape = interpreter.getInputTensor(0).shape()
+            val outputTensors = interpreter.outputTensorCount
+            
+            val modelInfo = Arguments.createMap().apply {
+                putString("modelName", modelName)
+                putInt("inputWidth", inputShape[1])
+                putInt("inputHeight", inputShape[2])
+                putInt("outputTensors", outputTensors)
+                putBoolean("isQuantized", interpreter.getInputTensor(0).dataType() == org.tensorflow.lite.DataType.UINT8)
+                putString("modelPath", modelFactory.getModelPath(modelName) ?: "")
+            }
+            
+            promise.resolve(modelInfo)
+        } catch (e: Exception) {
+            promise.reject("E_MODEL_INFO_ERROR", "모델 정보를 가져오는 중 오류 발생: ${e.message}")
+        }
+    }
+
+    @ReactMethod
+    fun getModelPerformance(modelName: String, promise: Promise) {
+        try {
+            if (!modelFactory.isModelLoaded(modelName)) {
+                promise.reject("E_MODEL_NOT_LOADED", "모델이 로드되지 않았습니다")
+                return
+            }
+            
+            val performanceInfo = modelFactory.getPerformanceInfo(modelName)
+            val result = Arguments.createMap().apply {
+                putDouble("averageInferenceTime", (performanceInfo["averageInferenceTime"] as Long).toDouble())
+                putDouble("minInferenceTime", (performanceInfo["minInferenceTime"] as Long).toDouble())
+                putDouble("maxInferenceTime", (performanceInfo["maxInferenceTime"] as Long).toDouble())
+                putInt("sampleCount", performanceInfo["sampleCount"] as Int)
+            }
+            
+            promise.resolve(result)
+        } catch (e: Exception) {
+            promise.reject("E_PERFORMANCE_INFO_ERROR", "성능 정보를 가져오는 중 오류 발생: ${e.message}")
+        }
+    }
+    
+    @ReactMethod
+    fun recordInferenceTime(modelName: String, inferenceTimeMs: Double, promise: Promise) {
+        try {
+            if (!modelFactory.isModelLoaded(modelName)) {
+                promise.reject("E_MODEL_NOT_LOADED", "모델이 로드되지 않았습니다")
+                return
+            }
+            
+            modelFactory.recordInferenceTime(modelName, inferenceTimeMs.toLong())
+            promise.resolve(true)
+        } catch (e: Exception) {
+            promise.reject("E_RECORD_TIME_ERROR", "추론 시간 기록 중 오류 발생: ${e.message}")
+        }
+    }
+
     override fun onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy()
         if (mActivityEventListener != null) {
