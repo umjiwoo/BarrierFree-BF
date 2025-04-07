@@ -1,3 +1,10 @@
+export interface TestAccountItemProps {
+  name: string;
+  date: string;
+  accountBank: string;
+  accountNumber: string;
+}
+
 export interface AccountItemProps {
   accountBalance: number;
   accountNo: string;

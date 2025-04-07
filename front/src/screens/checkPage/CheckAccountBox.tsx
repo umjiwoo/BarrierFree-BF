@@ -1,58 +1,78 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import Carousel from './CheckAccountCarousel';
-import {
-  AccountItemProps,
-  HistoryItemProps,
-} from '../../components/types/CheckAccount';
+import React from 'react';
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
+import {HistoryItemProps} from '../../components/types/CheckAccount';
 
 interface CheckAccountBoxProps {
-  data: AccountItemProps[] | HistoryItemProps[];
-  type: 'account' | 'history';
-  onSelect?: (item: AccountItemProps | HistoryItemProps) => void;
+  data: HistoryItemProps[];
+  onSelect: (item: HistoryItemProps) => void;
 }
 
-const CheckAccountBox: React.FC<CheckAccountBoxProps> = ({
-  data,
-  type,
-  onSelect,
-}) => {
-  const [containerWidth, setContainerWidth] = useState(0);
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
-  const handleLayout = (event: any) => {
-    const {width} = event.nativeEvent.layout;
-    if (width > 0) {
-      setContainerWidth(width);
-    }
-  };
-
+const CheckAccountBox = ({data, onSelect}: CheckAccountBoxProps) => {
+  console.log('data', data);
   return (
-    <View style={styles.accountBoxContainer}>
-      <View style={styles.accountBox} onLayout={handleLayout}>
-        <Carousel data={data} onSelect={onSelect} type={type} />
-      </View>
+    <View style={styles.container}>
+      <Carousel
+        loop={false}
+        width={SCREEN_WIDTH}
+        height={SCREEN_WIDTH / 2}
+        data={data}
+        onSnapToItem={index => onSelect(data[index])}
+        renderItem={({item}) => {
+          return (
+            <View
+              style={
+                [
+                  // styles.accountItem,
+                  // isSelected && styles.selectedAccount,
+                ]
+              }>
+              <Text style={styles.name}>{item.transactionName}</Text>
+              <Text style={styles.bank}>{item.transactionType}</Text>
+              <Text style={styles.number}>{item.transactionAmount}</Text>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  accountBoxContainer: {
-    width: '100%',
-    marginVertical: 10,
+  container: {
     flex: 1,
-  },
-  accountBox: {
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 0,
+    width: '100%',
+  },
+  accountItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    margin: 10,
+  },
+  selectedAccount: {
+    backgroundColor: '#e0e0ff',
     borderWidth: 2,
-    borderColor: '#373DCC',
-    borderRadius: 12,
-    backgroundColor: 'white',
-    elevation: 3,
+    borderColor: '#007AFF',
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  bank: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 5,
+  },
+  number: {
+    fontSize: 14,
+    color: '#999',
   },
 });
 

@@ -1,26 +1,44 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-} from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {RootStackParamList} from '../../navigation/types';
+import {StyleSheet, SafeAreaView} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation/types';
+import DefaultPage from '../../components/DefaultPage';
+import {useUserStore} from '../../stores/userStore';
+import {useAccountStore} from '../../stores/accountStore';
+import {getAccounts} from '../../api/axiosAccount';
 
-const Main = ({navigation}: {navigation: any}) => {
-  // const navigationProps =
-  //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+const Main = () => {
+  const {user} = useUserStore();
+  const {accounts} = useAccountStore();
+  console.log(user);
+  console.log(accounts);
 
-  // const handleSendFromWherePress = () => {
-  //   navigationProps.navigate('SendFromWhere');
-  // };
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const handleUpperLeftTextPress = async () => {
+    const data = await getAccounts();
+    console.log(data);
+
+    navigation.navigate('CheckHistory');
+  };
+
+  const handleUpperRightTextPress = () => {
+    navigation.navigate('SendMain');
+  };
+
+  const handleLowerLeftTextPress = () => {
+    // navigation.navigate('Payment');
+  };
+
+  const handleLowerRightTextPress = () => {
+    // navigation.navigate('Setting');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.grid}>
+      {/* <View style={styles.grid}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('CheckAccount')}>
@@ -37,7 +55,18 @@ const Main = ({navigation}: {navigation: any}) => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>마이 페이지</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
+      <DefaultPage
+        UpperLeftText="조회"
+        UpperRightText="송금"
+        LowerLeftText="결제"
+        LowerRightText="설정"
+        MainText="메인 텍스트 들어갈 자리"
+        onUpperLeftTextPress={handleUpperLeftTextPress}
+        onUpperRightTextPress={handleUpperRightTextPress}
+        onLowerLeftTextPress={handleLowerLeftTextPress}
+        onLowerRightTextPress={handleLowerRightTextPress}
+      />
     </SafeAreaView>
   );
 };

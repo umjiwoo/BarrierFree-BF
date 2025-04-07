@@ -1,20 +1,28 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-// import Title from '../../components/information/Title';
-import Title from '../../components/Title';
+import {View, StyleSheet, Text} from 'react-native';
 import DetailBox from '../../components/information/DetailBoxInformation';
-import BackButton from '../../components/BackButton';
 import {
   NavigationProp,
   ParamListBase,
+  RouteProp,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
-
+import DefaultPage from '../../components/DefaultPage';
+import {RootStackParamList} from '../../navigation/types';
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const route =
+    useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
+  const money = route.params?.money;
+  const selectedAccount = route.params?.selectedAccount;
 
   const handleSend = () => {
-    navigation.navigate('SendInputPage', {type: 'password'});
+    navigation.navigate('SendInputPage', {
+      type: 'password',
+      selectedAccount: selectedAccount,
+      money: money,
+    });
     console.log('송금하기 버튼 클릭');
   };
 
@@ -25,30 +33,28 @@ const ReceivingInformationScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Title title="송금 정보를 확인하세요." />
-      <DetailBox
-        recipient="엄지우"
-        bank="신한"
-        account="123-456-789000"
-        remitter="박수연"
-        amount={5000}
+      <DefaultPage
+        UpperLeftText="이전으로"
+        UpperRightText="홈"
+        LowerLeftText="취소"
+        LowerRightText="송금하기"
+        MainText={
+          <View>
+            <Text>송금 정보를 확인하세요.</Text>
+            <DetailBox
+              recipient={selectedAccount.name}
+              bank={selectedAccount.accountBank}
+              account={selectedAccount.accountNumber}
+              remitter="박수연"
+              amount={money}
+            />
+          </View>
+        }
+        onUpperLeftTextPress={handleBack}
+        onUpperRightTextPress={() => navigation.navigate('Main')}
+        onLowerLeftTextPress={handleSend}
+        onLowerRightTextPress={handleSend}
       />
-
-      {/* 버튼 */}
-      <View style={styles.buttonContainer}>
-        <BackButton
-          text="송금하기"
-          onPress={handleSend}
-          style={styles.sendButton}
-          textStyle={styles.buttonText}
-        />
-        <BackButton
-          text="이전으로"
-          onPress={handleBack}
-          style={styles.backButton}
-          textStyle={styles.buttonText}
-        />
-      </View>
     </View>
   );
 };

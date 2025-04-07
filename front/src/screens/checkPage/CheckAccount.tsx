@@ -2,86 +2,53 @@ import {View, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useEffect, useState} from 'react';
-import Title from '../../components/Title';
 import CheckAccountBox from './CheckAccountBox';
-import BackButton from '../../components/BackButton';
-import {
-  AccountItemProps,
-  HistoryItemProps,
-} from '../../components/types/CheckAccount';
+import {AccountItemProps} from '../../components/types/CheckAccount';
 import {getAccounts} from '../../api/axiosAccount';
 
-const SendFromWhere = () => {
+const CheckAccount = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [accounts, setAccounts] = useState<AccountItemProps[]>([]);
 
   useEffect(() => {
     const fetchAccounts = async () => {
       const data = await getAccounts();
-      setAccounts(data);
+      if (!data) {
+        console.log('계좌 조회 실패');
+      } else {
+        setAccounts(data);
+        if (data.length > 0) {
+          navigation.navigate('CheckHistory', {
+            selectedAccount: data[0],
+            id: data[0].id,
+          });
+        }
+      }
     };
     fetchAccounts();
-  }, []);
+  }, [navigation]);
 
-  // const accounts: AccountItemProps[] = [
-  //   {
-  //     accountNo: '110-262-000720',
-  //     accountBalance: 7000000,
-  //     accountState: 'active',
-  //     bankId: 1,
-  //     createdAt: '2021-01-01',
-  //     dailyTransferLimit: 1000000,
-  //     failedAttempts: 0,
-  //     id: 1,
-  //     oneTimeTransferLimit: 1000000,
-  //     updatedAt: '2021-01-01',
-  //   },
-  //   {
-  //     accountNo: '110-123-456789',
-  //     accountBalance: 100000,
-  //     accountState: 'active',
-  //     bankId: 1,
-  //     createdAt: '2021-01-01',
-  //     dailyTransferLimit: 1000000,
-  //     failedAttempts: 0,
-  //     id: 1,
-  //     oneTimeTransferLimit: 1000000,
-  //     updatedAt: '2025-03-26',
-  //   },
-  // ];
-
-  const handleSelectAccount = (item: AccountItemProps | HistoryItemProps) => {
-    navigation.navigate('CheckHistory', {
-      selectedAccount: item,
-      id: item.id,
-    });
-    console.log('Selected account:', item);
+  const handleCreateAccount = () => {
+    navigation.navigate('CreateAccount');
   };
-  console.log(accounts);
+
+  console.log('accounts', accounts);
+  console.log('accounts.length', accounts.length);
+
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Title title="계좌 조회" />
-      </View>
-      <CheckAccountBox
-        data={accounts}
-        type="account"
-        onSelect={handleSelectAccount}
-      />
-
-      {/* 버튼 */}
-      <View style={styles.buttonContainer}>
-        <BackButton
-          text="이전으로"
-          onPress={() => navigation.goBack()}
-          type="back"
+      {accounts.length > 0 ? null : (
+        <CheckAccountBox
+          // data={accounts}
+          type="createAccount"
+          onSelect={handleCreateAccount}
         />
-      </View>
+      )}
     </View>
   );
 };
 
-export default SendFromWhere;
+export default CheckAccount;
 
 const styles = StyleSheet.create({
   container: {
