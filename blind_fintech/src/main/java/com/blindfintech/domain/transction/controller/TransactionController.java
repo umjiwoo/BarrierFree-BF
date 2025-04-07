@@ -62,4 +62,10 @@ public class TransactionController {
 //
 //        return ResponseEntity.ok().body("ok");
 //    }
+
+    @GetMapping("/buyer-info")
+    public ResponseEntity<ResponseDto<BuyerInfoDto>> getBuyerInfo(){
+        BuyerInfoDto buyerInfoDto = transactionService.getBuyerInfo();
+        return ResponseEntity.ok().body(ResponseDto.success(buyerInfoDto));
+    }
 }

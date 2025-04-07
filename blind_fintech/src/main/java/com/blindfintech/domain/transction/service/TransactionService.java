@@ -140,4 +140,9 @@ public class TransactionService {
                 .map(RecentTransactionAccountDto::of)
                 .collect(Collectors.toList());
     }
+
+    public BuyerInfoDto getBuyerInfo(){
+        User user = userService.getCurrentUser();
+        return BuyerInfoDto.from(user);
+    }
 }
