@@ -32,7 +32,7 @@ public class TransactionController {
             @RequestBody TransactionRequestDto transactionRequestDto){
 
         transactionService.produceSendMoney(transactionRequestDto);
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body(ResponseDto.success(null));
     }
 
     @GetMapping("/history")
