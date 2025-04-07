@@ -104,7 +104,7 @@ public class TransactionService {
                     handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
                 }
             } catch (Exception e) {
-                log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+                log.error("WebSocket 응답 전송 실패: {}", e.getMessage());
                 String transactionResponse = objectMapper.writeValueAsString(
                         ResponseDto.error(new ExceptionResponse(SOCKET_RESPONSE_FAILED.getCode(),
                                                                 SOCKET_RESPONSE_FAILED.getMessage())));
@@ -123,7 +123,7 @@ public class TransactionService {
                     handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
                 }
             } catch (Exception ex) {
-                log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+                log.error("WebSocket 응답 전송 실패: {}", e.getMessage());
             }
         }
     }

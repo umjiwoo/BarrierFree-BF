@@ -33,7 +33,7 @@ public class TransactionProducer {
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                log.info("✅ Kafka 메시지 전송 성공\n topic={}, partition={}, offset={}, value={}",
+                log.info("Kafka 메시지 전송 성공\n topic={}, partition={}, offset={}, value={}",
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition(),
                         result.getRecordMetadata().offset(),
@@ -49,17 +49,17 @@ public class TransactionProducer {
                 transactionLogRepository.save(transactionLog);
             } else {
                 if (retryCount < MAX_RETRY_COUNT) {
-                    log.warn("⚠️ Kafka 메시지 전송 실패 (재시도 {}/{}): {}", retryCount + 1, MAX_RETRY_COUNT, transactionRequestDto, ex);
+                    log.warn("Kafka 메시지 전송 실패 (재시도 {}/{}): {}", retryCount + 1, MAX_RETRY_COUNT, transactionRequestDto, ex);
                     try {
                         Thread.sleep(1000L); // 재시도 간격
                     } catch (InterruptedException ignored) {}
 
                     sendWithRetry(transactionRequestDto, retryCount + 1); // 재귀적으로 재시도
                 } else {
-                    log.error("❌ Kafka 메시지 최종 실패 - DLQ로 전송: {}", transactionRequestDto, ex);
+                    log.error("Kafka 메시지 최종 실패 - DLQ로 전송: {}", transactionRequestDto, ex);
                     //// 재시도 모두 실패 - Dead Letter Queue(DLQ)로 메시지 전송, DLQ 토픽 따로 생성 필요 ; 후순위
                     //kafkaTemplate.send("send_money_dlq", transactionDto);
-                    //log.error("❌ Kafka 메시지 전송 최종 실패 (DLQ로 전송): {}", transactionDto);
+                    //log.error("Kafka 메시지 전송 최종 실패 (DLQ로 전송): {}", transactionDto);
                 }
             }
         });

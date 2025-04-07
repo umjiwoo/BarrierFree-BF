@@ -26,10 +26,10 @@ public class TransactionConsumer {
     @KafkaListener(topics = "send_money", groupId = "${KAFKA_GROUP_ID}", concurrency = "2")
     public void listen(ConsumerRecord<String, String> record) {
         try {
-            log.info("📥 Received DTO: {}", record);
+            log.info(" Received DTO: {}", record);
 
             String transactionJson = record.value();
-            log.info("📜 Extracted JSON: : {}", transactionJson);
+            log.info("Extracted JSON: : {}", transactionJson);
 
             TransactionRequestDto transactionRequestDto = objectMapper.readValue(transactionJson, TransactionRequestDto.class);
 
@@ -43,7 +43,7 @@ public class TransactionConsumer {
 
             transactionService.consumeSendMoney(transactionRequestDto, transactionUuid);
         } catch (Exception e) {
-            System.err.println("❌ JSON 변환 실패: " + e.getMessage());
+            log.error("JSON 변환 실패: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
