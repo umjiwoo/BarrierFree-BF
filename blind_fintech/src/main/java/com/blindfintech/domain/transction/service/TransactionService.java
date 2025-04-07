@@ -6,7 +6,7 @@ import com.blindfintech.common.exception.ExceptionResponse;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
-import com.blindfintech.domain.bank.Repository.BankRepository;
+import com.blindfintech.domain.bank.repository.BankRepository;
 import com.blindfintech.domain.bank.entity.Bank;
 import com.blindfintech.domain.transction.config.handler.BasicWebSocketHandler;
 import com.blindfintech.domain.transction.config.handler.RemittanceWebSocketHandler;
@@ -45,7 +45,6 @@ public class TransactionService {
     private final TransactionProcessor transactionProcessor;
     private final TransactionLogRepository transactionLogRepository;
 
-    private final RemittanceWebSocketHandler remittanceWebSocketHandler;
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final UserService userService;
 
@@ -56,11 +55,13 @@ public class TransactionService {
                 checkAccountRequestDto.getTransactionAccountNumber())
                 .orElseThrow(() -> new BadRequestException(ACCOUNT_NOT_FOUND));
 
-        Bank accountBank = bankRepository.findBankById(account.getBankId());
+        Bank accountBank = bankRepository.findBankById(account.getBankId())
+                .orElseThrow(() -> new BadRequestException(TransactionExceptionCode.INVALID_BANK_CODE));
+
         if(accountBank.getBankCode().equals(checkAccountRequestDto.getTransactionAccountBankCode())){
             return CheckAccountResultDto.from(account.getId(), account.getUsername());
         }else{
-            throw new BadRequestException(TransactionExceptionCode.ACCOUNT_NOT_FOUND);
+            throw new BadRequestException(TransactionExceptionCode.WRONG_BANK_CODE);
         }
     }
 
