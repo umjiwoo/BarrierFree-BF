@@ -3,11 +3,11 @@ import {View, Text, StyleSheet} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
-import ArrowRightIcon from '../../assets/icons/ArrowRight.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
 import {RootStackParamList} from '../../navigation/types';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {useAccountStore} from '../../stores/accountStore';
+import CheckIcon from '../../assets/icons/Check.svg';
 
 const CreateAccountSuccess = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -22,7 +22,7 @@ const CreateAccountSuccess = () => {
         UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
         UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="돌아가기"
-        LowerRightText={<ArrowRightIcon width={80} height={80} />}
+        LowerRightText={<CheckIcon width={100} height={100} />}
         MainText={
           <View style={styles.goodsContainer}>
             <Text style={styles.title}>통장 개설 완료</Text>

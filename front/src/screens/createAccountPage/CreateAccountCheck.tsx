@@ -3,11 +3,11 @@ import {View, Text, StyleSheet} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
-import ArrowRightIcon from '../../assets/icons/ArrowRight.svg';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import CheckIcon from '../../assets/icons/Check.svg';
 
 const CreateAccountCheck = () => {
   const navigation =
@@ -29,7 +29,7 @@ const CreateAccountCheck = () => {
         UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
         UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="돌아가기"
-        LowerRightText={<ArrowRightIcon width={80} height={80} />}
+        LowerRightText={<CheckIcon width={100} height={100} />}
         MainText={
           <View style={styles.goodsContainer}>
             <Text style={styles.goodsName}>본인 인증</Text>
