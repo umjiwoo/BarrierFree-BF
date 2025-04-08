@@ -32,10 +32,29 @@ const CreateAccountGoodsDetail = () => {
         LowerRightText={<ArrowRightIcon width={80} height={80} />}
         MainText={
           <ScrollView>
-            <Text style={styles.goodsName}>{goods.name}</Text>
+            {/* <Text style={styles.goodsName}>{goods.name}</Text>
             <Text style={styles.goodsDescription}>
               {goods.description.약관}
+            </Text> */}
+            <Text style={styles.goodsName}>{goods.name}</Text>
+            <Text style={styles.goodsDescription}>
+              {
+                require('../../assets/details/terms_summary_full.json')
+                  .content[0].content
+              }
             </Text>
+            {require('../../assets/details/terms_summary_full.json').content[0].subContent.map(
+              (item: any, index: number) => (
+                <View key={index} style={styles.subContentContainer}>
+                  <Text style={styles.subContentTitle}>{item.description}</Text>
+                  <Text style={styles.subContentText}>
+                    {Array.isArray(item.content)
+                      ? item.content.join('\n')
+                      : item.content}
+                  </Text>
+                </View>
+              ),
+            )}
           </ScrollView>
         }
         onUpperLeftTextPress={handlePressBack}
@@ -66,8 +85,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   goodsDescription: {
-    paddingTop: 50,
+    paddingTop: 20,
     fontSize: 30,
+  },
+  subContentContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  subContentTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subContentText: {
+    fontSize: 20,
+    lineHeight: 30,
   },
 });
 

@@ -7,6 +7,7 @@ import ArrowRightIcon from '../../assets/icons/ArrowRight.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
 import {RootStackParamList} from '../../navigation/types';
 import {RouteProp, useRoute} from '@react-navigation/native';
+import {useAccountStore} from '../../stores/accountStore';
 
 const CreateAccountSuccess = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -14,6 +15,7 @@ const CreateAccountSuccess = () => {
     useRoute<RouteProp<RootStackParamList, 'CreateAccountSuccess'>>();
   const goods = route.params?.goods;
 
+  const {accounts} = useAccountStore();
   return (
     <View style={styles.container}>
       <DefaultPage
@@ -28,9 +30,7 @@ const CreateAccountSuccess = () => {
               <Text style={[styles.goodsDescription, styles.goodsName]}>
                 {goods.name}
               </Text>
-              <Text style={styles.goodsDescription}>
-                {goods.description.약관}
-              </Text>
+              <Text style={styles.goodsDescription}>{accounts.accountNo}</Text>
               <Text style={[styles.goodsDescription, styles.goodSuccess]}>
                 개설이 완료되었습니다.
               </Text>

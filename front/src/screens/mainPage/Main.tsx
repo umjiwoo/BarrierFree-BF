@@ -13,7 +13,7 @@ import DefaultPage from '../../components/utils/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
-import BarrierFree from '../../assets/BarrierFree.svg';
+import BarrierFree from '../../assets/icons/BarrierFree.svg';
 import ChargeIcon from '../../assets/icons/Charge.svg';
 import SettingIcon from '../../assets/icons/Settings.svg';
 import HistoryIcon from '../../assets/icons/History.svg';
