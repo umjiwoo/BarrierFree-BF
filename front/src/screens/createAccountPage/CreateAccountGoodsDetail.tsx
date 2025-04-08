@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
-import ArrowRightIcon from '../../assets/ArrowRight.svg';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import ArrowRightIcon from '../../assets/icons/ArrowRight.svg';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
@@ -31,12 +31,12 @@ const CreateAccountGoodsDetail = () => {
         LowerLeftText="돌아가기"
         LowerRightText={<ArrowRightIcon width={80} height={80} />}
         MainText={
-          <View style={styles.goodsContainer}>
+          <ScrollView>
             <Text style={styles.goodsName}>{goods.name}</Text>
             <Text style={styles.goodsDescription}>
               {goods.description.약관}
             </Text>
-          </View>
+          </ScrollView>
         }
         onUpperLeftTextPress={handlePressBack}
         onUpperRightTextPress={handlePressHome}

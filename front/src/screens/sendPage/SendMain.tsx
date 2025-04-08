@@ -4,8 +4,8 @@ import DefaultPage from '../../components/utils/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useHandlePress} from '../../components/utils/handlePress';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
 
 const SendMain = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();

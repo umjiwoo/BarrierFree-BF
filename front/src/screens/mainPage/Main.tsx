@@ -14,6 +14,10 @@ import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
 import BarrierFree from '../../assets/BarrierFree.svg';
+import ChargeIcon from '../../assets/icons/Charge.svg';
+import SettingIcon from '../../assets/icons/Settings.svg';
+import HistoryIcon from '../../assets/icons/History.svg';
+import SendIcon from '../../assets/icons/Send.svg';
 
 const Main = () => {
   const {user} = useUserStore();
@@ -56,10 +60,34 @@ const Main = () => {
   return (
     <SafeAreaView style={styles.container}>
       <DefaultPage
-        UpperLeftText="조회"
-        UpperRightText="송금"
-        LowerLeftText="결제"
-        LowerRightText="설정"
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <HistoryIcon width={110} height={110} />
+            <Text style={styles.text}>조회</Text>
+          </View>
+        }
+        // UpperLeftText="조회"
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <SendIcon width={150} height={110} />
+            <Text style={styles.text}>송금</Text>
+          </View>
+        }
+        // UpperRightText="송금"
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <ChargeIcon width={110} height={110} />
+            <Text style={styles.text}>결제</Text>
+          </View>
+        }
+        // LowerLeftText="결제"
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <SettingIcon width={110} height={110} />
+            <Text style={styles.text}>설정</Text>
+          </View>
+        }
+        // LowerRightText="설정"
         MainText={
           <View style={styles.mainTextContainer}>
             <BarrierFree width={350} height={100} title="메인페이지" />
@@ -98,6 +126,17 @@ const styles = StyleSheet.create({
     color: '#7F35D4',
     fontWeight: 'bold',
     marginTop: 20,
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 35,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

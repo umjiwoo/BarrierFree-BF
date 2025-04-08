@@ -4,10 +4,10 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../components/utils/handlePress';
-import CheckCircle from '../../assets/CheckCircle.svg';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
-import CheckIcon from '../../assets/Check.svg';
+import CheckCircle from '../../assets/icons/CheckCircle.svg';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const {handlePressBack, handlePressHome} = useHandlePress();

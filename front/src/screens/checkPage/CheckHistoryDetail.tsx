@@ -4,9 +4,9 @@ import React from 'react';
 import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../components/utils/handlePress';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
-import CheckIcon from '../../assets/Check.svg';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
 import formatDateManually from '../../components/utils/makeDate';
 
 const CheckHistoryDetail = () => {
