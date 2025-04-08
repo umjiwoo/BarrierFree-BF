@@ -38,4 +38,7 @@ export type RootStackParamList = {
     money?: number;
   };
   ThreeBtn: undefined;
+  AcceptPaymentScreen: {
+    messageData: JSON;
+  };
 };

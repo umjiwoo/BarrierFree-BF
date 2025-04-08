@@ -1,12 +1,18 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React from 'react';
-import {loginUser} from '../api/axiosUser';
+import React, { useEffect } from 'react';
+import {loginUser, sendFcmToken} from '../api/axiosUser';
 import {useUserStore} from '../stores/userStore';
 import {useAccountStore} from '../stores/accountStore';
 import {getAccounts} from '../api/axiosAccount';
+import { getFCMToken, foregroundMessageListener, backgroundMessageOpenedListener, checkInitialNotification }from '../firebase/messaging';
 // import {UserItemProps} from '../components/types/UserInfo';
 
 const HomeScreen = ({navigation}: {navigation: any}) => {
+  useEffect(() => {
+    foregroundMessageListener(navigation);
+    backgroundMessageOpenedListener(navigation);
+  }, []);
+
   // const [user, setUser] = useState<UserItemProps>({} as UserItemProps);
   const {setUser} = useUserStore();
   const {setAccounts} = useAccountStore();
@@ -17,6 +23,13 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
     });
     console.log(data);
     setUser(data.body);
+
+    const fcmToken = await sendFcmToken({
+      fcmToken: await getFCMToken(), 
+      userId:data.body.id
+    });
+
+    console.log(fcmToken);
 
     const accountData = await getAccounts();
     console.log(accountData);
