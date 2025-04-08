@@ -1,143 +1,137 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import Carousel from './CheckAccountCarousel';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
 import {HistoryItemProps} from '../../components/types/CheckAccount';
+import formatDateManually from '../../components/utils/makeDate';
 
 interface CheckAccountBoxProps {
-  data?: HistoryItemProps[];
-  type: 'history' | 'createAccount';
-  onSelect?: (item: HistoryItemProps) => void;
+  data: HistoryItemProps[];
+  carouselRef: any;
+  onSelect: (item: HistoryItemProps) => void;
 }
 
-const CheckAccountBox: React.FC<CheckAccountBoxProps> = ({
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
+
+const CheckAccountBox = ({
   data,
-  type,
+  carouselRef,
   onSelect,
-}) => {
-  const [_containerWidth, setContainerWidth] = useState(0);
-
-  const handleLayout = (event: any) => {
-    const {width} = event.nativeEvent.layout;
-    if (width > 0) {
-      setContainerWidth(width);
-    }
-  };
-
+}: CheckAccountBoxProps) => {
+  console.log('data', data);
   return (
-    <View style={styles.accountBoxContainer}>
-      <View style={styles.accountBox} onLayout={handleLayout}>
-        <Carousel data={data} onSelect={onSelect} type={type} />
-      </View>
+    <View style={styles.container}>
+      <Carousel
+        ref={carouselRef}
+        loop={false}
+        width={SCREEN_WIDTH}
+        // height={'100%'}
+        data={data}
+        renderItem={({item}) => {
+          return (
+            <TouchableOpacity
+              onPress={() => onSelect(item)}
+              style={styles.accountItem}>
+              <View style={styles.dateContainer}>
+                <Text style={styles.date}>
+                  {formatDateManually(item.transactionDate).date}
+                </Text>
+                <Text style={styles.time}>
+                  {formatDateManually(item.transactionDate).time}
+                </Text>
+              </View>
+              <Text style={styles.name}>{item.transactionName}</Text>
+              {item.transactionType === 'WITHDRAWAL' ? (
+                <View style={styles.bankContainer}>
+                  <Text style={[styles.bank, styles.withdrawal]}>출금</Text>
+                  <Text style={[styles.number, styles.withdrawal]}>
+                    {item.transactionAmount} 원
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.bankContainer}>
+                  <Text style={[styles.bank, styles.deposit]}>입금</Text>
+                  <Text style={[styles.number, styles.deposit]}>
+                    {item.transactionAmount} 원
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          );
+        }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  accountBoxContainer: {
-    width: '100%',
-    marginVertical: 10,
-    flex: 1,
-  },
-  accountBox: {
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingVertical: 0,
-    borderWidth: 2,
-    borderColor: '#373DCC',
-    borderRadius: 12,
-    backgroundColor: 'white',
-    elevation: 3,
-  },
-  account: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 60,
-  },
-  accountBankContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: 10,
-  },
-  accountBank: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  accountNumber: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  accountBalance: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
   container: {
+    flex: 1,
     width: '100%',
     height: '100%',
-    // paddingHorizontal: CONTAINER_PADDING, // 컨테이너에 패딩 추가
   },
-  item: {
-    // width: ITEM_WIDTH, // 아이템 너비 적용
+  accountItem: {
+    flex: 1,
+    gap: 20,
     width: '100%',
     height: '100%',
-    padding: 30,
-    borderRadius: 12,
-    backgroundColor: '#f8f8f8',
+    // padding: 20,
+    paddingVertical: 20,
+    paddingRight: 60,
+    paddingLeft: 20,
+    borderRadius: 10,
+    // margin: 10,
   },
-  accountCreatedAtContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-  },
-  accountCreatedAt: {
-    fontSize: 20,
+  name: {
+    fontSize: 35,
     fontWeight: 'bold',
-    color: '#24282B',
+    marginBottom: 10,
   },
-  accountLockContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-  },
-  accountLock: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#24282B',
-  },
-  accountTransferContainer: {
+  dateContainer: {
     flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: 10,
-    width: '100%',
-  },
-  accountDailyTransferLimitContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    gap: 10,
+    // alignItems: 'center',
   },
-  accountOneTimeTransferLimitContainer: {
-    width: '100%',
+  date: {
+    fontSize: 35,
+    color: '#24282B',
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  time: {
+    fontSize: 30,
+    color: '#24282B',
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  bankContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    gap: 10,
+    alignItems: 'flex-start',
   },
-  accountDailyTransfer: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  bank: {
+    fontSize: 35,
     color: '#24282B',
+    marginBottom: 10,
+    fontWeight: 'bold',
   },
-  accountOneTimeTransfer: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  number: {
+    fontSize: 35,
     color: '#24282B',
+    fontWeight: 'bold',
+    flexShrink: 1,
+    textAlign: 'right',
+  },
+  withdrawal: {
+    color: '#373DCC',
+  },
+  deposit: {
+    color: '#B6010E',
   },
 });
 

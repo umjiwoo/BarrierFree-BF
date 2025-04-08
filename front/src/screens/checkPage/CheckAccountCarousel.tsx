@@ -7,11 +7,14 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import {HistoryItemProps} from '../../components/types/CheckAccount';
+import {
+  AccountItemProps,
+  HistoryItemProps,
+} from '../../components/types/CheckAccount';
 interface CarouselProps {
-  data?: HistoryItemProps[];
-  type: 'history' | 'createAccount';
-  onSelect?: (item: HistoryItemProps) => void;
+  data: AccountItemProps[] | HistoryItemProps[];
+  type: 'account' | 'history';
+  onSelect?: (item: AccountItemProps | HistoryItemProps) => void;
 }
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -27,7 +30,7 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
   type,
   onSelect,
 }) => {
-  const [_activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
   const formatDateManually = (isoString: string): string => {
@@ -44,8 +47,32 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     return `${year}년 ${month}월 ${day}일 \n${hour}:${minute}:${second}`;
   };
 
-  const renderItem = ({item}: {item: HistoryItemProps}) => {
-    if (type === 'history') {
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: AccountItemProps | HistoryItemProps;
+    index: number;
+  }) => {
+    if (type === 'account') {
+      const accountItem = item as AccountItemProps;
+      return (
+        <TouchableOpacity
+          style={[styles.item]}
+          onPress={() => onSelect && onSelect(item)}
+          activeOpacity={0.9}>
+          <View style={styles.account}>
+            {/* <Text style={styles.accountBank}>{accountItem.accountBank}</Text> */}
+            <Text style={styles.accountNumber}>{accountItem.accountNo}</Text>
+            {accountItem.accountBalance && (
+              <Text style={styles.accountBalance}>
+                잔액 : {accountItem.accountBalance} 원
+              </Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
       const historyItem = item as HistoryItemProps;
       return (
         <TouchableOpacity
@@ -81,19 +108,6 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
           </View>
         </TouchableOpacity>
       );
-    } else {
-      return (
-        <TouchableOpacity
-          style={[styles.item]}
-          onPress={() => onSelect && onSelect(item)}
-          activeOpacity={0.9}>
-          <View style={styles.account}>
-            <Text style={styles.accountNumber}>
-              계좌가 없습니다! 계좌를 만들어주세요!
-            </Text>
-          </View>
-        </TouchableOpacity>
-      );
     }
   };
 
@@ -108,7 +122,7 @@ const CheckAccountCarousel: React.FC<CarouselProps> = ({
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / ITEM_WIDTH);
 
-    if (index >= 0 && index < (data?.length ?? 0)) {
+    if (index >= 0 && index < data.length) {
       // 가장 가까운 페이지로 스냅
       setTimeout(() => {
         if (flatListRef.current) {

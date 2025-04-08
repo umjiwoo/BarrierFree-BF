@@ -1,54 +1,61 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-// import Title from '../../components/information/Title';
-import Title from '../../components/Title';
+import {View, StyleSheet, Text} from 'react-native';
 import DetailBox from '../../components/information/DetailBoxInformation';
-import BackButton from '../../components/BackButton';
 import {
   NavigationProp,
   ParamListBase,
+  RouteProp,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
+import DefaultPage from '../../components/utils/DefaultPage';
+import {RootStackParamList} from '../../navigation/types';
+import {useHandlePress} from '../../components/utils/handlePress';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import {useUserStore} from '../../stores/userStore';
 
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const {handlePressBack, handlePressHome} = useHandlePress();
+  const route =
+    useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
+  const money = route.params?.money;
+  const selectedAccount = route.params?.selectedAccount;
+  const {user} = useUserStore();
 
   const handleSend = () => {
-    navigation.navigate('SendInputPage', {type: 'password'});
+    navigation.navigate('SendInputPage', {
+      type: 'password',
+      selectedAccount: selectedAccount,
+      money: money,
+    });
     console.log('송금하기 버튼 클릭');
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
-    console.log('이전으로 버튼 클릭');
   };
 
   return (
     <View style={styles.container}>
-      <Title title="송금 정보를 확인하세요." />
-      <DetailBox
-        recipient="엄지우"
-        bank="신한"
-        account="123-456-789000"
-        remitter="박수연"
-        amount={5000}
+      <DefaultPage
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
+        LowerLeftText="취소"
+        LowerRightText="송금하기"
+        MainText={
+          <View style={styles.mainTextContainer}>
+            <Text style={styles.mainText}>송금 정보를 확인하세요.</Text>
+            <DetailBox
+              recipient={selectedAccount.receiverName}
+              receiverAccount={selectedAccount.receiverAccount}
+              remitter={user.username}
+              amount={money}
+            />
+          </View>
+        }
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handlePressBack}
+        onLowerRightTextPress={handleSend}
       />
-
-      {/* 버튼 */}
-      <View style={styles.buttonContainer}>
-        <BackButton
-          text="송금하기"
-          onPress={handleSend}
-          style={styles.sendButton}
-          textStyle={styles.buttonText}
-        />
-        <BackButton
-          text="이전으로"
-          onPress={handleBack}
-          style={styles.backButton}
-          textStyle={styles.buttonText}
-        />
-      </View>
     </View>
   );
 };
@@ -59,32 +66,22 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
+    // paddingVertical: 20,
+    // marginTop: 50,
+  },
+  mainText: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#7F35D4',
+  },
+  mainTextContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     paddingVertical: 20,
-    marginTop: 50,
-  },
-  buttonContainer: {
-    width: '100%',
-    bottom: 0,
-  },
-  sendButton: {
-    backgroundColor: '#373DCC',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  backButton: {
-    backgroundColor: '#B6010E',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 20,
+    // justifyContent: 'center',
   },
 });
 

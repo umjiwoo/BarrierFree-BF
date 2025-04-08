@@ -3,16 +3,14 @@ import {View, Text, StyleSheet} from 'react-native';
 
 interface DetailBoxProps {
   recipient: string;
-  bank: string;
-  account: string;
+  receiverAccount: string;
   remitter: string;
   amount: number;
 }
 
 const DetailBoxInformation: React.FC<DetailBoxProps> = ({
   recipient,
-  bank,
-  account,
+  receiverAccount,
   remitter,
   amount,
 }) => {
@@ -25,9 +23,8 @@ const DetailBoxInformation: React.FC<DetailBoxProps> = ({
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>계좌 정보</Text>
-          <View>
-            <Text style={styles.detailValue}>{bank}</Text>
-            <Text style={styles.accountNumber}>{account}</Text>
+          <View style={styles.detailValueContainer}>
+            <Text style={styles.detailValue}>{receiverAccount}</Text>
           </View>
         </View>
         <View style={styles.detailRow}>
@@ -36,7 +33,7 @@ const DetailBoxInformation: React.FC<DetailBoxProps> = ({
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>금액</Text>
-          <Text style={styles.detailValue}>{amount}원</Text>
+          <Text style={styles.detailValue}>{amount} 원</Text>
         </View>
       </View>
     </View>
@@ -48,33 +45,36 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flex: 1,
     width: '100%',
+    height: '100%',
   },
   detailBox: {
     width: '100%',
     height: '100%',
-    borderWidth: 2,
-    borderColor: '#373DCC',
-    padding: 30,
-    borderRadius: 12,
-    // marginBottom: 30,
+    paddingVertical: 30,
+    marginBottom: 30,
     gap: 5,
   },
   detailRow: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 10,
     marginBottom: 10,
   },
   detailLabel: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
+    color: '#7F35D4',
   },
   detailValue: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
+    color: '#24282B',
   },
-  accountNumber: {
-    fontSize: 24,
-    color: '#333',
+  detailValueContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
   },
 });
 

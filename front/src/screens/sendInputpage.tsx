@@ -7,12 +7,20 @@ import {
   NavigationProp,
   ParamListBase,
 } from '@react-navigation/native';
-import BackButton from '../components/BackButton';
+import BackButton from '../components/utils/BackButton';
+import {
+  TestAccountItemProps,
+  GoodsItemProps,
+} from '../components/types/CheckAccount';
+import {useHandlePress} from '../components/utils/handlePress';
 
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
   SendInputPage: {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
+    selectedAccount?: TestAccountItemProps;
+    money?: number;
+    goods?: GoodsItemProps;
   };
 };
 
@@ -22,14 +30,20 @@ type SendInputPageRouteProp = RouteProp<SendInputPageParams, 'SendInputPage'>;
 const SendInputPage = () => {
   // 네비게이션 객체 가져오기
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const {handlePressBack} = useHandlePress();
 
   // 상태 관리 임시 추가
-  const [accountNumber, setAccountNumber] = React.useState('');
+  const [accountNumber, _setAccountNumber] = React.useState('');
   // const [bankName, setBankName] = React.useState('');
 
   // 라우트 파라미터에서 type 가져오기
   const route = useRoute<SendInputPageRouteProp>();
-  const {type} = route.params || {type: 'direct'}; // 기본값 설정
+  const {type, selectedAccount} = route.params || {
+    type: 'directMyAccount',
+    selectedAccount: null,
+  }; // 기본값 설정
+  const money = route.params?.money;
+  const goods = route.params?.goods;
 
   // 타입에 따라 헤더 타이틀 설정
   useEffect(() => {
@@ -77,9 +91,7 @@ const SendInputPage = () => {
             <BackButton
               text="뒤로 가기"
               type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={handlePressBack}
             />
           </View>
         </View>
@@ -97,7 +109,11 @@ const SendInputPage = () => {
                 navigation.navigate('SendInputPage', {type: 'money'});
               }}
             />
-            <BackButton text="뒤로 가기" type="back" />
+            <BackButton
+              text="뒤로 가기"
+              type="back"
+              onPress={handlePressBack}
+            />
           </View>
         </View>
       );
@@ -111,15 +127,16 @@ const SendInputPage = () => {
               text="확인"
               type="input"
               onPress={() => {
-                navigation.navigate('RemittanceInformation');
+                navigation.navigate('RemittanceInformation', {
+                  money: 0,
+                  selectedAccount: selectedAccount,
+                });
               }}
             />
             <BackButton
               text="뒤로 가기"
               type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={handlePressBack}
             />
           </View>
         </View>
@@ -134,15 +151,22 @@ const SendInputPage = () => {
               text="확인"
               type="input"
               onPress={() => {
-                navigation.navigate('RemittanceConfirm');
+                if (selectedAccount) {
+                  navigation.navigate('RemittanceConfirm', {
+                    selectedAccount: selectedAccount,
+                    money: money,
+                  });
+                } else {
+                  navigation.navigate('CreateAccountSuccess', {
+                    goods: goods,
+                  });
+                }
               }}
             />
             <BackButton
               text="뒤로 가기"
               type="back"
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={handlePressBack}
             />
           </View>
         </View>
