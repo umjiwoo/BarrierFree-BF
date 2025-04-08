@@ -1,14 +1,15 @@
 import React, {useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
 import {useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import CreateAccountGoods from './CreateAccountGoods';
-import ArrowRightIcon from '../../assets/ArrowRight.svg';
+import PreviousIcon from '../../assets/icons/Prev.svg';
+import NextIcon from '../../assets/icons/Next.svg';
 
 interface GoodsItemProps {
   id: number;
@@ -116,10 +117,10 @@ const CreateAccountScreen = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText={<ArrowLeftIcon width={80} height={80} />}
-        LowerRightText={<ArrowRightIcon width={80} height={80} />}
+        UpperLeftText={<ArrowLeftIcon width={110} height={110} />}
+        UpperRightText={<HomeIcon width={110} height={110} />}
+        LowerLeftText={<PreviousIcon width={110} height={110} />}
+        LowerRightText={<NextIcon width={110} height={110} />}
         MainText={
           <CreateAccountGoods
             data={accountGoods}

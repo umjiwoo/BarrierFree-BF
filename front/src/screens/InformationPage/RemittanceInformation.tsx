@@ -11,8 +11,8 @@ import {
 import DefaultPage from '../../components/utils/DefaultPage';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
 import {useUserStore} from '../../stores/userStore';
 
 const ReceivingInformationScreen: React.FC = () => {

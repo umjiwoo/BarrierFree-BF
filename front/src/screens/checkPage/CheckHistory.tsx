@@ -9,10 +9,10 @@ import DefaultPage from '../../components/utils/DefaultPage';
 import {useAccountStore} from '../../stores/accountStore';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
-import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
-import HomeIcon from '../../assets/Home.svg';
-import ArrowRightIcon from '../../assets/ArrowRight.svg';
-
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import NextIcon from '../../assets/icons/Next.svg';
+import PreviousIcon from '../../assets/icons/Prev.svg';
 // const histories: HistoryItemProps[] = [
 //   {
 //     id: 1,
@@ -121,8 +121,8 @@ const CheckHistory = () => {
         UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
         // UpperLeftText={<GoBackIcon width={100} height={100} />}
         UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText={<ArrowLeftIcon width={80} height={80} />}
-        LowerRightText={<ArrowRightIcon width={80} height={80} />}
+        LowerLeftText={<PreviousIcon width={100} height={100} />}
+        LowerRightText={<NextIcon width={100} height={100} />}
         MainText={
           histories.length === 0 ? (
             <Text>거래 내역이 없습니다.</Text>

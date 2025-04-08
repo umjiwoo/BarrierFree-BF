@@ -4,9 +4,9 @@ import {View, StyleSheet, Text} from 'react-native';
 // import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage';
-import ArrowLeft from '../../assets/ArrowLeft.svg';
-import ArrowRight from '../../assets/ArrowRight.svg';
-import Home from '../../assets/Home.svg';
+import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
+import ArrowRight from '../../assets/icons/ArrowRight.svg';
+import Home from '../../assets/icons/Home.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
 
 const PayMain = () => {
