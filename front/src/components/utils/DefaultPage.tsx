@@ -2,12 +2,11 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {ReactNode} from 'react';
 
 interface DefaultPageProps {
-  UpperLeftText?: string; // 버튼 텍스트 (기본값: '뒤로')
-  UpperRightText?: string; // 버튼 텍스트 (기본값: '뒤로')
-  LowerLeftText?: string; // 버튼 텍스트 (기본값: '뒤로')
-  LowerRightText?: string; // 버튼 텍스트 (기본갸: '뒤로')
+  UpperLeftText?: ReactNode; // 버튼 텍스트 (기본값: '뒤로')
+  UpperRightText?: ReactNode; // 버튼 텍스트 (기본값: '뒤로')
+  LowerLeftText?: ReactNode; // 버튼 텍스트 (기본값: '뒤로')
+  LowerRightText?: ReactNode; // 버튼 텍스트 (기본갸: '뒤로')
   MainText?: ReactNode;
-  onPress?: () => void;
   onUpperLeftTextPress?: () => void;
   onUpperRightTextPress?: () => void;
   onLowerLeftTextPress?: () => void;
@@ -20,7 +19,6 @@ export default function DefaultPage({
   LowerLeftText,
   LowerRightText,
   MainText,
-  onPress,
   onUpperLeftTextPress,
   onUpperRightTextPress,
   onLowerLeftTextPress,
@@ -30,25 +28,46 @@ export default function DefaultPage({
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={onUpperLeftTextPress}>
-          <Text style={styles.buttonText}>{UpperLeftText}</Text>
+          {/* <Text style={styles.buttonText}>{UpperLeftText}</Text> */}
+          {typeof UpperLeftText === 'string' ? (
+            <Text style={styles.buttonText}>{UpperLeftText}</Text>
+          ) : (
+            UpperLeftText
+          )}
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onUpperRightTextPress}>
-          <Text style={styles.buttonText}>{UpperRightText}</Text>
+          {/* <Text style={styles.buttonText}>{UpperRightText}</Text> */}
+          {typeof UpperRightText === 'string' ? (
+            <Text style={styles.buttonText}>{UpperRightText}</Text>
+          ) : (
+            UpperRightText
+          )}
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.mainButton} onPress={onPress}>
+      <View style={styles.mainButton}>
+        {/* <View style={styles.mainButton} onPress={onPress}> */}
         {typeof MainText === 'string' ? (
           <Text style={styles.mainText}>{MainText}</Text>
         ) : (
           MainText
         )}
-      </TouchableOpacity>
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={onLowerLeftTextPress}>
-          <Text style={styles.buttonText}>{LowerLeftText}</Text>
+          {/* <Text style={styles.buttonText}>{LowerLeftText}</Text> */}
+          {typeof LowerLeftText === 'string' ? (
+            <Text style={styles.buttonText}>{LowerLeftText}</Text>
+          ) : (
+            LowerLeftText
+          )}
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onLowerRightTextPress}>
-          <Text style={styles.buttonText}>{LowerRightText}</Text>
+          {/* <Text style={styles.buttonText}>{LowerRightText}</Text> */}
+          {typeof LowerRightText === 'string' ? (
+            <Text style={styles.buttonText}>{LowerRightText}</Text>
+          ) : (
+            LowerRightText
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -80,18 +99,18 @@ const styles = StyleSheet.create({
     // backgroundColor: 'blue',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: '#7F35D4',
+    backgroundColor: '#7F35D4',
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
     // margin: 10,
   },
   mainButton: {
-    flex: 2,
-    // backgroundColor: 'red',
+    flex: 1.5,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'black',
+    borderWidth: 2,
+    borderColor: '#7F35D4',
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -100,9 +119,11 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
+    color: 'white',
   },
   mainText: {
     fontSize: 30,
     fontWeight: 'bold',
+    color: '#7F35D4',
   },
 });

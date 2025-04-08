@@ -1,10 +1,14 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useHandlePress} from '../../components/utils/handlePress';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
 
 const SendMain = () => {
+  const {handlePressBack, handlePressHome} = useHandlePress();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const handleDirectInput = () => {
@@ -12,18 +16,23 @@ const SendMain = () => {
     console.log('직접 입력 버튼 클릭');
   };
 
+  const handleRecentAccount = () => {
+    navigation.navigate('SendRecentAccount');
+    console.log('최근 보낸 계좌 버튼 클릭');
+  };
+
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="직접 입력"
-        LowerRightText="자주 보낸 계좌"
-        MainText="송금 페이지 텍스트 들어갈 자리"
-        onUpperLeftTextPress={() => navigation.goBack()}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
+        LowerRightText="최근 보낸 계좌"
+        MainText="송금하실 계좌를 선택해주세요."
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
         onLowerLeftTextPress={handleDirectInput}
-        onLowerRightTextPress={() => navigation.navigate('SendFavoriteAccount')}
+        onLowerRightTextPress={handleRecentAccount}
       />
     </View>
   );

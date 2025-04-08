@@ -3,17 +3,22 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types';
 import Main from '../screens/mainPage/Main';
 import SendMain from '../screens/sendPage/SendMain';
-import SendFavoriteAccount from '../screens/sendPage/SendFavoriteAccount';
 import HomeScreen from '../screens/HomeScreen';
 import SendSuccess from '../screens/sendPage/SendSuccess';
 import ReceivingAccountScreen from '../screens/InformationPage/ReceivingAccount';
 import RemittanceConfirm from '../screens/InformationPage/RemittanceConfirm';
 import SendInputPage from '../screens/sendInputpage';
-import ThreeBtn from '../screens/threebtn';
 import RemittanceInformation from '../screens/InformationPage/RemittanceInformation';
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
-import DefaultButton from '../components/DefaultPage';
+import DefaultButton from '../components/utils/DefaultPage';
+import SendRecentAccount from '../screens/sendPage/SendRecentAccount';
+import CreateAccountScreen from '../screens/createAccountPage/createAccountScreen';
+import CreateAccountGoodsDetail from '../screens/createAccountPage/CreateAccountGoodsDetail';
+import CreateAccountCheck from '../screens/createAccountPage/CreateAccountCheck';
+import CreateAccountSuccess from '../screens/createAccountPage/CreateAccountSuccess';
+import PayMain from '../screens/payPage/PayMain';
+import SettingsMain from '../screens/settingsPage/SettingsMain';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
@@ -27,6 +32,40 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
+      {/* 계좌 생성 */}
+      <Stack.Screen
+        name="CreateAccountScreen"
+        component={CreateAccountScreen}
+        options={{
+          title: 'CreateAccountScreen',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateAccountGoodsDetail"
+        component={CreateAccountGoodsDetail}
+        options={{
+          title: 'CreateAccountGoodsDetail',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateAccountCheck"
+        component={CreateAccountCheck}
+        options={{
+          title: 'CreateAccountCheck',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateAccountSuccess"
+        component={CreateAccountSuccess}
+        options={{
+          title: 'CreateAccountSuccess',
+          headerShown: false,
+        }}
+      />
+      {/* 기본 페이지 */}
       <Stack.Screen
         name="DefaultButton"
         component={DefaultButton}
@@ -35,6 +74,7 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
+      {/* 메인 페이지 */}
       <Stack.Screen
         name="Main"
         component={Main}
@@ -44,6 +84,7 @@ const RootStack = () => {
           // 필요한 옵션 추가
         }}
       />
+      {/* 조회 페이지 */}
       <Stack.Screen
         name="CheckHistory"
         component={CheckHistory}
@@ -60,19 +101,20 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
+      {/* 송금 페이지 */}
       <Stack.Screen
         name="SendMain"
         component={SendMain}
         options={{
-          title: '누구에게 보낼까요?',
+          title: '송금 페이지',
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="SendFavoriteAccount"
-        component={SendFavoriteAccount}
+        name="SendRecentAccount"
+        component={SendRecentAccount}
         options={{
-          title: '자주 보낸 계좌',
+          title: '최근 보낸 계좌',
           headerShown: false,
         }}
       />
@@ -108,6 +150,7 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
+      {/* 입력 페이지 */}
       <Stack.Screen
         name="SendInputPage"
         component={SendInputPage}
@@ -116,11 +159,21 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
+      {/* 결제 페이지 */}
       <Stack.Screen
-        name="ThreeBtn"
-        component={ThreeBtn}
+        name="PayMain"
+        component={PayMain}
         options={{
-          title: '금액을 입력하세요.',
+          title: '결제 페이지',
+          headerShown: false,
+        }}
+      />
+      {/* 설정 페이지 */}
+      <Stack.Screen
+        name="SettingsMain"
+        component={SettingsMain}
+        options={{
+          title: '설정 페이지',
           headerShown: false,
         }}
       />

@@ -2,57 +2,38 @@ import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import DefaultPage from '../../components/DefaultPage';
-
+import DefaultPage from '../../components/utils/DefaultPage';
+import {useHandlePress} from '../../components/utils/handlePress';
+import CheckCircle from '../../assets/CheckCircle.svg';
+import ArrowLeftIcon from '../../assets/ArrowLeft.svg';
+import HomeIcon from '../../assets/Home.svg';
+import CheckIcon from '../../assets/Check.svg';
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const {handlePressBack, handlePressHome} = useHandlePress();
 
-  // 유저 계좌 하드코딩 -> 추후 수정 필요
-  const selectedAccount = {
-    accountBalance: 1000000,
-    accountNo: '110262000720',
-    accountState: 'ACTIVE',
-    bankId: '001',
-    createdAt: '2025-04-03',
-    dailyTransferLimit: 1000000,
-    failedAttempts: 0,
-    id: 1,
-    oneTimeTransferLimit: 1000000,
-    updatedAt: '2025-04-03',
+  const handleCheckHistory = () => {
+    navigation.navigate('CheckHistory');
+    console.log('내역 조회 버튼 클릭');
   };
-
-  // 송금 내역 하드코딩 -> 추후 수정 필요
-  const history = [
-    {
-      id: 1,
-      transactionStatus: true,
-      transactionBankId: 1,
-      transactionBalance: 100000,
-      transactionAccount: '110262000720',
-      transactionAmount: 100000,
-      transactionType: 'WITHDRAW',
-      transactionDate: '2025-04-03',
-      transactionName: '홍길동',
-    },
-  ];
 
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="내역 조회"
-        LowerRightText="확인"
-        MainText={<Text>이체가 완료되었습니다.</Text>}
-        onUpperLeftTextPress={() => navigation.goBack()}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
-        onLowerLeftTextPress={() =>
-          navigation.navigate('CheckHistory', {
-            selectedAccount: selectedAccount,
-            history: history,
-          })
+        LowerRightText={<CheckIcon width={80} height={80} />}
+        MainText={
+          <View style={styles.mainTextContainer}>
+            <Text style={styles.mainText}>이체가 완료되었습니다.</Text>
+            <CheckCircle style={styles.checkCircle} />
+          </View>
         }
-        onLowerRightTextPress={() => navigation.navigate('Main')}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handleCheckHistory}
+        onLowerRightTextPress={handlePressHome}
       />
     </View>
   );
@@ -63,9 +44,9 @@ export default SendSuccess;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    marginTop: 50,
+    // paddingHorizontal: 20,
+    // paddingBottom: 20,
+    // marginTop: 50,
     backgroundColor: '#ffffff',
   },
   titleContainer: {
@@ -94,5 +75,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 100,
     height: 100,
+    color: '#7F35D4',
+  },
+  mainText: {
+    fontSize: 40,
+    fontWeight: '800',
+    color: '#7F35D4',
+  },
+  mainTextContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 50,
   },
 });

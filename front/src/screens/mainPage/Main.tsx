@@ -1,71 +1,78 @@
-import React from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  NativeModules,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
+import BarrierFree from '../../assets/BarrierFree.svg';
 
 const Main = () => {
   const {user} = useUserStore();
   const {accounts} = useAccountStore();
+  const {CustomVibration} = NativeModules;
+  const [lastTap, setLastTap] = useState(0);
+  const tapTimeout = useRef<NodeJS.Timeout | null>(null);
+
   console.log(user);
   console.log(accounts);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleUpperLeftTextPress = async () => {
-    const data = await getAccounts();
-    console.log(data);
+  const handleDefaultPress = async (
+    page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
+  ) => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
 
-    navigation.navigate('CheckHistory');
-  };
-
-  const handleUpperRightTextPress = () => {
-    navigation.navigate('SendMain');
-  };
-
-  const handleLowerLeftTextPress = () => {
-    // navigation.navigate('Payment');
-  };
-
-  const handleLowerRightTextPress = () => {
-    // navigation.navigate('Setting');
+    if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
+      // 더블 탭
+      if (tapTimeout.current) {
+        clearTimeout(tapTimeout.current);
+      }
+      CustomVibration.vibrateCustomSequence('double_tick');
+      const data = await getAccounts();
+      console.log(data);
+      navigation.navigate(page);
+    } else {
+      // 싱글 탭
+      CustomVibration.vibrateCustomSequence('tick');
+      tapTimeout.current = setTimeout(() => {
+        setLastTap(0);
+      }, DOUBLE_TAP_DELAY);
+    }
+    setLastTap(now);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.grid}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('CheckAccount')}>
-          <Text style={styles.text}>조회</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('SendFromWhere')}>
-          <Text style={styles.text}>송금</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>결제</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>마이 페이지</Text>
-        </TouchableOpacity>
-      </View> */}
       <DefaultPage
         UpperLeftText="조회"
         UpperRightText="송금"
         LowerLeftText="결제"
         LowerRightText="설정"
-        MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={handleLowerLeftTextPress}
-        onLowerRightTextPress={handleLowerRightTextPress}
+        MainText={
+          <View style={styles.mainTextContainer}>
+            <BarrierFree width={350} height={100} title="메인페이지" />
+            <Text style={styles.userName}>{user.username} 님, 환영합니다.</Text>
+          </View>
+        }
+        // MainText="메인 텍스트 들어갈 자리"
+        onUpperLeftTextPress={() => handleDefaultPress('CheckHistory')}
+        // onUpperLeftTextPress={handleUpperLeftTextPress}
+        onUpperRightTextPress={() => handleDefaultPress('SendMain')}
+        // onUpperRightTextPress={handleUpperRightTextPress}
+        onLowerLeftTextPress={() => handleDefaultPress('PayMain')}
+        onLowerRightTextPress={() => handleDefaultPress('SettingsMain')}
       />
     </SafeAreaView>
   );
@@ -79,26 +86,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  grid: {
-    // flex: 1,
-    width: '100%',
-    height: '90%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  button: {
-    width: '45%', // 2x2 그리드 배치
-    height: '50%',
-    backgroundColor: 'blue',
+  mainTextContainer: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
   },
-  text: {
+  userName: {
     fontSize: 40,
-    color: 'white',
+    color: '#7F35D4',
     fontWeight: 'bold',
+    marginTop: 20,
   },
 });
 
