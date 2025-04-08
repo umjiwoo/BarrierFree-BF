@@ -15,6 +15,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Svg, { Rect, Polygon, Text as SvgText } from 'react-native-svg';
+import { createLogger } from '../utils/logger';
 
 // 네이티브 모듈 가져오기
 const { CameraPreviewModule } = NativeModules;
@@ -24,7 +25,7 @@ const MODEL_FILE_NAME = 'sadtearsmallcat.tflite';
 const LABELS_FILE_NAME = 'sadtearsmallcatlabel.txt';
 
 // 모델 정보 타입 정의
-interface ModelInfo {
+export interface ModelInfo {
   modelName: string;
   inputWidth: number;
   inputHeight: number;
@@ -34,7 +35,7 @@ interface ModelInfo {
 }
 
 // 성능 정보 타입 정의
-interface PerformanceInfo {
+export interface PerformanceInfo {
   averageInferenceTime: number;
   minInferenceTime: number;
   maxInferenceTime: number;
@@ -58,45 +59,134 @@ interface DetectionResult {
   corners?: Array<{x: number, y: number}>;
 }
 
+// 카메라 스크린 전용 로거 생성
+const logger = createLogger('CameraScreen');
+
 const CameraScreen: React.FC = () => {
+  // 상태들
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [modelLoaded, setModelLoaded] = useState<boolean>(false);
   const [modelLoading, setModelLoading] = useState<boolean>(false);
-  const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-  const [performanceInfo, setPerformanceInfo] = useState<PerformanceInfo | null>(null);
   const [isDetecting, setIsDetecting] = useState<boolean>(false);
+  const [modelInfo, setModelInfo] = useState<any>(null);
+  const [performanceInfo, setPerformanceInfo] = useState<any>(null);
   const [detectionResults, setDetectionResults] = useState<DetectionResult[]>([]);
   const [detectionError, setDetectionError] = useState<string | null>(null);
+  // 디버그 로그를 저장할 상태
+  const [logMessages, setLogMessages] = useState<string[]>([]);
+  // 버튼 비활성화 상태 추가
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+
+  // 커스텀 로그 함수
+  const addLog = useCallback((message: string) => {
+    setLogMessages(prev => {
+      const newLogs = [`${new Date().toISOString().slice(11, 23)} - ${message}`, ...prev];
+      return newLogs.slice(0, 20); // 최대 20개 로그만 유지
+    });
+  }, []);
 
   // 이벤트 리스너 등록
   useEffect(() => {
-    console.log('이벤트 리스너 등록 시작');
+    addLog('이벤트 리스너 등록 시작');
+    logger.debug('이벤트 리스너 등록 시작 ===============================');
+    
+    // 이미 감지 중이었다면 중지 (안전장치)
+    if (isDetecting) {
+      CameraPreviewModule.stopObjectDetection()
+        .then(() => addLog('기존 감지 중지됨'))
+        .catch((err: unknown) => addLog(`기존 감지 중지 오류: ${err}`));
+    }
+    
     const eventEmitter = new NativeEventEmitter(CameraPreviewModule);
     
     // 사용 가능한 이벤트 리스너 로깅
-    console.log('CameraPreviewModule 확인:', CameraPreviewModule);
+    addLog(`CameraPreviewModule: ${JSON.stringify(CameraPreviewModule).slice(0, 100)}...`);
+    logger.debug('CameraPreviewModule 확인:', CameraPreviewModule);
     
     // DETECTION_EVENT의 실제 이름인 'onDetectionResults' 구독
-    const subscription = eventEmitter.addListener('onDetectionResults', (results) => {
-      console.log('감지 결과 수신:', JSON.stringify(results));
-      setDetectionResults(results);
+    const subscription = eventEmitter.addListener('onDetectionResults', (result) => {
+      try {
+        addLog(`감지 이벤트 수신됨: ${typeof result}`);
+        logger.debug('감지 결과 수신 ===============================');
+        logger.debug('결과 타입:' + typeof result);
+        
+        // 만약 이미 감지가 중지되었다면 이벤트 무시
+        if (!isDetecting) {
+          addLog('감지 중지 상태에서 이벤트 수신 - 무시');
+          return;
+        }
+        
+        // 결과가 배열인지 단일 객체인지 확인
+        let resultsArray: DetectionResult[] = [];
+        if (Array.isArray(result)) {
+          addLog(`배열 타입 감지 결과: ${result.length} 항목`);
+          resultsArray = result;
+        } else if (typeof result === 'object' && result !== null) {
+          addLog(`단일 객체 감지 결과: ${result.label || '라벨 없음'}`);
+          // 단일 객체를 배열로 변환
+          resultsArray = [result as DetectionResult];
+          
+          // 바운딩 박스 정보 디버깅 (렌더링에서는 로그를 제거했으므로 여기서 로깅)
+          if (resultsArray.length > 0 && resultsArray[0].boundingBox) {
+            const box = resultsArray[0].boundingBox;
+            addLog(`바운딩 박스: L:${box.left} T:${box.top} W:${box.width} H:${box.height}`);
+          }
+        } else {
+          addLog(`알 수 없는 형식의 감지 결과: ${JSON.stringify(result).substr(0, 50)}`);
+        }
+        
+        logger.debug('처리된 결과 길이:' + resultsArray.length);
+        logger.debug('결과 내용:' + JSON.stringify(resultsArray, null, 2));
+        
+        // 상태 업데이트 - 렌더링 최적화
+        if (isDetecting) {
+          setDetectionResults(resultsArray);
+        }
+      } catch (error) {
+        addLog(`감지 결과 처리 중 오류: ${error}`);
+        logger.error(`감지 결과 처리 중 오류: ${error}`);
+      }
     });
     
-    console.log('이벤트 리스너 등록 완료');
+    // 이벤트 리스너 목록 확인 (지원되는 경우)
+    if (eventEmitter.listenerCount) {
+      logger.debug('onDetectionResults 리스너 수:' + eventEmitter.listenerCount('onDetectionResults'));
+    }
+    
+    logger.debug('이벤트 리스너 등록 완료 ===============================');
 
-    // 컴포넌트 언마운트 시 이벤트 리스너 해제
+    // 컴포넌트 언마운트 또는 isDetecting 변경 시 이벤트 리스너 해제
     return () => {
-      console.log('이벤트 리스너 해제');
-      if (isDetecting) {
-        CameraPreviewModule.stopObjectDetection()
-          .then(() => console.log('객체 감지 중지됨'))
-          .catch((err: any) => console.error('감지 중지 오류:', err));
-      }
-      subscription.remove();
+      logger.debug('이벤트 리스너 해제 시작 ===============================');
+      
+      // 중복 호출 방지 - 참조 변수 사용
+      let isCleaning = false;
+      
+      const cleanUp = async () => {
+        if (isCleaning) return;
+        isCleaning = true;
+        
+        if (isDetecting) {
+          try {
+            await CameraPreviewModule.stopObjectDetection();
+            addLog('객체 감지 중지됨');
+            logger.debug('객체 감지 중지됨');
+          } catch (err) {
+            addLog(`감지 중지 오류: ${err}`);
+            logger.error('감지 중지 오류:' + err);
+          }
+        }
+        
+        subscription.remove();
+        addLog('이벤트 리스너 해제 완료');
+        logger.debug('이벤트 리스너 해제 완료 ===============================');
+      };
+      
+      cleanUp();
     };
-  }, [isDetecting]);
+  }, [isDetecting, addLog]);
 
   // 성능 정보 정기적 업데이트
   useEffect(() => {
@@ -178,32 +268,81 @@ const CameraScreen: React.FC = () => {
 
   // 감지 시작/중지 처리
   const toggleDetection = useCallback(() => {
-    if (isDetecting) {
-      CameraPreviewModule.stopObjectDetection()
-        .then(() => {
-          setIsDetecting(false);
-          setDetectionResults([]);
-          setDetectionError(null);
-        })
-        .catch((err: any) => {
-          console.error('감지 중지 오류:', err);
-          setDetectionError('감지 중지 오류: ' + err);
-        });
-    } else {
-      CameraPreviewModule.startObjectDetection(MODEL_FILE_NAME)
-        .then(() => {
-          setIsDetecting(true);
-          setDetectionError(null);
-        })
-        .catch((err: any) => {
-          console.error('감지 시작 오류:', err);
-          setDetectionError('감지 시작 오류: ' + err);
-        });
+    try {
+      if (isDetecting) {
+        addLog('객체 감지 중지 시도');
+        logger.debug('객체 감지 중지 시도 ===============================');
+        
+        // 버튼 비활성화 상태로 변경하여 중복 클릭 방지
+        setIsButtonDisabled(true);
+        
+        // 먼저 검출 결과 초기화 (렌더링 문제 방지)
+        setDetectionResults([]);
+        
+        CameraPreviewModule.stopObjectDetection()
+          .then(() => {
+            addLog('객체 감지 중지 성공');
+            logger.debug('객체 감지 중지 성공');
+            setIsDetecting(false);
+            setDetectionError(null);
+          })
+          .catch((err: any) => {
+            addLog(`감지 중지 오류: ${err}`);
+            logger.error('감지 중지 오류:' + err);
+            setDetectionError('감지 중지 오류: ' + err);
+          })
+          .finally(() => {
+            // 작업 완료 후 버튼 다시 활성화
+            setIsButtonDisabled(false);
+          });
+      } else {
+        addLog('객체 감지 시작 시도');
+        logger.debug('객체 감지 시작 시도 ===============================');
+        logger.debug('사용 모델:' + MODEL_FILE_NAME);
+        
+        // 버튼 비활성화 상태로 변경하여 중복 클릭 방지
+        setIsButtonDisabled(true);
+        
+        // 타임아웃 설정 - 5초 후에도 응답이 없으면 버튼 다시 활성화
+        const timeoutId = setTimeout(() => {
+          if (!isDetecting) {
+            addLog('객체 감지 시작 타임아웃');
+            setIsButtonDisabled(false);
+            setDetectionError('객체 감지 시작 타임아웃: 응답 없음');
+          }
+        }, 5000);
+        
+        CameraPreviewModule.startObjectDetection(MODEL_FILE_NAME)
+          .then(() => {
+            clearTimeout(timeoutId);
+            addLog('객체 감지 시작 성공');
+            logger.debug('객체 감지 시작 성공');
+            setIsDetecting(true);
+            setDetectionError(null);
+          })
+          .catch((err: any) => {
+            clearTimeout(timeoutId);
+            addLog(`감지 시작 오류: ${err}`);
+            logger.error('감지 시작 오류:' + err);
+            setDetectionError('감지 시작 오류: ' + err);
+          })
+          .finally(() => {
+            // 작업 완료 후 버튼 다시 활성화
+            setIsButtonDisabled(false);
+          });
+      }
+    } catch (error) {
+      // 예상치 못한 오류 발생 시 복구
+      addLog(`예상치 못한 오류: ${error}`);
+      logger.error(`예상치 못한 오류: ${error}`);
+      setIsDetecting(false);
+      setIsButtonDisabled(false);
+      setDetectionError(`예상치 못한 오류: ${error}`);
     }
-  }, [isDetecting]);
+  }, [isDetecting, addLog]);
 
   // 권한 요청 함수
-  const requestCameraPermission = async () => {
+  const requestCameraPermission = useCallback(async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -233,7 +372,7 @@ const CameraScreen: React.FC = () => {
       console.error('권한 요청 오류:', err);
       return false;
     }
-  };
+  }, [loadTFLiteModel]);
 
   // 컴포넌트 마운트 시 권한 확인
   useEffect(() => {
@@ -311,7 +450,7 @@ const CameraScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [hasCameraPermission, modelLoaded, modelLoading, loadTFLiteModel]);
+  }, [hasCameraPermission, modelLoaded, modelLoading, loadTFLiteModel, requestCameraPermission]);
 
   // 이미지 초기화 함수
   const resetImage = useCallback(() => {
@@ -377,69 +516,83 @@ const CameraScreen: React.FC = () => {
     );
   };
 
-  // 바운딩 박스 렌더링
-  const renderDetections = () => {
-    if (!isDetecting || detectionResults.length === 0) return null;
-
+  // 렌더링 최적화를 위한 메모이제이션 사용
+  const memoizedDetections = React.useMemo(() => {
+    if (!isDetecting || detectionResults.length === 0) {
+      return null;
+    }
+    
     return (
-      <View style={styles.detectionOverlay}>
+      <View style={styles.detectionOverlay} pointerEvents="none">
         <Svg height="100%" width="100%" viewBox={`0 0 ${SCREEN_WIDTH} ${SCREEN_HEIGHT}`}>
           {detectionResults.map((detection, index) => {
-            const { boundingBox, score, label, corners } = detection;
-            const color = getColorForLabel(label);
-            
-            if (corners) {
-              // 회전된 바운딩 박스 (OBB)
-              const pointsStr = corners.map(p => `${p.x},${p.y}`).join(' ');
-              return (
-                <React.Fragment key={index}>
-                  <Polygon
-                    points={pointsStr}
-                    stroke={color}
-                    strokeWidth="2"
-                    fill="transparent"
-                  />
-                  <SvgText
-                    x={corners[0].x}
-                    y={corners[0].y - 10}
-                    fill={color}
-                    fontSize="12"
-                    fontWeight="bold"
-                  >
-                    {`${label} ${Math.round(score * 100)}%`}
-                  </SvgText>
-                </React.Fragment>
-              );
-            } else {
-              // 일반 바운딩 박스 (AABB)
-              return (
-                <React.Fragment key={index}>
-                  <Rect
-                    x={boundingBox.left}
-                    y={boundingBox.top}
-                    width={boundingBox.width}
-                    height={boundingBox.height}
-                    stroke={color}
-                    strokeWidth="2"
-                    fill="transparent"
-                  />
-                  <SvgText
-                    x={boundingBox.left}
-                    y={boundingBox.top - 10}
-                    fill={color}
-                    fontSize="12"
-                    fontWeight="bold"
-                  >
-                    {`${label} ${Math.round(score * 100)}%`}
-                  </SvgText>
-                </React.Fragment>
-              );
+            try {
+              const { boundingBox, score, label, corners } = detection;
+              
+              if (!boundingBox) {
+                return null;
+              }
+              
+              const color = getColorForLabel(label || 'unknown');
+              
+              if (corners) {
+                // 회전된 바운딩 박스 (OBB)
+                const pointsStr = corners.map(p => `${p.x},${p.y}`).join(' ');
+                return (
+                  <React.Fragment key={index}>
+                    <Polygon
+                      points={pointsStr}
+                      stroke={color}
+                      strokeWidth="2"
+                      fill="transparent"
+                    />
+                    <SvgText
+                      x={corners[0].x}
+                      y={corners[0].y - 10}
+                      fill={color}
+                      fontSize="12"
+                      fontWeight="bold"
+                    >
+                      {`${label || 'unknown'} ${Math.round((score || 0) * 100)}%`}
+                    </SvgText>
+                  </React.Fragment>
+                );
+              } else {
+                // 일반 바운딩 박스 (AABB)
+                return (
+                  <React.Fragment key={index}>
+                    <Rect
+                      x={boundingBox.left}
+                      y={boundingBox.top}
+                      width={boundingBox.width}
+                      height={boundingBox.height}
+                      stroke={color}
+                      strokeWidth="2"
+                      fill="transparent"
+                    />
+                    <SvgText
+                      x={boundingBox.left}
+                      y={boundingBox.top - 10}
+                      fill={color}
+                      fontSize="12"
+                      fontWeight="bold"
+                    >
+                      {`${label || 'unknown'} ${Math.round((score || 0) * 100)}%`}
+                    </SvgText>
+                  </React.Fragment>
+                );
+              }
+            } catch (error) {
+              return null;
             }
           })}
         </Svg>
       </View>
     );
-  };
+  }, [isDetecting, detectionResults]);
+
+  // 바운딩 박스 렌더링 - 메모이제이션 사용
+  const renderDetections = () => memoizedDetections;
 
   // 레이블별 고유한 색상 생성
   const getColorForLabel = (label: string) => {
@@ -494,10 +647,12 @@ const CameraScreen: React.FC = () => {
               <TouchableOpacity 
                 style={[styles.button, isDetecting ? styles.buttonStop : styles.buttonStart]}
                 onPress={toggleDetection}
-                disabled={!modelLoaded}
+                disabled={!modelLoaded || isButtonDisabled}
               >
                 <Text style={styles.buttonText}>
-                  {isDetecting ? "객체 감지 중지" : "객체 감지 시작"}
+                  {isButtonDisabled 
+                    ? (isDetecting ? "처리 중..." : "처리 중...")
+                    : (isDetecting ? "객체 감지 중지" : "객체 감지 시작")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -521,6 +676,16 @@ const CameraScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       )}
+      
+      {/* 디버그 로그 컴포넌트 추가 */}
+      <View style={styles.debugLogContainer}>
+        <Text style={styles.debugLogTitle}>디버그 로그:</Text>
+        <ScrollView style={styles.debugLogScrollView}>
+          {logMessages.map((message, index) => (
+            <Text key={index} style={styles.debugLogText}>{message}</Text>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -669,6 +834,29 @@ const styles = StyleSheet.create({
   },
   buttonStop: {
     backgroundColor: '#FF6347',
+  },
+  debugLogContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 10,
+    maxHeight: 200,
+    zIndex: 5,
+  },
+  debugLogTitle: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  debugLogScrollView: {
+    maxHeight: 180,
+  },
+  debugLogText: {
+    color: '#ffffff',
+    fontSize: 10,
+    marginBottom: 2,
   },
 });
 

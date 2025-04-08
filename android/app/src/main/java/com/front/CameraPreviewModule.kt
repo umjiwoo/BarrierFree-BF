@@ -212,7 +212,10 @@ class CameraPreviewModule(private val reactContext: ReactApplicationContext) : R
     @ReactMethod
     fun startObjectDetection(modelName: String, promise: Promise) {
         try {
+            Log.d(TAG, "========== 객체 감지 시작 메서드 호출됨: $modelName ==========")
+            
             if (!modelFactory.isModelLoaded(modelName)) {
+                Log.e(TAG, "모델이 로드되지 않음: $modelName")
                 promise.reject("E_MODEL_NOT_LOADED", "모델이 로드되지 않았습니다")
                 return
             }
@@ -220,38 +223,65 @@ class CameraPreviewModule(private val reactContext: ReactApplicationContext) : R
             // 현재 활동 확인
             val currentActivity = currentActivity
             if (currentActivity == null) {
+                Log.e(TAG, "Activity가 존재하지 않음")
                 promise.reject("E_ACTIVITY_DOES_NOT_EXIST", "Activity doesn't exist")
                 return
+            }
+            
+            // 진행 중인 감지가 있으면 먼저 중지 (재진입 방지)
+            if (isDetectionEnabled) {
+                Log.d(TAG, "이미 감지 중, 기존 감지 중지 후 재시작")
+                stopObjectDetection(null)
             }
             
             // 감지 콜백 설정 및 시작
             isDetectionEnabled = true
             
-            // ModelManager에 DetectionCallback 등록하고 감지 시작
-            Log.d(TAG, "객체 감지 시작: $modelName")
+            // 테스트 데이터 직접 전송 - 실제 감지가 작동하는지 확인
+            try {
+                Log.d(TAG, "직접 테스트 데이터 생성")
+                
+                // WritableMap을 하나만 사용하여 단순화
+                val resultMap = Arguments.createMap()
+                
+                // 바운딩 박스 정보를 Map으로
+                val boxMap = Arguments.createMap()
+                boxMap.putDouble("left", 100.0)
+                boxMap.putDouble("top", 100.0)
+                boxMap.putDouble("right", 300.0)
+                boxMap.putDouble("bottom", 300.0)
+                boxMap.putDouble("width", 200.0)
+                boxMap.putDouble("height", 200.0)
+                
+                // 테스트 데이터 정보 설정
+                resultMap.putDouble("score", 0.95)
+                resultMap.putString("label", "테스트")
+                resultMap.putMap("boundingBox", boxMap)
+                
+                // 이벤트 발생 - 메인 스레드에서 안전하게 이벤트 발생
+                Log.d(TAG, "이벤트 단일 객체 전송 직전")
+                
+                // 핸들러를 통해 메인 스레드에서 이벤트 발생
+                reactContext.runOnUiQueueThread {
+                    try {
+                        if (reactContext.hasActiveReactInstance() && isDetectionEnabled) {
+                            Log.d(TAG, "UI 스레드에서 이벤트 전송")
+                            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                                ?.emit(DETECTION_EVENT, resultMap)
+                            Log.d(TAG, "UI 스레드에서 이벤트 전송 완료")
+                        } else {
+                            Log.e(TAG, "활성화된 React 인스턴스가 없거나 감지가 중지됨")
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "UI 스레드에서 이벤트 전송 중 오류", e)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "이벤트 전송 중 오류 발생", e)
+            }
             
-            // 테스트 데이터 전송 - 실제 감지가 작동하는지 확인
-            val testDetection = Arguments.createArray()
-            val detectionMap = Arguments.createMap()
-            detectionMap.putDouble("score", 0.95)
-            detectionMap.putString("label", "테스트")
-            
-            // 바운딩 박스 정보
-            val boxMap = Arguments.createMap()
-            boxMap.putDouble("left", 100.0)
-            boxMap.putDouble("top", 100.0)
-            boxMap.putDouble("right", 300.0)
-            boxMap.putDouble("bottom", 300.0)
-            boxMap.putDouble("width", 200.0)
-            boxMap.putDouble("height", 200.0)
-            
-            detectionMap.putMap("boundingBox", boxMap)
-            testDetection.pushMap(detectionMap)
-            
-            // 테스트 데이터 이벤트 전송
-            sendEvent(DETECTION_EVENT, testDetection)
-            
-            // 검출 결과 이벤트 활성화
+            // JS에 Promise로 응답
+            Log.d(TAG, "========== 객체 감지 시작 완료 ==========")
             promise.resolve(true)
         } catch (e: Exception) {
             Log.e(TAG, "객체 감지 시작 중 오류 발생", e)
@@ -260,14 +290,24 @@ class CameraPreviewModule(private val reactContext: ReactApplicationContext) : R
     }
     
     @ReactMethod
-    fun stopObjectDetection(promise: Promise) {
+    fun stopObjectDetection(promise: Promise?) {
         try {
+            Log.d(TAG, "객체 감지 중지 요청")
+            
+            // 이미 중지되었으면 바로 성공 반환
+            if (!isDetectionEnabled) {
+                Log.d(TAG, "이미 중지된 상태")
+                promise?.resolve(true)
+                return
+            }
+            
             isDetectionEnabled = false
-            Log.d(TAG, "객체 감지 중지")
-            promise.resolve(true)
+            Log.d(TAG, "객체 감지 중지 완료")
+            
+            promise?.resolve(true)
         } catch (e: Exception) {
             Log.e(TAG, "객체 감지 중지 중 오류 발생", e)
-            promise.reject("E_STOP_DETECTION_ERROR", "객체 감지 중지 중 오류 발생: ${e.message}")
+            promise?.reject("E_STOP_DETECTION_ERROR", "객체 감지 중지 중 오류 발생: ${e.message}")
         }
     }
     
@@ -328,18 +368,38 @@ class CameraPreviewModule(private val reactContext: ReactApplicationContext) : R
     }
     
     /**
-     * JS로 이벤트 전송
+     * JS로 이벤트 전송 - 안전한 방식으로 수정
      */
     private fun sendEvent(eventName: String, params: WritableMap) {
-        reactContext
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-            .emit(eventName, params)
+        try {
+            Log.d(TAG, "이벤트 전송 (Map) 시도: $eventName")
+            if (reactContext.hasActiveReactInstance()) {
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    ?.emit(eventName, params)
+                Log.d(TAG, "이벤트 전송 (Map) 완료: $eventName")
+            } else {
+                Log.e(TAG, "활성화된 React 인스턴스가 없어 이벤트 전송 불가: $eventName")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "이벤트 전송 중 오류 (Map)", e)
+        }
     }
     
     private fun sendEvent(eventName: String, params: WritableArray) {
-        reactContext
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-            .emit(eventName, params)
+        try {
+            Log.d(TAG, "이벤트 전송 (Array) 시도: $eventName")
+            if (reactContext.hasActiveReactInstance()) {
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    ?.emit(eventName, params)
+                Log.d(TAG, "이벤트 전송 (Array) 완료: $eventName")
+            } else {
+                Log.e(TAG, "활성화된 React 인스턴스가 없어 이벤트 전송 불가: $eventName")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "이벤트 전송 중 오류 (Array)", e)
+        }
     }
     
     @ReactMethod
@@ -356,13 +416,27 @@ class CameraPreviewModule(private val reactContext: ReactApplicationContext) : R
 
     override fun onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy()
-        if (mActivityEventListener != null) {
-            reactContext.removeActivityEventListener(mActivityEventListener)
-            mActivityEventListener = null
+        
+        Log.d(TAG, "onCatalystInstanceDestroy - 리소스 정리 시작")
+        
+        // 모든 리소스 정리
+        try {
+            // 감지 중지
+            isDetectionEnabled = false
+            
+            // 이벤트 리스너 정리
+            if (mActivityEventListener != null) {
+                reactContext.removeActivityEventListener(mActivityEventListener)
+                mActivityEventListener = null
+            }
+            
+            // 모델 정리
+            modelManager.release()
+            modelFactory.releaseAll()
+            
+            Log.d(TAG, "리소스 정리 완료")
+        } catch (e: Exception) {
+            Log.e(TAG, "리소스 정리 중 오류 발생", e)
         }
-        // 리소스 정리
-        isDetectionEnabled = false
-        modelManager.release()
-        modelFactory.releaseAll()
     }
 } 
