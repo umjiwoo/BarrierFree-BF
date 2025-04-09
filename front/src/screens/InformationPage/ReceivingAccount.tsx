@@ -23,11 +23,11 @@ const ReceivingAccountScreen: React.FC = () => {
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
+    // Alert.alert('송금하기 버튼 클릭됨!');
     navigation.navigate('SendInputPage', {
       type: 'money',
       selectedAccount: accountInfo,
     }); // 금액 입력 페이지로 이동
-    // alert('송금하기 버튼 클릭됨!');
   };
 
   return (
