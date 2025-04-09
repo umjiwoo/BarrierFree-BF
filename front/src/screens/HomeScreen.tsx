@@ -1,52 +1,69 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/types';
 
-const HomeScreen = ({navigation}: {navigation: any}) => {
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+const HomeScreen = () => {
+  const navigation = useNavigation<NavigationProp>();
+
   return (
     <View style={styles.container}>
-      <View style={styles.grid}>
-        <TouchableOpacity
-          style={styles.button}
-          // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
-          onPress={() => navigation.navigate('Main')}>
-          <Text style={styles.text}>test</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('CameraTest')}>
-          <Text style={styles.text}>카메라 테스트</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>홈 화면</Text>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Main')}>
+        <Text style={styles.buttonText}>메인으로 이동</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('CheckAccount')}>
+        <Text style={styles.buttonText}>계좌 조회</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('CameraTest')}>
+        <Text style={styles.buttonText}>카메라 테스트</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ObjectDetection')}>
+        <Text style={styles.buttonText}>주민등록증 인식</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    padding: 16,
   },
-  grid: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   button: {
-    width: '45%',
-    height: '45%',
-    backgroundColor: 'blue',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 5,
+    backgroundColor: '#4a90e2',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginVertical: 10,
   },
-  text: {
-    fontSize: 24,
+  buttonText: {
     color: 'white',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
+
+export default HomeScreen;

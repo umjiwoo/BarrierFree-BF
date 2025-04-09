@@ -27,4 +27,5 @@ export type RootStackParamList = {
     type?: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
   };
   ThreeBtn: undefined;
+  ObjectDetection: undefined;
 };

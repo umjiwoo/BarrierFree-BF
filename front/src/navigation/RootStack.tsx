@@ -15,6 +15,7 @@ import CheckAccount from '../screens/checkPage/CheckAccount';
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
 import CameraTest from '../screens/CameraTest';
+import ObjectDetection from '../screens/ObjectDetection';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -132,6 +133,14 @@ const RootStack = () => {
         component={CameraTest}
         options={{
           title: '카메라 테스트',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ObjectDetection"
+        component={ObjectDetection}
+        options={{
+          title: '주민등록증 인식',
           headerShown: false,
         }}
       />
