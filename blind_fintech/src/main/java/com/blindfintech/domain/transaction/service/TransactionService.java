@@ -1,8 +1,11 @@
 package com.blindfintech.domain.transaction.service;
 
+import com.blindfintech.common.dto.FcmMesssageDto;
 import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.common.exception.ExceptionResponse;
+import com.blindfintech.common.service.FcmMessageFactory;
+import com.blindfintech.common.service.FcmService;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
@@ -46,6 +49,7 @@ public class TransactionService {
 
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final UserService userService;
+    private final FcmService fcmService;
 
     private final List<BasicWebSocketHandler> webSocketHandlers;
 
@@ -145,5 +149,10 @@ public class TransactionService {
     public BuyerInfoDto getBuyerInfo(){
         User user = userService.getCurrentUser();
         return BuyerInfoDto.from(user);
+    }
+
+    public void sendNotification(PushMessageDto pushMessageDto){
+        FcmMesssageDto fcmMessage = FcmMessageFactory.from(pushMessageDto);
+        fcmService.sendNotification(fcmMessage);
     }
 }

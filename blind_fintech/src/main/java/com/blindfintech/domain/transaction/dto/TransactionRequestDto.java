@@ -1,8 +1,6 @@
 package com.blindfintech.domain.transaction.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
@@ -13,4 +11,5 @@ public class TransactionRequestDto {
     private Integer transactionAmount;
     private String transactionName;
     private String transactionWebSocketId;
+    private String accountPassword;
 }
