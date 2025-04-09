@@ -67,6 +67,7 @@ const SendAccountBox = ({
                 <Text style={styles.number}>{time}</Text>
               </View>
               <Text style={styles.bank}>{item.receiverName}</Text>
+              {/* <Text style={styles.bank}>1190101022222222</Text> */}
               <Text style={styles.bank}>{item.receiverAccount}</Text>
             </View>
           );

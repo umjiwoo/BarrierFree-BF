@@ -66,21 +66,6 @@ const getHistories = async (id: number): Promise<HistoryItemProps[]> => {
   }
 };
 
-const getTransactionsHistory = async (): Promise<any> => {
-  try {
-    const response = await axiosInstance.get('/api/transactions/history');
-    if (response.data.result.code === 200) {
-      console.log('최근 보낸 계좌 조회 성공: ', response.data.body);
-    } else {
-      console.log('최근 보낸 계좌 조회 실패');
-    }
-    return response.data.body;
-  } catch (error) {
-    console.error('최근 보낸 계좌 조회 실패:', error);
-    return [];
-  }
-};
-
 // 계좌 잠김 상태 조회 함수
 const getAccountLockStatus = async (id: number): Promise<boolean> => {
   try {
@@ -167,7 +152,6 @@ export {
   makeAccounts,
   getAccounts,
   getHistories,
-  getTransactionsHistory,
   getAccountLockStatus,
   postAccountPassword,
   postAccountUnlock,
