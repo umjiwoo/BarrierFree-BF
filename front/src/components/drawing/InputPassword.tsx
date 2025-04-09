@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -8,27 +8,27 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 
-import {useUserStore} from '../../stores/userStore';
-import { playTTS } from '../utils/tts';
+import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
-
+import {postCheckAccountPassword} from '../../api/axiosTransaction';
+import {useAccountStore} from '../../stores/accountStore';
 interface Props {
   type: string;
 }
 
-const InputPassword: React.FC<Props> = ({ type }) => {
+const InputPassword: React.FC<Props> = ({type}) => {
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(true);
-   
+
   const handlePrediction = (digit: string) => {
-    if (digit === "11") {
+    if (digit === '11') {
       console.log('"X" 지우기');
       deleteLastDigit();
-    } else if (digit === "10") {
+    } else if (digit === '10') {
       closeModal();
     } else {
       setPassword(prev => {
@@ -36,7 +36,7 @@ const InputPassword: React.FC<Props> = ({ type }) => {
           const updated = prev + digit;
           console.log('digit', digit);
           console.log('updated', updated);
-          playTTS(digit); 
+          playTTS(digit);
           if (updated.length === 4) {
             console.log('입력완료');
             setShowModal(false);
@@ -45,7 +45,7 @@ const InputPassword: React.FC<Props> = ({ type }) => {
         }
         return prev;
       });
-    }    
+    }
   };
 
   const renderPasswordDots = () => {
@@ -67,15 +67,38 @@ const InputPassword: React.FC<Props> = ({ type }) => {
   };
 
   const {handlePressBack, handlePressHome} = useHandlePress();
-  const {user} = useUserStore();
+  const {accounts} = useAccountStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+  const receiverAccountId = route.params?.receiverAccountId;
 
-  const handleSend = () => {
+  const handleSend = async () => {
     console.log('비밀번호 완료');
-    navigation.navigate('RemittanceConfirm', {selectedAccount: selectedAccount,money: money,});  // password 비밀번호
+
+    const response = await postCheckAccountPassword(
+      accounts.id,
+      Number(password),
+    );
+    if (response === true) {
+      navigation.navigate('RemittanceConfirm', {
+        selectedAccount: selectedAccount,
+        money: money,
+        password: password,
+        accountId: accounts.id,
+        receiverAccountId: receiverAccountId,
+      }); // password 비밀번호
+    } else if (response === 'wrong') {
+      playTTS('비밀번호가 틀렸습니다.');
+      setPassword('');
+    } else if (response === 'locked') {
+      playTTS(
+        '비밀번호 5회 입력 실패로 계좌가 잠겼습니다. 메인페이지로 돌아갑니다.',
+      );
+      setPassword('');
+      navigation.navigate('Main');
+    }
   };
 
   return (
@@ -89,9 +112,7 @@ const InputPassword: React.FC<Props> = ({ type }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>비밀번호 입력</Text>
             <Text style={styles.accountDisplay}>{renderPasswordDots()}</Text>
-            <DrawingModal 
-               visible={showModal}
-               onPredict={handlePrediction} />
+            <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={handlePressBack}
