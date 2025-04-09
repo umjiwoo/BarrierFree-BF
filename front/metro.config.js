@@ -17,7 +17,7 @@ const config = {
     }),
   },
   resolver: {
-    assetExts: ['png', 'jpg', 'jpeg', 'gif'],
+    assetExts: ['png', 'jpg', 'jpeg', 'gif', 'tflite'],
     sourceExts: ['js', 'jsx', 'json', 'ts', 'tsx', 'svg'],
   },
 };
