@@ -24,6 +24,16 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootStack = () => {
   return (
     <Stack.Navigator>
+      {/* 메인 페이지 */}
+      <Stack.Screen
+        name="Main"
+        component={Main}
+        options={{
+          title: '메인',
+          headerShown: false,
+          // 필요한 옵션 추가
+        }}
+      />
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -72,16 +82,6 @@ const RootStack = () => {
         options={{
           title: 'DefaultButton',
           headerShown: false,
-        }}
-      />
-      {/* 메인 페이지 */}
-      <Stack.Screen
-        name="Main"
-        component={Main}
-        options={{
-          title: '메인',
-          headerShown: false,
-          // 필요한 옵션 추가
         }}
       />
       {/* 조회 페이지 */}

@@ -19,6 +19,7 @@ import SettingIcon from '../../assets/icons/Settings.svg';
 import HistoryIcon from '../../assets/icons/History.svg';
 import SendIcon from '../../assets/icons/Send.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const Main = () => {
 
@@ -42,6 +43,7 @@ const Main = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  const handleDefaultPress = useTapNavigationHandler();
   // const handleDefaultPress = async (
   //   page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
   // ) => {
@@ -66,8 +68,6 @@ const Main = () => {
   //   }
   //   setLastTap(now);
   // };
-
-  const handleDefaultPress = (para: string) => {}
 
   return (
     <SafeAreaView style={styles.container}>
@@ -107,12 +107,12 @@ const Main = () => {
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={() => handleDefaultPress('CheckHistory')}
+        onUpperLeftTextPress={() => handleDefaultPress('조회', 'CheckHistory')}
         // onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={() => handleDefaultPress('SendMain')}
+        onUpperRightTextPress={() => handleDefaultPress('송금','SendMain')}
         // onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={() => handleDefaultPress('PayMain')}
-        onLowerRightTextPress={() => handleDefaultPress('SettingsMain')}
+        onLowerLeftTextPress={() => handleDefaultPress('결제','PayMain')}
+        onLowerRightTextPress={() => handleDefaultPress('설정','SettingsMain')}
       />
     </SafeAreaView>
   );
