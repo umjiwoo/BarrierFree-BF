@@ -81,11 +81,27 @@
 
 ## 5️⃣핵심 기술
 ### ✔️OCR
+1. 객체 인식
+2. OCR
+- OCR을 위한 ec2 서버 배포
+- Flask 서버를 통해 image를 POST 요청으로 보내면 Paddle OCR을 사용하여 이미지에서 텍스트 정보 추출
+- Python 정규식을 활용하여 이름, 주민번호 앞자리/뒷자리, 발급일자 검증 및 정확도 산출
+3. 진위여부 확인
+- 정확도 0.95이상일 경우 API를 통해 주민등록증 진위여부 확인
 
 ### ✔️MessageQue
 
 ### ✔️Viberation & TTS customizing
-
+1. 진동 모듈 커스텀
+- 진동의 세기 및 리듬으로 사용자에게 정보 전달
+    - 한번 탭 :약한 진동 한번
+    - 두번 탭 : 약한 진동 두번
+    - 성공 : _ -
+    - 실패 : _ _ —
+    - 경고 : — — —
+    - 드로잉 중 : 심장 박동 느낌
+    - 로딩 중 : 도로록 도로록
+    - 송금/결제 완료 : 게이지가가 차는 느낌
 <br>
 
 
@@ -98,11 +114,11 @@
 
 ## 7️⃣프로젝트 산출물
 ### 📌 ERD
-
+![ERD](./images/Blind_fin_ERD.PNG)
 ---
 
 ### 📌 Flow chart
-
+![FlowChart](./images/Flow_chart.png)
 
 ---
 
@@ -112,3 +128,4 @@
 ---
 
 ### 📌 API 문서
+[주민등록증 진위 여부 API](https://apick.app/dev_guide/identi_card1)
