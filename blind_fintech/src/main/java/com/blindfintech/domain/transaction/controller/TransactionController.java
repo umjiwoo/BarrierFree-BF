@@ -47,11 +47,10 @@ public class TransactionController {
         CheckAccountResultDto checkAccount = transactionService.checkAccount(
                 CheckAccountRequestDto.from(paymentRequest));
 
-        // TODO push 알림 보내기
-        // TODO 받을 사람 게좌 id/이름, transactionWebSocketId, transactionAmount 포함
-//        if(checkAccount != null){
-//            fcmService.sendPushNotification();
-//        }
+        if(checkAccount != null) {
+            transactionService.sendNotification(
+                    PushMessageDto.from(checkAccount, paymentRequest));
+        }
 
         return ResponseEntity.ok().body(ResponseDto.success(null));
     }
