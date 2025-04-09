@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class PaymentRequestDto {
-    private String fcmToken;
+    private Long userId;
     private String transactionWebSocketId;
     private String sellerAccountNo;
     private String sellerAccountBankCode;

@@ -9,12 +9,12 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class BuyerInfoDto {
-    private String fcmToken;
+    private Long userId;
     private String username;
 
     public static BuyerInfoDto from(User user){
         return BuyerInfoDto.builder()
-//TODO                .fcmToken(user.getFcmToken())
+                .userId(user.getId())
                 .username(user.getUsername())
                 .build();
     }
