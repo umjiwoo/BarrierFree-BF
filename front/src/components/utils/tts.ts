@@ -26,7 +26,7 @@ export const initializeTtsListeners = async () => {
   Tts.setDefaultLanguage('ko-KR'); 
 
   // Set the default speaking rate. Lower values are slower, and higher values are faster
-  Tts.setDefaultRate(2, true);
+  Tts.setDefaultRate(1, true);
 
   // Ignore the silent switch on the device, allowing TTS to play even if the device is set to silent
   Tts.setIgnoreSilentSwitch('ignore');
@@ -59,7 +59,7 @@ export const initializeTtsListeners = async () => {
 // Function to play a message using TTS
 export const playTTS = async (message: string) => {
   // Ensure TTS is initialized before speaking
-  Tts.getInitStatus().then(
+  await Tts.getInitStatus().then(
     (e) => {
       console.log('ALL OK TTS ✅'); // TTS is initialized successfully
     },
@@ -73,7 +73,21 @@ export const playTTS = async (message: string) => {
   );
 
   // Use TTS to speak the provided message
+  await Tts.stop();
   Tts.speak(message);
+};
+
+// Function to stop a message
+export const stopTTS = async () => {
+  try {
+    await Tts.getInitStatus();
+    Tts.stop();
+    console.log('🛑 TTS 중단 완료');
+  } catch (err: any) {
+    if (err.code === 'no_engine') {
+      console.log('❌ TTS 엔진 없음 (중단 요청)');
+    }
+  }
 };
 
 export const cleanupTTS = () => {
