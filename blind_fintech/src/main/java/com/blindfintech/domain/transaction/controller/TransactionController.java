@@ -1,7 +1,9 @@
 package com.blindfintech.domain.transaction.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
-import com.blindfintech.domain.accounts.repository.AccountRepository;
+import com.blindfintech.common.exception.ExceptionResponse;
+import com.blindfintech.domain.accounts.dto.IsCorrectPwdDto;
+import com.blindfintech.domain.accounts.service.AccountService;
 import com.blindfintech.domain.transaction.dto.*;
 import com.blindfintech.domain.transaction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.blindfintech.domain.accounts.exception.AccountExceptionCode.*;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     @GetMapping("/check-account")
     public ResponseEntity<ResponseDto<CheckAccountResultDto>> checkAccount(
@@ -30,9 +34,20 @@ public class TransactionController {
     @PostMapping("/send-money")
     public ResponseEntity<?> sendMoney(
             @RequestBody TransactionRequestDto transactionRequestDto){
+        IsCorrectPwdDto passwordValidationCheck = accountService.validatePassword(
+                transactionRequestDto.getSenderAccountId(),
+                transactionRequestDto.getAccountPassword());
 
-        transactionService.produceSendMoney(transactionRequestDto);
-        return ResponseEntity.ok().body(ResponseDto.success(null));
+        if(passwordValidationCheck.isCorrect()) {
+            transactionService.produceSendMoney(transactionRequestDto);
+
+            return ResponseEntity.ok().body(ResponseDto.success(null));
+        }else{
+            return ResponseEntity.ok().body(ResponseDto.error(
+                    new ExceptionResponse(
+                            WRONG_PASSWORD.getCode(),
+                            WRONG_PASSWORD.getMessage())));
+        }
     }
 
     @GetMapping("/history")
@@ -58,10 +73,20 @@ public class TransactionController {
     @PostMapping("/accept-payment")
     public ResponseEntity<?> acceptPayment(
             @RequestBody TransactionRequestDto transactionRequestDto){
-        // TODO 선택된 계좌, 비밀번호 매칭 확인
-        transactionService.produceSendMoney(transactionRequestDto);
+        IsCorrectPwdDto passwordValidationCheck = accountService.validatePassword(
+                transactionRequestDto.getSenderAccountId(),
+                transactionRequestDto.getAccountPassword());
 
-        return ResponseEntity.ok().body(ResponseDto.success(null));
+        if(passwordValidationCheck.isCorrect()) {
+            transactionService.produceSendMoney(transactionRequestDto);
+
+            return ResponseEntity.ok().body(ResponseDto.success(null));
+        }else{
+            return ResponseEntity.ok().body(ResponseDto.error(
+                    new ExceptionResponse(
+                            WRONG_PASSWORD.getCode(),
+                            WRONG_PASSWORD.getMessage())));
+        }
     }
 
     @GetMapping("/buyer-info")
