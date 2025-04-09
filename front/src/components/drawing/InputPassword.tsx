@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/native';
 
 import {useUserStore} from '../../stores/userStore';
-import {initializeTtsListeners, playTTS, cleanupTTS} from './Tts.ts';
+import { playTTS } from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -23,18 +23,7 @@ interface Props {
 const InputPassword: React.FC<Props> = ({ type }) => {
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(true);
-  
-  useEffect(() => {
-    initializeTtsListeners();  // tts
-
-    // 언마운트시 이벤트 제거
-    return () => {
-      // shakeListener.remove();
-      cleanupTTS();
-    };
-  }, []);
-
-  
+   
   const handlePrediction = (digit: string) => {
     if (digit === "11") {
       console.log('"X" 지우기');

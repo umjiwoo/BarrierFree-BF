@@ -8,6 +8,8 @@ import CheckCircle from '../../assets/icons/CheckCircle.svg';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -16,6 +18,11 @@ const SendSuccess = () => {
     navigation.navigate('CheckHistory');
     console.log('내역 조회 버튼 클릭');
   };
+
+  useTTSOnFocus(`
+    송금이 완료 되었습니다.
+    내역을 확인하시려면 왼쪽 아래를, 메인 화면으로 돌아가시려면 오른쪽 아래를 눌러주세요.
+  `)
 
   return (
     <View style={styles.container}>

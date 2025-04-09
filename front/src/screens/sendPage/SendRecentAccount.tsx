@@ -8,8 +8,18 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {getTransactionsHistory} from '../../api/axiosAccount';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 
 const SendFavoriteAccount = () => {
+
+  useTTSOnFocus(`
+    최근 송금한 계좌 목록입니다.
+    화면 가운데를 좌우로 움직여 송금할 계좌를 선택해주세요.
+    계좌 번호를 직접 입력하시려면 왼쪽 아래를,
+    선택을 완료하시려면 오른쪽 아래를 눌러주세요.
+    왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
+  `)
+
   const {handlePressBack, handlePressHome} = useHandlePress();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
