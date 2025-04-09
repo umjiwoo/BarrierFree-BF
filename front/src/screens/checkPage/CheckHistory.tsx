@@ -1,16 +1,19 @@
 import {View, StyleSheet, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import CheckAccountBox from './CheckAccountBox';
 import {getHistories} from '../../api/axiosAccount';
-import {
-  // AccountItemProps,
-  HistoryItemProps,
-} from '../../components/types/CheckAccount';
-import DefaultPage from '../../components/DefaultPage';
+import {HistoryItemProps} from '../../components/types/CheckAccount';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useAccountStore} from '../../stores/accountStore';
-
+import {RootStackParamList} from '../../navigation/types';
+import {useHandlePress} from '../../components/utils/handlePress';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import NextIcon from '../../assets/icons/Next.svg';
+import PreviousIcon from '../../assets/icons/Prev.svg';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 // const histories: HistoryItemProps[] = [
 //   {
 //     id: 1,
@@ -48,19 +51,21 @@ import {useAccountStore} from '../../stores/accountStore';
 // ];
 
 const CheckHistory = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  useTTSOnFocus(`
+    계좌 내역 화면입니다.
+    화면 가운데를 좌우로 움직여 계좌 내역을 조회할 수 있습니다.
+    왼쪽 아래와 오른쪽 아래 버튼을 눌러도 계좌 내역을 넘길 수 있습니다.
+    내역을 선택하시면 상세 정보를 확인하실 수 있습니다.
+    왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
+  `);
+
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {accounts} = useAccountStore();
+  const {handlePressBack, handlePressHome} = useHandlePress();
 
   const [histories, setHistories] = useState<HistoryItemProps[]>([]);
   const [_isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const fetchAccounts = async () => {
-  //     const data = await getHistories(accounts.id);
-  //     setHistories(data);
-  //   };
-  //   fetchAccounts();
-  // }, [accounts.id]);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -80,25 +85,40 @@ const CheckHistory = () => {
     fetchAccounts();
   }, [accounts?.id]);
 
+  const carouselRef = useRef<any>(null);
+
   const handleSelectHistory = (item: HistoryItemProps) => {
     // 계좌 선택 시 처리할 로직
     navigation.navigate('CheckHistoryDetail', {
       history: item as HistoryItemProps,
     });
   };
+
+  const handleLowerLeftTextPress = () => {
+    if (carouselRef.current) {
+      carouselRef.current.prev();
+    }
+  };
+
+  const handleLowerRightTextPress = () => {
+    if (carouselRef.current) {
+      carouselRef.current.next();
+    }
+  };
+
   if (!accounts) {
     return (
       <View style={styles.container}>
         <DefaultPage
-          UpperLeftText="이전으로"
-          UpperRightText="홈"
+          UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+          UpperRightText={<HomeIcon width={80} height={80} />}
           MainText={
             <View>
               <Text>등록된 계좌가 없습니다. 계좌를 먼저 생성해주세요.</Text>
             </View>
           }
-          onUpperLeftTextPress={() => navigation.goBack()}
-          onUpperRightTextPress={() => navigation.navigate('Main')}
+          onUpperLeftTextPress={handlePressBack}
+          onUpperRightTextPress={handlePressHome}
         />
       </View>
     );
@@ -106,35 +126,28 @@ const CheckHistory = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Title title="내역 조회" /> */}
-      {/* 선택된 계좌 정보 표시 */}
-      {/* <View style={styles.accountInfo}>
-        <Text style={styles.accountBank}>{accounts?.accountBank}</Text>
-        <Text style={styles.accountNumber}>{accounts?.accountNo}</Text>
-        <Text style={styles.balance}>잔액: {accounts?.accountBalance}원</Text>
-      </View> */}
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
-        LowerLeftText="<"
-        LowerRightText=">"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        // UpperLeftText={<GoBackIcon width={100} height={100} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
+        LowerLeftText={<PreviousIcon width={100} height={100} />}
+        LowerRightText={<NextIcon width={100} height={100} />}
         MainText={
-          <CheckAccountBox data={histories} onSelect={handleSelectHistory} />
+          histories.length === 0 ? (
+            <Text>거래 내역이 없습니다.</Text>
+          ) : (
+            <CheckAccountBox
+              data={histories}
+              onSelect={handleSelectHistory}
+              carouselRef={carouselRef}
+            />
+          )
         }
-        onUpperLeftTextPress={() => navigation.goBack()}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
-        onLowerLeftTextPress={() => {}}
-        onLowerRightTextPress={() => {}}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handleLowerLeftTextPress}
+        onLowerRightTextPress={handleLowerRightTextPress}
       />
-
-      {/* 버튼 */}
-      {/* <View style={styles.buttonContainer}>
-        <BackButton
-          text="이전으로"
-          onPress={() => navigation.goBack()}
-          type="back"
-        />
-      </View> */}
     </View>
   );
 };
@@ -148,41 +161,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-  },
-  buttonContainer: {
-    width: '100%',
-    bottom: 0,
-  },
-  accountInfo: {
-    width: '100%',
-    // marginBottom: 10,
-    paddingBottom: 10,
-    borderBottomWidth: 3,
-    borderColor: '#373DCC',
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  accountBank: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  accountNumber: {
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  balanceContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 5,
-  },
-  balanceTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  balance: {
-    fontSize: 35,
-    fontWeight: 'bold',
   },
 });

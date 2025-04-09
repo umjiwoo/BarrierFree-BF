@@ -1,71 +1,117 @@
-import React from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  NativeModules,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import {getAccounts} from '../../api/axiosAccount';
+import BarrierFree from '../../assets/icons/BarrierFree.svg';
+import ChargeIcon from '../../assets/icons/Charge.svg';
+import SettingIcon from '../../assets/icons/Settings.svg';
+import HistoryIcon from '../../assets/icons/History.svg';
+import SendIcon from '../../assets/icons/Send.svg';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 
 const Main = () => {
+  useTTSOnFocus(`
+    메인 화면입니다.
+    계좌 조회를 원하시면 왼쪽 위,
+    송금을 원하시면 오른쪽 위,
+    결제를 원하시면 왼쪽 아래,
+    설정을 원하시면 오른쪽 아래를 눌러주세요.
+  `);
+
   const {user} = useUserStore();
   const {accounts} = useAccountStore();
+  const {CustomVibration} = NativeModules;
+  const [lastTap, setLastTap] = useState(0);
+  const tapTimeout = useRef<NodeJS.Timeout | null>(null);
+
   console.log(user);
   console.log(accounts);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleUpperLeftTextPress = async () => {
-    const data = await getAccounts();
-    console.log(data);
+  const handleDefaultPress = useTapNavigationHandler();
+  // const handleDefaultPress = async (
+  //   page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
+  // ) => {
+  //   const now = Date.now();
+  //   const DOUBLE_TAP_DELAY = 300;
 
-    navigation.navigate('CheckHistory');
-  };
-
-  const handleUpperRightTextPress = () => {
-    navigation.navigate('SendMain');
-  };
-
-  const handleLowerLeftTextPress = () => {
-    navigation.navigate('Payment');
-  };
-
-  const handleLowerRightTextPress = () => {
-    // navigation.navigate('Setting');
-  };
+  //   if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
+  //     // 더블 탭
+  //     if (tapTimeout.current) {
+  //       clearTimeout(tapTimeout.current);
+  //     }
+  //     CustomVibration.vibrateCustomSequence('double_tick');
+  //     const data = await getAccounts();
+  //     console.log(data);
+  //     navigation.navigate(page);
+  //   } else {
+  //     // 싱글 탭
+  //     CustomVibration.vibrateCustomSequence('tick');
+  //     tapTimeout.current = setTimeout(() => {
+  //       setLastTap(0);
+  //     }, DOUBLE_TAP_DELAY);
+  //   }
+  //   setLastTap(now);
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.grid}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('CheckAccount')}>
-          <Text style={styles.text}>조회</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('SendFromWhere')}>
-          <Text style={styles.text}>송금</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>결제</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>마이 페이지</Text>
-        </TouchableOpacity>
-      </View> */}
       <DefaultPage
-        UpperLeftText="조회"
-        UpperRightText="송금"
-        LowerLeftText="결제"
-        LowerRightText="설정"
-        MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={handleLowerLeftTextPress}
-        onLowerRightTextPress={handleLowerRightTextPress}
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <HistoryIcon width={110} height={110} />
+            <Text style={styles.text}>조회</Text>
+          </View>
+        }
+        // UpperLeftText="조회"
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <SendIcon width={150} height={110} />
+            <Text style={styles.text}>송금</Text>
+          </View>
+        }
+        // UpperRightText="송금"
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <ChargeIcon width={110} height={110} />
+            <Text style={styles.text}>결제</Text>
+          </View>
+        }
+        // LowerLeftText="결제"
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <SettingIcon width={110} height={110} />
+            <Text style={styles.text}>설정</Text>
+          </View>
+        }
+        // LowerRightText="설정"
+        MainText={
+          <View style={styles.mainTextContainer}>
+            <BarrierFree width={350} height={100} title="메인페이지" />
+            <Text style={styles.userName}>{user.username} 님, 환영합니다.</Text>
+          </View>
+        }
+        // MainText="메인 텍스트 들어갈 자리"
+        onUpperLeftTextPress={() => handleDefaultPress('조회', 'CheckHistory')}
+        // onUpperLeftTextPress={handleUpperLeftTextPress}
+        onUpperRightTextPress={() => handleDefaultPress('송금', 'SendMain')}
+        // onUpperRightTextPress={handleUpperRightTextPress}
+        onLowerLeftTextPress={() => handleDefaultPress('결제', 'PayMain')}
+        onLowerRightTextPress={() => handleDefaultPress('설정', 'SettingsMain')}
       />
     </SafeAreaView>
   );
@@ -79,26 +125,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  grid: {
-    // flex: 1,
-    width: '100%',
-    height: '90%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  button: {
-    width: '45%', // 2x2 그리드 배치
-    height: '50%',
-    backgroundColor: 'blue',
+  mainTextContainer: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
+  },
+  userName: {
+    fontSize: 40,
+    color: '#7F35D4',
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   text: {
-    fontSize: 40,
-    color: 'white',
+    fontSize: 35,
+    color: '#ffffff',
     fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

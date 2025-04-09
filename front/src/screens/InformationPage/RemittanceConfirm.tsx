@@ -7,49 +7,54 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import DetailBox from '../../components/information/DetailBoxInformation';
+import {useHandlePress} from '../../components/utils/handlePress';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import {useUserStore} from '../../stores/userStore';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 
 const ReceivingConfirmScreen: React.FC = () => {
+  const {handlePressBack, handlePressHome} = useHandlePress();
+  const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+
+  useTTSOnFocus(`
+    ${selectedAccount.receiverName}님에게 ${money}원을 송금하시겠습니까?
+    취소하시려면 왼쪽 아래를, 송금하시려면 오른쪽 아래를 눌러주세요.
+    왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
+  `);
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
     navigation.navigate('SendSuccess');
   };
 
-  const handleBack = () => {
-    console.log('이전으로 버튼 클릭');
-    navigation.goBack();
-  };
-
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="취소"
         LowerRightText="송금하기"
         MainText={
-          <View>
+          <View style={styles.mainTextContainer}>
             <DetailBox
-              recipient={selectedAccount.name}
-              bank={selectedAccount.accountBank}
-              account={selectedAccount.accountNumber}
-              remitter="박수연"
+              recipient={selectedAccount.receiverName}
+              receiverAccount={selectedAccount.receiverAccount}
+              remitter={user.username}
               amount={money}
             />
-            <Text style={{fontSize: 20, fontWeight: 'bold', margin: 20}}>
-              송금하시겠습니까?
-            </Text>
+            <Text style={styles.confirmText}>송금하시겠습니까?</Text>
           </View>
         }
-        onUpperLeftTextPress={handleBack}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
-        onLowerLeftTextPress={handleBack}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handlePressBack}
         onLowerRightTextPress={handleSend}
       />
     </View>
@@ -59,35 +64,27 @@ const ReceivingConfirmScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // height: '100%',
     // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    marginTop: 50,
+    // paddingHorizontal: 20,
+    // paddingVertical: 20,
+    // marginTop: 50,
   },
-  buttonContainer: {
+  confirmText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    // marginTop: 20,
+    marginBottom: 30,
+    textAlign: 'center',
+    color: '#7F35D4',
+  },
+  mainTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
-    bottom: 0,
-  },
-  sendButton: {
-    backgroundColor: '#373DCC',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  backButton: {
-    backgroundColor: '#B6010E',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 20,
   },
 });
 

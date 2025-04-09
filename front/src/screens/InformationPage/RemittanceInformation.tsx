@@ -8,14 +8,28 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import DefaultPage from '../../components/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage';
 import {RootStackParamList} from '../../navigation/types';
+import {useHandlePress} from '../../components/utils/handlePress';
+import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
+import HomeIcon from '../../assets/icons/Home.svg';
+import {useUserStore} from '../../stores/userStore';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const {handlePressBack, handlePressHome} = useHandlePress();
   const route =
     useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+  const {user} = useUserStore();
+
+  useTTSOnFocus(`
+    ${selectedAccount.receiverName}님에게 ${money}원을 송금하시겠습니까?
+    취소하시려면 왼쪽 아래를, 송금하시려면 오른쪽 아래를 눌러주세요.
+    왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
+  `);
 
   const handleSend = () => {
     navigation.navigate('SendInputPage', {
@@ -26,33 +40,27 @@ const ReceivingInformationScreen: React.FC = () => {
     console.log('송금하기 버튼 클릭');
   };
 
-  const handleBack = () => {
-    navigation.goBack();
-    console.log('이전으로 버튼 클릭');
-  };
-
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText="이전으로"
-        UpperRightText="홈"
+        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+        UpperRightText={<HomeIcon width={80} height={80} />}
         LowerLeftText="취소"
         LowerRightText="송금하기"
         MainText={
-          <View>
-            <Text>송금 정보를 확인하세요.</Text>
+          <View style={styles.mainTextContainer}>
+            <Text style={styles.mainText}>송금 정보를 확인하세요.</Text>
             <DetailBox
-              recipient={selectedAccount.name}
-              bank={selectedAccount.accountBank}
-              account={selectedAccount.accountNumber}
-              remitter="박수연"
+              recipient={selectedAccount.receiverName}
+              receiverAccount={selectedAccount.receiverAccount}
+              remitter={user.username}
               amount={money}
             />
           </View>
         }
-        onUpperLeftTextPress={handleBack}
-        onUpperRightTextPress={() => navigation.navigate('Main')}
-        onLowerLeftTextPress={handleSend}
+        onUpperLeftTextPress={handlePressBack}
+        onUpperRightTextPress={handlePressHome}
+        onLowerLeftTextPress={handlePressBack}
         onLowerRightTextPress={handleSend}
       />
     </View>
@@ -65,32 +73,22 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
+    // paddingVertical: 20,
+    // marginTop: 50,
+  },
+  mainText: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#7F35D4',
+  },
+  mainTextContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     paddingVertical: 20,
-    marginTop: 50,
-  },
-  buttonContainer: {
-    width: '100%',
-    bottom: 0,
-  },
-  sendButton: {
-    backgroundColor: '#373DCC',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  backButton: {
-    backgroundColor: '#B6010E',
-    width: '100%',
-    height: 70,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 20,
+    // justifyContent: 'center',
   },
 });
 

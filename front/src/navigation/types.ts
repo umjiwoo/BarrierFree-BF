@@ -1,25 +1,29 @@
 import {
-  // AccountItemProps,
   HistoryItemProps,
   TestAccountItemProps,
+  GoodsItemProps,
 } from '../components/types/CheckAccount';
 
 export type RootStackParamList = {
   HomeScreen: undefined;
+  CreateAccountScreen: undefined;
+  CreateAccountGoodsDetail: {
+    goods: GoodsItemProps;
+  };
+  CreateAccountCheck: {
+    goods: GoodsItemProps;
+  };
+  CreateAccountSuccess: {
+    goods: GoodsItemProps;
+  };
   Main: undefined;
   DefaultButton: undefined;
-  // CheckAccount: {
-  //   selectedAccount: AccountItemProps;
-  // };
   CheckHistory: undefined;
-  // CheckHistory: {
-  //   history: HistoryItemProps;
-  // };
   CheckHistoryDetail: {
     history: HistoryItemProps;
   };
   SendMain: undefined;
-  SendFavoriteAccount: undefined;
+  SendRecentAccount: undefined;
   SendSuccess: undefined;
   ReceivingAccountScreen: {
     selectedAccount: TestAccountItemProps;
@@ -36,8 +40,10 @@ export type RootStackParamList = {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
     selectedAccount?: TestAccountItemProps;
     money?: number;
+    goods?: GoodsItemProps;
   };
-  ThreeBtn: undefined;
+  PayMain: undefined;
+  SettingsMain: undefined;
   Payment: undefined;
   PaymentConfirm: {
     accountNumber: string;

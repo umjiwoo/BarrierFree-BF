@@ -1,8 +1,21 @@
 export interface TestAccountItemProps {
+  receiverName: string;
+  receiverAccount: string;
+}
+
+export interface GoodsItemProps {
+  id: number;
   name: string;
-  date: string;
-  accountBank: string;
-  accountNumber: string;
+  description: {
+    상품개요: string;
+    가입대상: string;
+    상품특징: string;
+    예금과목: string;
+    저축방법: string;
+    거래한도: string;
+    약관: string;
+  };
+  interestRate: number;
 }
 
 export interface AccountItemProps {

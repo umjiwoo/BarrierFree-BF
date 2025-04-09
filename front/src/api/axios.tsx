@@ -18,8 +18,8 @@ export interface SignUpUserProps {
 
 // axios 인스턴스 생성
 export const axiosInstance = axios.create({
-  // baseURL: 'http://j12a208.p.ssafy.io:8080',
-  baseURL: 'http://10.0.2.2:8080', // Android 에뮬레이터에서 localhost 접근
+  baseURL: 'http://j12a208.p.ssafy.io:8080',
+  // baseURL: 'http://10.0.2.2:8080', // Android 에뮬레이터에서 localhost 접근
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
