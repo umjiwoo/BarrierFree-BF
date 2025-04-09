@@ -13,6 +13,7 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {useUserStore} from '../../stores/userStore';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 
 const ReceivingConfirmScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -21,6 +22,12 @@ const ReceivingConfirmScreen: React.FC = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+
+  useTTSOnFocus(`
+    ${selectedAccount.receiverName}님에게 ${money}원을 송금하시겠습니까?
+    취소하시려면 왼쪽 아래를, 송금하시려면 오른쪽 아래를 눌러주세요.
+    왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
+  `)
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');

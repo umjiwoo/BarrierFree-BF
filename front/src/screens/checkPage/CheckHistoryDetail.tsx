@@ -8,11 +8,22 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import formatDateManually from '../../components/utils/makeDate';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 
 const CheckHistoryDetail = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
   const history = route.params?.history;
+  const dateInfo = formatDateManually(history.transactionDate);
+  const transactionType = history.transactionType === 'DEPOSIT' ? '입금' : '출금';
+
+  useTTSOnFocus(`
+    ${dateInfo.date} ${dateInfo.time}에 ${history.transactionName}에서 ${transactionType}되었습니다.
+    금액은 ${history.transactionAmount}이며, 거래 후 잔액은 ${history.transactionBalance}입니다.
+    계좌번호는 ${history.transactionAccount.split('').join(' ')}입니다.
+    아래 버튼을 누르면 계좌 조회 페이지로 이동됩니다.
+    왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
+  `)
 
   return (
     <View style={styles.container}>
