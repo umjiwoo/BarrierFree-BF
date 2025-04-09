@@ -24,7 +24,7 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final AccountService accountService;
 
-    @GetMapping("/check-account")
+    @PostMapping("/check-account")
     public ResponseEntity<ResponseDto<CheckAccountResultDto>> checkAccount(
             @RequestBody CheckAccountRequestDto accountInfo) {
         CheckAccountResultDto checkAccountResultDto= transactionService.checkAccount(accountInfo);
