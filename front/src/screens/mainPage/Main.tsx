@@ -42,30 +42,32 @@ const Main = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleDefaultPress = async (
-    page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
-  ) => {
-    const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300;
+  // const handleDefaultPress = async (
+  //   page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
+  // ) => {
+  //   const now = Date.now();
+  //   const DOUBLE_TAP_DELAY = 300;
 
-    if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
-      // 더블 탭
-      if (tapTimeout.current) {
-        clearTimeout(tapTimeout.current);
-      }
-      CustomVibration.vibrateCustomSequence('double_tick');
-      const data = await getAccounts();
-      console.log(data);
-      navigation.navigate(page);
-    } else {
-      // 싱글 탭
-      CustomVibration.vibrateCustomSequence('tick');
-      tapTimeout.current = setTimeout(() => {
-        setLastTap(0);
-      }, DOUBLE_TAP_DELAY);
-    }
-    setLastTap(now);
-  };
+  //   if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
+  //     // 더블 탭
+  //     if (tapTimeout.current) {
+  //       clearTimeout(tapTimeout.current);
+  //     }
+  //     CustomVibration.vibrateCustomSequence('double_tick');
+  //     const data = await getAccounts();
+  //     console.log(data);
+  //     navigation.navigate(page);
+  //   } else {
+  //     // 싱글 탭
+  //     CustomVibration.vibrateCustomSequence('tick');
+  //     tapTimeout.current = setTimeout(() => {
+  //       setLastTap(0);
+  //     }, DOUBLE_TAP_DELAY);
+  //   }
+  //   setLastTap(now);
+  // };
+
+  const handleDefaultPress = (para: string) => {}
 
   return (
     <SafeAreaView style={styles.container}>
