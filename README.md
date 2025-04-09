@@ -58,8 +58,10 @@
 ## 4️⃣기술 스택
 ### BackEnd
 - Java
+- Python
 - Spring Boot
 - Spring JPA
+- Flask
 - MySQL
 - Redis
 - Web Socket
