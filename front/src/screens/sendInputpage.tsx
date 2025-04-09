@@ -14,6 +14,11 @@ import {
 } from '../components/types/CheckAccount';
 import {useHandlePress} from '../components/utils/handlePress';
 
+// 숫자 입력
+import InputAccount from '../components/drawing/InputAccount';
+import InputAmount from '../components/drawing/InputAmount';
+import InputPassword from '../components/drawing/InputPassword';
+
 // 라우트 파라미터 타입 정의
 type SendInputPageParams = {
   SendInputPage: {
@@ -99,77 +104,80 @@ const SendInputPage = () => {
     } else if (type === 'directOtherAccount') {
       // 2. 상대방 계좌 직접 입력을 받는 경우
       return (
-        <View style={styles.contentContainer}>
-          <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
-          <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                navigation.navigate('SendInputPage', {type: 'money'});
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              type="back"
-              onPress={handlePressBack}
-            />
-          </View>
-        </View>
+        <InputAccount type={type}/>
+        // <View style={styles.contentContainer}>
+        //   <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
+        //   <View style={styles.buttonContainer}>
+        //     <BackButton
+        //       text="확인"
+        //       type="input"
+        //       onPress={() => {
+        //         navigation.navigate('SendInputPage', {type: 'money'});
+        //       }}
+        //     />
+        //     <BackButton
+        //       text="뒤로 가기"
+        //       type="back"
+        //       onPress={handlePressBack}
+        //     />
+        //   </View>
+        // </View>
       );
     } else if (type === 'money') {
       // 3. 금액 입력을 받는 경우
       return (
-        <View style={styles.contentContainer}>
-          <Text style={styles.text}>금액 입력 화면입니다.</Text>
-          <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                navigation.navigate('RemittanceInformation', {
-                  money: 0,
-                  selectedAccount: selectedAccount,
-                });
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              type="back"
-              onPress={handlePressBack}
-            />
-          </View>
-        </View>
+        <InputAmount type={type}/>
+        // <View style={styles.contentContainer}>
+        //   <Text style={styles.text}>금액 입력 화면입니다.</Text>
+        //   <View style={styles.buttonContainer}>
+        //     <BackButton
+        //       text="확인"
+        //       type="input"
+        //       onPress={() => {
+        //         navigation.navigate('RemittanceInformation', {
+        //           money: 0,
+        //           selectedAccount: selectedAccount,
+        //         });
+        //       }}
+        //     />
+        //     <BackButton
+        //       text="뒤로 가기"
+        //       type="back"
+        //       onPress={handlePressBack}
+        //     />
+        //   </View>
+        // </View>
       );
     } else if (type === 'password') {
       // 4. 비밀번호 입력을 받는 경우
       return (
-        <View style={styles.contentContainer}>
-          <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
-          <View style={styles.buttonContainer}>
-            <BackButton
-              text="확인"
-              type="input"
-              onPress={() => {
-                if (selectedAccount) {
-                  navigation.navigate('RemittanceConfirm', {
-                    selectedAccount: selectedAccount,
-                    money: money,
-                  });
-                } else {
-                  navigation.navigate('CreateAccountSuccess', {
-                    goods: goods,
-                  });
-                }
-              }}
-            />
-            <BackButton
-              text="뒤로 가기"
-              type="back"
-              onPress={handlePressBack}
-            />
-          </View>
-        </View>
+        <InputPassword type={type}/>
+        // <View style={styles.contentContainer}>
+        //   <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
+        //   <View style={styles.buttonContainer}>
+        //     <BackButton
+        //       text="확인"
+        //       type="input"
+        //       onPress={() => {
+        //         if (selectedAccount) {
+        //           navigation.navigate('RemittanceConfirm', {
+        //             selectedAccount: selectedAccount,
+        //             money: money,
+        //           });
+        //         } else {
+        //           navigation.navigate('CreateAccountSuccess', {
+        //             goods: goods,
+        //           });
+        //         }
+        //       }}
+        //     />
+        //     <BackButton
+        //       text="뒤로 가기"
+        //       type="back"
+        //       onPress={handlePressBack}
+        //     />
+        //   </View>
+        // </View>
       );
     }
   };
