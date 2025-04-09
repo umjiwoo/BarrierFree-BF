@@ -4,7 +4,7 @@ import {loginUser, sendFcmToken} from '../api/axiosUser';
 import {useUserStore} from '../stores/userStore';
 import {useAccountStore} from '../stores/accountStore';
 import {getAccounts} from '../api/axiosAccount';
-import { getFCMToken, foregroundMessageListener, backgroundMessageOpenedListener, checkInitialNotification }from '../firebase/messaging';
+import { getFCMToken, foregroundMessageListener, backgroundMessageOpenedListener }from '../firebase/messaging';
 // import {UserItemProps} from '../components/types/UserInfo';
 
 const HomeScreen = ({navigation}: {navigation: any}) => {
@@ -32,7 +32,7 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
     console.log(fcmToken);
 
     const accountData = await getAccounts();
-    console.log(accountData);
+    console.log('계좌: ',accountData);
     setAccounts(accountData[0]);
 
     navigation.navigate('Main');
