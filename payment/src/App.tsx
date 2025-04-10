@@ -4,7 +4,7 @@ import './App.css';
 const App = () => {
   const socketRef = useRef<WebSocket | null>(null);
   const [wsId, setWsId] = useState('');
-  const [expiresAt, setExpiresAt] = useState('');
+  // const [expiresAt, setExpiresAt] = useState('');
   const [username, setUsername] = useState('');
   const [userId, setuserId] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
@@ -13,7 +13,7 @@ const App = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setExpiresAt(params.get('expiresAt') || '');
+    // setExpiresAt(params.get('expiresAt') || '');
     setUsername(params.get('userName') || '');
     setuserId(params.get('userId') || '');
 
