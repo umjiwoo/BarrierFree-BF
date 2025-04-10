@@ -6,7 +6,7 @@ const App = () => {
   const [wsId, setWsId] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [username, setUsername] = useState('');
-  const [fcmToken, setFcmToken] = useState('');
+  const [userId, setuserId] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [amount, setAmount] = useState('');
   const [status, setStatus] = useState<'idle' | 'waiting' | 'approved'>('idle');
@@ -15,7 +15,7 @@ const App = () => {
     const params = new URLSearchParams(window.location.search);
     setExpiresAt(params.get('expiresAt') || '');
     setUsername(params.get('userName') || '');
-    setFcmToken(params.get('fcmToken') || '');
+    setuserId(params.get('userId') || '');
 
     const newWsId = Math.random().toString(36).substring(2);
     setWsId(newWsId);
@@ -49,7 +49,7 @@ const App = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        fcmToken: fcmToken,
+        userId: userId,
         transactionWebSocketId: wsId, // wsId를 그대로 사용
         sellerAccountNo: accountNumber,
         sellerAccountBankCode: '911', // 또는 선택 옵션으로 처리 가능

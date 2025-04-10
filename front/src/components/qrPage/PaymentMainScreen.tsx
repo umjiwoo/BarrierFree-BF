@@ -47,14 +47,6 @@ const PaymentScreen = () => {
 
     // 백엔드에서 구매자 정보 받아오기
     try {
-      // const response: AxiosResponse<ApiResponse> = await axiosInstance.get(
-      //   '/api/transactions/buyer-info',
-      // );
-      // setBuyerInfo(response.data.body);
-      // // const buyerInfo = response.data;
-      // console.log('구매자 정보', buyerInfo);
-
-      // FCM 토큰 발급
       const response: AxiosResponse<ApiResponse> = await axiosInstance.get(
         '/api/transactions/buyer-info',
       );
@@ -62,10 +54,19 @@ const PaymentScreen = () => {
       // const buyerInfo = response.data;
       console.log('구매자 정보', buyerInfo);
 
+      // FCM 토큰 발급
+      // const response: AxiosResponse<ApiResponse> = await axiosInstance.get(
+      //   '/api/transactions/buyer-info',
+      // );
+      // setBuyerInfo(response.data.body);
+      // // const buyerInfo = response.data;
+      // console.log('구매자 정보', buyerInfo);
+
 
       // TODO : 판매자용 페이지 넘어갈 수 있게 react 정적 배포 필요
       // setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&buyerId=${buyerInfo.userId}&buyerName=${buyerInfo.username}`);
-      setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${user.username}&fcmToken=${user.fcmToken}`);
+      // setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${user.username}&fcmToken=${user.fcmToken}`);
+      setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${user.username}&userId=${user.id}`);
   
       // 이렇게 QR 생성 값 넣으면 찍고 바로 넘어가지는 거 확인
       // setQrValue('http://j12a208.p.ssafy.io:8080/api/swagger-ui/index.html');
