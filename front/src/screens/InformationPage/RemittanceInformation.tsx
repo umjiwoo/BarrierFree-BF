@@ -23,6 +23,7 @@ const ReceivingInformationScreen: React.FC = () => {
     useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+  const receiverAccountId = route.params?.receiverAccountId;
   const {user} = useUserStore();
 
   useTTSOnFocus(`
@@ -36,6 +37,7 @@ const ReceivingInformationScreen: React.FC = () => {
       type: 'password',
       selectedAccount: selectedAccount,
       money: money,
+      receiverAccountId: receiverAccountId,
     });
     console.log('송금하기 버튼 클릭');
   };
