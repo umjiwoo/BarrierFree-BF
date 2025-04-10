@@ -9,14 +9,10 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import formatDateManually from '../../components/utils/makeDate';
+import {TestAccountItemProps} from '../../components/types/CheckAccount.ts';
 
 interface SendAccountBoxProps {
-  accountData: Array<{
-    // name: string;
-    transactionDate: string;
-    // accountBank: string;
-    receiverAccount: string;
-  }>;
+  accountData: Array<TestAccountItemProps>;
   onSelectAccount: (account: any) => void;
   selectedAccount: any;
   onSnapToItem?: (index: number) => void;
@@ -73,6 +69,8 @@ const SendAccountBox = ({
                 <Text style={styles.number}>{date}</Text>
                 <Text style={styles.number}>{time}</Text>
               </View>
+              <Text style={styles.bank}>{item.receiverName}</Text>
+              {/* <Text style={styles.bank}>1190101022222222</Text> */}
               <Text style={styles.bank}>{item.receiverAccount}</Text>
             </View>
           );

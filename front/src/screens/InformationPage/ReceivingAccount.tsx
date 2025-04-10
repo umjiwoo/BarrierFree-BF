@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {
   NavigationProp,
@@ -11,12 +11,14 @@ import DetailBox from '../../components/information/DetailBoxAccount';
 import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../components/utils/handlePress';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {postCheckAccount} from '../../api/axiosTransaction';
+import {useAccountStore} from '../../stores/accountStore';
 
 const ReceivingAccountScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -25,21 +27,41 @@ const ReceivingAccountScreen: React.FC = () => {
   const route =
     useRoute<RouteProp<RootStackParamList, 'ReceivingAccountScreen'>>();
   const accountInfo = route.params?.selectedAccount;
+  console.log('accountInfo: ', accountInfo);
+
+  const {accounts} = useAccountStore();
+  const [checkAccount, setCheckAccount] = useState<any>(null);
+  console.log('accounts: ', accounts);
+
+  useEffect(() => {
+    const fetchCheckAccounts = async () => {
+      const checkAccounts = await postCheckAccount();
+      // setAccountData(checkAccounts);
+      if (checkAccounts.length === 0) {
+        console.log('계좌 조회 실패');
+      } else {
+        setCheckAccount(checkAccounts);
+        console.log('계좌 조회 성공: ', checkAccounts);
+      }
+    };
+    fetchCheckAccounts();
+  }, [accountInfo.receiverAccount]);
 
   useTTSOnFocus(`
     ${accountInfo.receiverName}님에게 송금할 계좌입니다.
     계좌번호는 ${accountInfo.receiverAccount.split('').join(' ')}입니다.
     취소하시려면 왼쪽 아래를, 송금하시려면 오른쪽 아래를 눌러주세요.
     왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const handleSend = () => {
     console.log('송금하기 버튼 클릭');
+    // Alert.alert('송금하기 버튼 클릭됨!');
     navigation.navigate('SendInputPage', {
       type: 'money',
       selectedAccount: accountInfo,
+      receiverAccountId: checkAccount.receiverAccountId,
     }); // 금액 입력 페이지로 이동
-    // alert('송금하기 버튼 클릭됨!');
   };
 
   return (

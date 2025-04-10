@@ -12,6 +12,7 @@ import CheckIcon from '../../assets/icons/Check.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import PaymentMainScreen from '../../components/qrPage/PaymentMainScreen';
 
 const PayMain = () => {
   // const navigation =

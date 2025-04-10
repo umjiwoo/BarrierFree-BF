@@ -2,15 +2,15 @@ import {create} from 'zustand';
 import {AccountItemProps} from '../components/types/CheckAccount';
 
 interface AccountState {
-  accounts: AccountItemProps[];
+  accounts: AccountItemProps;
   selectedAccount: AccountItemProps | null;
-  setAccounts: (accounts: AccountItemProps[]) => void;
+  setAccounts: (accounts: AccountItemProps) => void;
   setSelectedAccount: (account: AccountItemProps) => void;
 }
 
 export const useAccountStore = create<AccountState>(set => ({
-  accounts: [],
-  selectedAccount: null,
+  accounts: {} as AccountItemProps,
+  selectedAccount: {} as AccountItemProps,
   setAccounts: accounts => set({accounts}),
   setSelectedAccount: account => set({selectedAccount: account}),
 }));

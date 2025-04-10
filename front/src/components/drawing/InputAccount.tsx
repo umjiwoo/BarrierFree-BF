@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/native';
 
 import {useUserStore} from '../../stores/userStore';
-import { playTTS } from '../utils/tts';
+import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -37,9 +37,9 @@ const InputAccount: React.FC<Props> = ({ type }) => {
 
   const [accountNumber, setAccountNumber] = useState('');
   const [showModal, setShowModal] = useState(true);
-  
+
   const handlePrediction = (digit: string) => {
-    if (digit === "11") {
+    if (digit === '11') {
       console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
@@ -48,10 +48,10 @@ const InputAccount: React.FC<Props> = ({ type }) => {
       playTTS('입력 완료');
       playTTS(accountNumber);
     } else {
-      console.log('digit', digit)
+      console.log('digit', digit);
       setAccountNumber(prev => prev + digit);
-      playTTS(digit);    // 현재 digit 읽기    
-    }    
+      playTTS(digit); // 현재 digit 읽기
+    }
   };
 
   const deleteLastDigit = () => {
@@ -78,7 +78,7 @@ const InputAccount: React.FC<Props> = ({ type }) => {
 
   const handleSend = () => {
     console.log('계좌 입력 완료');
-    navigation.navigate('ReceivingAccountScreen', {selectedAccount});  // 입력한 계좌로 변경(accountNumber)
+    navigation.navigate('ReceivingAccountScreen', {selectedAccount}); // 입력한 계좌로 변경(accountNumber)
   };
 
   return (
@@ -111,10 +111,10 @@ const InputAccount: React.FC<Props> = ({ type }) => {
         MainText={
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>계좌번호 입력</Text>
-            <Text style={styles.accountDisplay}>{accountNumber || '계좌번호를 입력해주세요'}</Text>
-            <DrawingModal 
-               visible={showModal}
-               onPredict={handlePrediction} />
+            <Text style={styles.accountDisplay}>
+              {accountNumber || '계좌번호를 입력해주세요'}
+            </Text>
+            <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}

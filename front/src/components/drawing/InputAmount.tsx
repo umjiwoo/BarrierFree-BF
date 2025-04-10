@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native';
 import { TestAccountItemProps } from '../../components/types/CheckAccount';
 import {useUserStore} from '../../stores/userStore';
-import { playTTS } from '../utils/tts';
+import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -36,9 +36,9 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
 
   const [amountNumber, setAmountNumber] = useState('');
   const [showModal, setShowModal] = useState(true);
-  
+
   const handlePrediction = (digit: string) => {
-    if (digit === "11") {
+    if (digit === '11') {
       console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
@@ -47,10 +47,10 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
       playTTS('입력 완료');
       playTTS(amountNumber);
     } else {
-      console.log('digit', digit)
+      console.log('digit', digit);
       setAmountNumber(prev => prev + digit);
-      playTTS(digit);    // 현재 digit 읽기    
-    }    
+      playTTS(digit); // 현재 digit 읽기
+    }
   };
 
   const deleteLastDigit = () => {
@@ -79,7 +79,8 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
   };
 
   const renderAmountNumber = () => {
-    if (!amountNumber || isNaN(Number(amountNumber))) return '송금할 금액을 입력해주세요';
+    if (!amountNumber || isNaN(Number(amountNumber)))
+      return '송금할 금액을 입력해주세요';
     return Number(amountNumber).toLocaleString('ko-KR') + '원';
   };
 
@@ -114,9 +115,7 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>금액 입력</Text>
             <Text style={styles.accountDisplay}>{renderAmountNumber()}</Text>
-            <DrawingModal 
-               visible={showModal}
-               onPredict={handlePrediction} />
+            <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}

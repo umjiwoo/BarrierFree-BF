@@ -54,14 +54,13 @@ import formatDateManually from '../../components/utils/makeDate';
 // ];
 
 const CheckHistory = () => {
-
   useTTSOnFocus(`
     계좌 내역 화면입니다.
     화면 가운데를 좌우로 움직여 계좌 내역을 조회할 수 있습니다.
     왼쪽 아래와 오른쪽 아래 버튼을 눌러도 계좌 내역을 넘길 수 있습니다.
     내역을 선택하시면 상세 정보를 확인하실 수 있습니다.
     왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();

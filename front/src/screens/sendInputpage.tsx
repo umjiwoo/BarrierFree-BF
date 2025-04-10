@@ -25,6 +25,7 @@ type SendInputPageParams = {
   SendInputPage: {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
     selectedAccount?: TestAccountItemProps;
+    receiverAccountId?: number;
     money?: number;
     goods?: GoodsItemProps;
   };
@@ -45,9 +46,10 @@ const SendInputPage = () => {
 
   // 라우트 파라미터에서 type 가져오기
   const route = useRoute<SendInputPageRouteProp>();
-  const {type, selectedAccount} = route.params || {
+  const {type, selectedAccount, receiverAccountId} = route.params || {
     type: 'directMyAccount',
     selectedAccount: null,
+    receiverAccountId: null,
   }; // 기본값 설정
   const money = route.params?.money;
   const goods = route.params?.goods;
@@ -106,7 +108,7 @@ const SendInputPage = () => {
     } else if (type === 'directOtherAccount') {
       // 2. 상대방 계좌 직접 입력을 받는 경우
       return (
-        <InputAccount type={type}/>
+        <InputAccount type={type} />
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>

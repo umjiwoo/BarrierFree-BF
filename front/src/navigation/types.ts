@@ -31,17 +31,31 @@ export type RootStackParamList = {
   RemittanceConfirm: {
     money: number;
     selectedAccount: TestAccountItemProps;
+    password: string;
+    accountId: number;
+    receiverAccountId?: number;
   };
   RemittanceInformation: {
     money: number;
-    selectedAccount: TestAccountItemProps;
+    selectedAccount: any;
+    receiverAccountId?: number;
   };
   SendInputPage: {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
     selectedAccount?: TestAccountItemProps;
+    receiverAccountId?: number;
     money?: number;
     goods?: GoodsItemProps;
   };
   PayMain: undefined;
   SettingsMain: undefined;
+  Payment: undefined;
+  PaymentConfirm: {
+    accountNumber: string;
+    amount: number;
+    sessionId: string;
+  };
+  AcceptPaymentScreen: {
+    messageData: JSON;
+  };
 };

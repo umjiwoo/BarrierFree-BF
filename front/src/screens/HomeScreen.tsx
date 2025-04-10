@@ -1,14 +1,25 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React from 'react';
-import {loginUser} from '../api/axiosUser';
+import React, {useEffect, useState} from 'react';
+import {loginUser, sendFcmToken} from '../api/axiosUser';
 import {useUserStore} from '../stores/userStore';
 import {useAccountStore} from '../stores/accountStore';
 import {getAccounts} from '../api/axiosAccount';
+import {
+  getFCMToken,
+  foregroundMessageListener,
+  backgroundMessageOpenedListener,
+} from '../firebase/messaging';
 // import {UserItemProps} from '../components/types/UserInfo';
 import { useTTSOnFocus } from '../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../components/utils/useTapNavigationHandler ';
 import VolumeIcon from '../assets/icons/Volume.svg';
 
+// type HomeScreenNavigationProp = NativeStackNavigationProp<
+//   RootStackParamList,
+//   'HomeScreen'
+// >;
+
+// const HomeScreen = () => {
 const HomeScreen = ({navigation}: {navigation: any}) => {
 
   useTTSOnFocus(`
@@ -31,8 +42,15 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
     console.log(data);
     setUser(data.body);
 
+    const fcmToken = await sendFcmToken({
+      fcmToken: await getFCMToken(),
+      userId: data.body.id,
+    });
+
+    console.log(fcmToken);
+
     const accountData = await getAccounts();
-    console.log(accountData);
+    console.log('계좌: ', accountData);
     setAccounts(accountData[0]);
 
     navigation.navigate('CreateAccountScreen');

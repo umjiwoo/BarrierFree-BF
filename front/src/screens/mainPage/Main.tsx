@@ -24,14 +24,13 @@ import { useTapNavigationHandler } from '../../components/utils/useTapNavigation
 import { center } from '@shopify/react-native-skia';
 
 const Main = () => {
-
   useTTSOnFocus(`
     메인 화면입니다.
     계좌 조회를 원하시면 왼쪽 위,
     송금을 원하시면 오른쪽 위,
     결제를 원하시면 왼쪽 아래,
     설정을 원하시면 오른쪽 아래를 눌러주세요.
-  `)
+  `);
 
   const {user} = useUserStore();
   const {accounts} = useAccountStore();

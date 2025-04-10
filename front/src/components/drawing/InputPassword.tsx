@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -43,9 +43,9 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
 
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(true);
-   
+
   const handlePrediction = (digit: string) => {
-    if (digit === "11") {
+    if (digit === '11') {
       console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
@@ -59,7 +59,7 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
           const updated = prev + digit;
           console.log('digit', digit);
           console.log('updated', updated);
-          playTTS(digit); 
+          playTTS(digit);
           if (updated.length === 4) {
             console.log('입력완료');
             playTTS('입력 완료');
@@ -70,7 +70,7 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
         }
         return prev;
       });
-    }    
+    }
   };
 
   const renderPasswordDots = () => {
@@ -96,10 +96,10 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
   const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const handleSend = () => {
+  const handleSend = async () => {
     console.log('비밀번호 완료');
     if (selectedAccount && money){
-      navigation.navigate('RemittanceConfirm', {selectedAccount: selectedAccount, money: money,});  // password 비밀번호
+      navigation.navigate('RemittanceConfirm', {selectedAccount: selectedAccount, money: money});  // password 비밀번호
     } else if (goods) {
       navigation.navigate('CreateAccountSuccess', {goods: goods});
     }
@@ -136,9 +136,7 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>비밀번호 입력</Text>
             <Text style={styles.accountDisplay}>{renderPasswordDots()}</Text>
-            <DrawingModal 
-               visible={showModal}
-               onPredict={handlePrediction} />
+            <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}

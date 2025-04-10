@@ -12,13 +12,12 @@ import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const SendMain = () => {
-
   useTTSOnFocus(`
     송금 화면입니다.
     계좌 번호를 직접 입력하려면 왼쪽 아래,
     최근 계좌를 선택하시려면 오른쪽 아래를 눌러주세요.
     왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const {handlePressBack, handlePressHome} = useHandlePress();
   const handleDefaultPress = useTapNavigationHandler();
