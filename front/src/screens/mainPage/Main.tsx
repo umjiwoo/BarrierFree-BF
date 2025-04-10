@@ -107,12 +107,12 @@ const Main = () => {
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={() => handleDefaultPress('조회', 'CheckHistory')}
+        onUpperLeftTextPress={() => handleDefaultPress('조회', ['CheckHistory'])}
         // onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={() => handleDefaultPress('송금','SendMain')}
+        onUpperRightTextPress={() => handleDefaultPress('송금',['SendMain'])}
         // onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={() => handleDefaultPress('결제','PayMain')}
-        onLowerRightTextPress={() => handleDefaultPress('설정','SettingsMain')}
+        onLowerLeftTextPress={() => handleDefaultPress('결제',['PayMain'])}
+        onLowerRightTextPress={() => handleDefaultPress('설정',['SettingsMain'])}
       />
     </SafeAreaView>
   );

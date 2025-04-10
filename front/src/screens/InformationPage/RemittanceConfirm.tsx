@@ -14,9 +14,12 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {useUserStore} from '../../stores/userStore';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+
 
 const ReceivingConfirmScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
@@ -52,10 +55,10 @@ const ReceivingConfirmScreen: React.FC = () => {
             <Text style={styles.confirmText}>송금하시겠습니까?</Text>
           </View>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handleSend}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerRightTextPress={() => handleDefaultPress('송금하기', undefined, handleSend)}
       />
     </View>
   );

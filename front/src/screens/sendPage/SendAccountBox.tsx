@@ -19,6 +19,7 @@ interface SendAccountBoxProps {
   }>;
   onSelectAccount: (account: any) => void;
   selectedAccount: any;
+  onSnapToItem?: (index: number) => void;
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
@@ -28,6 +29,7 @@ const SendAccountBox = ({
   accountData,
   onSelectAccount,
   selectedAccount,
+  onSnapToItem,
 }: SendAccountBoxProps) => {
   useEffect(() => {
     if (accountData.length > 0) {
@@ -40,6 +42,7 @@ const SendAccountBox = ({
     const currentIndex = Math.round(contentOffset.x / SCREEN_WIDTH);
     if (currentIndex >= 0 && currentIndex < accountData.length) {
       onSelectAccount(accountData[currentIndex]);
+      onSnapToItem?.(currentIndex);
     }
   };
 

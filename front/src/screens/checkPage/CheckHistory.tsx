@@ -14,6 +14,9 @@ import HomeIcon from '../../assets/icons/Home.svg';
 import NextIcon from '../../assets/icons/Next.svg';
 import PreviousIcon from '../../assets/icons/Prev.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { playTTS } from '../../components/utils/tts';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import formatDateManually from '../../components/utils/makeDate';
 // const histories: HistoryItemProps[] = [
 //   {
 //     id: 1,
@@ -64,6 +67,7 @@ const CheckHistory = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {accounts} = useAccountStore();
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
 
   const [histories, setHistories] = useState<HistoryItemProps[]>([]);
   const [_isLoading, setIsLoading] = useState(true);
@@ -87,13 +91,50 @@ const CheckHistory = () => {
   }, [accounts?.id]);
 
   const carouselRef = useRef<any>(null);
+  
+  // 캐러셀
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentItem = histories[currentIndex];
 
   const handleSelectHistory = (item: HistoryItemProps) => {
-    // 계좌 선택 시 처리할 로직
-    navigation.navigate('CheckHistoryDetail', {
-      history: item as HistoryItemProps,
-    });
-  };
+    const typeLabel =
+      item.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+    const [hour, minute] = formatDateManually(item.transactionDate).time.split(':');
+
+    const message = [
+      `${formatDateManually(item.transactionDate).date}`,
+      `${hour}시 ${minute}분`,
+      `${item.transactionName}`,
+      `${item.transactionAmount.toLocaleString()}원`,
+      `${typeLabel}되었습니다.`,
+    ].join('\n\n');
+  
+      handleDefaultPress(message, ['CheckHistoryDetail', {history: item}])
+    };
+    
+  useEffect(() => {
+    if (currentItem) {
+      const typeLabel =
+      currentItem.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+      const [hour, minute] = formatDateManually(currentItem.transactionDate).time.split(':');
+      const message = [
+        `${formatDateManually(currentItem.transactionDate).date}`,
+        `${hour}시 ${minute}분`,
+        `${currentItem.transactionName}`,
+        `${currentItem.transactionAmount.toLocaleString()}원`,
+        `${typeLabel}되었습니다.`,
+      ].join('\n\n');
+      
+      playTTS(message);
+    }
+  }, [currentIndex]);
+
+  // const handleSelectHistory = (item: HistoryItemProps) => {
+  //   // 계좌 선택 시 처리할 로직
+  //   navigation.navigate('CheckHistoryDetail', {
+  //     history: item as HistoryItemProps,
+  //   });
+  // };
 
   const handleLowerLeftTextPress = () => {
     if (carouselRef.current) {
@@ -141,11 +182,12 @@ const CheckHistory = () => {
               data={histories}
               onSelect={handleSelectHistory}
               carouselRef={carouselRef}
+              onSnapToItem={setCurrentIndex}
             />
           )
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
         onLowerLeftTextPress={handleLowerLeftTextPress}
         onLowerRightTextPress={handleLowerRightTextPress}
       />

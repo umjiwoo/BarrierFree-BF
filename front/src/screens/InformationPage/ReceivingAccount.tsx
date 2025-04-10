@@ -14,9 +14,11 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const ReceivingAccountScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const route =
     useRoute<RouteProp<RootStackParamList, 'ReceivingAccountScreen'>>();
@@ -54,10 +56,10 @@ const ReceivingAccountScreen: React.FC = () => {
             />
           </View>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handleSend}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerRightTextPress={() => handleDefaultPress('송금하기', undefined, handleSend)}
       />
     </View>
   );

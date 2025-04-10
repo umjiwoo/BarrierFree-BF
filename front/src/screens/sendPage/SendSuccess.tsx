@@ -9,10 +9,12 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
 
   const handleCheckHistory = () => {
     navigation.navigate('CheckHistory');
@@ -37,10 +39,10 @@ const SendSuccess = () => {
             <CheckCircle style={styles.checkCircle} />
           </View>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handleCheckHistory}
-        onLowerRightTextPress={handlePressHome}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('내역 조회', undefined, handleCheckHistory)}
+        onLowerRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
       />
     </View>
   );

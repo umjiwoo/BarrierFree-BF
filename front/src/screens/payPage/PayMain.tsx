@@ -8,12 +8,21 @@ import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import ArrowRight from '../../assets/icons/ArrowRight.svg';
 import Home from '../../assets/icons/Home.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const PayMain = () => {
   // const navigation =
   //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  useTTSOnFocus(`
+      결제 페이지입니다.
+      QR를 스캔하여 송금할 계좌와 금액을 입력해주세요.
+    `)
+  
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
+  
 
   return (
     <View style={styles.container}>
@@ -23,10 +32,10 @@ const PayMain = () => {
         LowerLeftText={<ArrowLeft />}
         LowerRightText={<ArrowRight />}
         MainText={<Text>결제 메인페이지 입니다.</Text>}
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handlePressHome}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={undefined}
+        onLowerRightTextPress={undefined}
       />
     </View>
   );

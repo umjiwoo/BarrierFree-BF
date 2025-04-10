@@ -13,6 +13,7 @@ interface CreateAccountGoodsProps {
   data: GoodsItemProps[];
   carouselRef: any;
   onSelect: (item: GoodsItemProps) => void;
+  onSnapToItem?: (index: number) => void;
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
@@ -21,6 +22,7 @@ const CreateAccountGoods = ({
   data,
   carouselRef,
   onSelect,
+  onSnapToItem,
 }: CreateAccountGoodsProps) => {
   console.log('data', data);
   return (
@@ -78,6 +80,7 @@ const CreateAccountGoods = ({
             </TouchableOpacity>
           );
         }}
+        onSnapToItem={onSnapToItem}
       />
     </View>
   );

@@ -15,10 +15,12 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {useUserStore} from '../../stores/userStore';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const route =
     useRoute<RouteProp<RootStackParamList, 'RemittanceInformation'>>();
   const money = route.params?.money;
@@ -58,10 +60,10 @@ const ReceivingInformationScreen: React.FC = () => {
             />
           </View>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handleSend}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerRightTextPress={() => handleDefaultPress('송금하기', undefined, handleSend)}
       />
     </View>
   );

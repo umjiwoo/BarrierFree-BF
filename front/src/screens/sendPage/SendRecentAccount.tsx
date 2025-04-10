@@ -9,6 +9,8 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {getTransactionsHistory} from '../../api/axiosAccount';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { playTTS } from '../../components/utils/tts';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const SendFavoriteAccount = () => {
 
@@ -21,6 +23,7 @@ const SendFavoriteAccount = () => {
   `)
 
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   // const accountData = [
@@ -58,10 +61,47 @@ const SendFavoriteAccount = () => {
 
   const [selectedAccount, setSelectedAccount] = useState<any>(accountData[0]);
 
+  // const handleSelectAccount = (account: any) => {
+  //   setSelectedAccount(account);
+  //   console.log('Selected account:', account);
+  // };
+
+    // 캐러셀
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const currentItem = accountData[currentIndex];
+
   const handleSelectAccount = (account: any) => {
+
+    const message = [
+      `${account.receiverName}`,
+      // `${account.accountBank}`,
+      `${account.receiverAccount}`,
+      `${account.transactionDate}`,
+      `송금`
+    ].join('\n\n');
+    
     setSelectedAccount(account);
     console.log('Selected account:', account);
+    console.log(message);
+    handleDefaultPress(message)
   };
+
+  
+
+  useEffect(() => {
+    if (currentItem) {
+      const message = [
+        `${currentItem.receiverName}`,
+        // `${currentItem.accountBank}`,
+        `${currentItem.receiverAccount}`,
+        `${currentItem.transactionDate}`,
+        `송금`
+      ].join('\n\n');
+
+      playTTS(message);
+    }
+  }, [currentIndex]);
+
 
   const handleSendMoney = () => {
     if (selectedAccount) {
@@ -88,12 +128,13 @@ const SendFavoriteAccount = () => {
             accountData={accountData}
             onSelectAccount={handleSelectAccount}
             selectedAccount={selectedAccount}
+            onSnapToItem={setCurrentIndex}
           />
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handleDirectInput}
-        onLowerRightTextPress={handleSendMoney}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('직접 입력', undefined, handleDirectInput)}
+        onLowerRightTextPress={() => handleDefaultPress('선택 완료', undefined, handleSendMoney)}
       />
     </View>
   );

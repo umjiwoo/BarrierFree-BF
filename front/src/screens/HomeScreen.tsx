@@ -5,11 +5,23 @@ import {useUserStore} from '../stores/userStore';
 import {useAccountStore} from '../stores/accountStore';
 import {getAccounts} from '../api/axiosAccount';
 // import {UserItemProps} from '../components/types/UserInfo';
+import { useTTSOnFocus } from '../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../components/utils/useTapNavigationHandler ';
 
 const HomeScreen = ({navigation}: {navigation: any}) => {
+
+  useTTSOnFocus(`
+      안녕하세요. Barrier Free입니다.
+      한 번 탭하면 화면의 내용을 읽어드리고,
+      두 번 연속 탭하면 선택이 됩니다.
+      시작하려면 화면을 두 번 터치해주세요.
+    `)
+
   // const [user, setUser] = useState<UserItemProps>({} as UserItemProps);
   const {setUser} = useUserStore();
   const {setAccounts} = useAccountStore();
+  const handleDefaultPress = useTapNavigationHandler();
+
   const handleTestButtonPress = async () => {
     const data = await loginUser({
       phoneNumber: '01011111111',
@@ -24,15 +36,16 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
 
     navigation.navigate('CreateAccountScreen');
   };
+
   return (
     <View style={styles.container}>
       {/* <View style={styles.grid}> */}
       <TouchableOpacity
         style={styles.button}
         // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
-        onPress={handleTestButtonPress}>
+        onPress={() => handleDefaultPress('화면을 두 번 터치해서 시작하세요', undefined, handleTestButtonPress)}>
         <Text style={styles.text}>시작하기</Text>
-        <Text style={styles.touchText}>화면을 터치하세요!</Text>
+        <Text style={styles.touchText}>화면을 두 번 터치하세요!</Text>
       </TouchableOpacity>
       {/* </View> */}
     </View>

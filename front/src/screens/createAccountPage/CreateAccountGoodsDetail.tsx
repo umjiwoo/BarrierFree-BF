@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Pressable} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
@@ -8,11 +8,22 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import CheckIcon from '../../assets/icons/Check.svg';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const CreateAccountGoodsDetail = () => {
+
+  useTTSOnFocus(`
+    계좌 개설 상세 안내 페이지입니다.
+    약관 내용을 들으시려면 화면 가운데를 한 번 눌러주세요.
+    왼쪽 아래에는 돌아가기 버튼, 오른쪽 아래에는 선택 버튼이 있습니다.
+    왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
+  `)
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const route =
     useRoute<RouteProp<RootStackParamList, 'CreateAccountGoodsDetail'>>();
   const goods = route.params?.goods;
@@ -23,6 +34,19 @@ const CreateAccountGoodsDetail = () => {
 
   console.log('goods', goods);
 
+  const termsData = require('../../assets/details/terms_summary_full.json');
+
+  const fullMessage = [
+    goods.name,
+    termsData.content[0].content,
+    ...termsData.content[0].subContent.map((item: any) => {
+      const text = Array.isArray(item.content)
+        ? item.content.join('\n')
+        : item.content;
+      return `${item.description}\n${text}`;
+    }),
+  ].join('\n\n');
+
   return (
     <View style={styles.container}>
       <DefaultPage
@@ -31,7 +55,9 @@ const CreateAccountGoodsDetail = () => {
         LowerLeftText="돌아가기"
         LowerRightText={<CheckIcon width={100} height={100} />}
         MainText={
-          <ScrollView>
+          <ScrollView
+            >
+          <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
             {/* <Text style={styles.goodsName}>{goods.name}</Text>
             <Text style={styles.goodsDescription}>
               {goods.description.약관}
@@ -55,12 +81,13 @@ const CreateAccountGoodsDetail = () => {
                 </View>
               ),
             )}
+          </Pressable>
           </ScrollView>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handleLowerRightTextPress}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', ['back'])}
+        onUpperRightTextPress={() => handleDefaultPress('홈', ['Main'])}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', ['back'])}
+        onLowerRightTextPress={() => handleDefaultPress('계좌 개설', undefined, handleLowerRightTextPress)}
       />
     </View>
   );

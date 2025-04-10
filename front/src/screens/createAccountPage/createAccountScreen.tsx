@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
@@ -10,6 +10,9 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import CreateAccountGoods from './CreateAccountGoods';
 import PreviousIcon from '../../assets/icons/Prev.svg';
 import NextIcon from '../../assets/icons/Next.svg';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { playTTS } from '../../components/utils/tts';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 interface GoodsItemProps {
   id: number;
@@ -27,9 +30,22 @@ interface GoodsItemProps {
 }
 
 const CreateAccountScreen = () => {
+
+    useTTSOnFocus(`
+      계좌 개설 페이지입니다.
+      화면 중앙을 좌우로 움직여 개설할 계좌 종류를 선택할 수 있습니다.
+      가운데를 한 번 탭하면 계좌에 대한 간단한 설명을 읽어드리고,
+      두 번 연속 탭하면 해당 계좌를 선택합니다.
+      왼쪽 아래 버튼을 사용해 계좌 종류를 이동할 수도 있어요.
+      왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
+    `)
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {handlePressBack, handlePressHome} = useHandlePress();
+
+  const handleDefaultPress = useTapNavigationHandler();
+  
 
   const accountGoods = [
     {
@@ -99,8 +115,46 @@ const CreateAccountScreen = () => {
 
   const handleSelectGoods = (item: GoodsItemProps) => {
     // 상품 선택 시 처리할 로직
-    navigation.navigate('CreateAccountGoodsDetail', {goods: item});
+    const message = [
+      item.name,
+      `상품개요: ${item.description.상품개요}`,
+      `가입대상: ${item.description.가입대상}`,
+      `상품특징: ${item.description.상품특징}`,
+      `예금과목: ${item.description.예금과목}`,
+      `저축방법: ${item.description.저축방법}`,
+      `거래한도: ${item.description.거래한도}`,
+      `약관: ${item.description.약관}`,
+    ].join('\n\n');
+
+    handleDefaultPress(message, ['CreateAccountGoodsDetail', {goods: item}])
+
+    // navigation.navigate('CreateAccountGoodsDetail', {goods: item});
   };
+  
+  // 캐러셀
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentItem = accountGoods[currentIndex];
+  useEffect(() => {
+    if (currentItem) {
+      const message = [
+        currentItem.name,
+        `상품개요: ${currentItem.description.상품개요}`,
+        `가입대상: ${currentItem.description.가입대상}`,
+        `상품특징: ${currentItem.description.상품특징}`,
+        `예금과목: ${currentItem.description.예금과목}`,
+        `저축방법: ${currentItem.description.저축방법}`,
+        `거래한도: ${currentItem.description.거래한도}`,
+        `약관: ${currentItem.description.약관}`,
+      ].join('\n\n');
+  
+      playTTS(message);
+    }
+  }, [currentIndex]);
+  
+
+
+
+
 
   const handleLowerLeftTextPress = () => {
     if (carouselRef.current) {
@@ -126,12 +180,13 @@ const CreateAccountScreen = () => {
             data={accountGoods}
             carouselRef={carouselRef}
             onSelect={handleSelectGoods}
+            onSnapToItem={setCurrentIndex}
           />
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handleLowerLeftTextPress}
-        onLowerRightTextPress={handleLowerRightTextPress}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', ['back'])}
+        onUpperRightTextPress={() => handleDefaultPress('홈', ['Main'])}
+        onLowerLeftTextPress={() => handleDefaultPress('이전 상품', undefined, handleLowerLeftTextPress)}
+        onLowerRightTextPress={() => handleDefaultPress('다음 상품', undefined, handleLowerRightTextPress)}
       />
     </View>
   );

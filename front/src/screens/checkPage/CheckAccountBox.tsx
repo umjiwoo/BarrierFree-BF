@@ -14,6 +14,7 @@ interface CheckAccountBoxProps {
   data: HistoryItemProps[];
   carouselRef: any;
   onSelect: (item: HistoryItemProps) => void;
+  onSnapToItem?: (index: number) => void;
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
@@ -22,6 +23,7 @@ const CheckAccountBox = ({
   data,
   carouselRef,
   onSelect,
+  onSnapToItem,
 }: CheckAccountBoxProps) => {
   console.log('data', data);
   return (
@@ -64,6 +66,7 @@ const CheckAccountBox = ({
             </TouchableOpacity>
           );
         }}
+        onSnapToItem={onSnapToItem}
       />
     </View>
   );

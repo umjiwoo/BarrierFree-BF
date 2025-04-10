@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Pressable} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {RootStackParamList} from '../../navigation/types';
@@ -9,9 +9,12 @@ import HomeIcon from '../../assets/icons/Home.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import formatDateManually from '../../components/utils/makeDate';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const CheckHistoryDetail = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
+
   const route = useRoute<RouteProp<RootStackParamList, 'CheckHistoryDetail'>>();
   const history = route.params?.history;
   const dateInfo = formatDateManually(history.transactionDate);
@@ -25,6 +28,17 @@ const CheckHistoryDetail = () => {
     왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
   `)
 
+  const typeLabel =
+  history.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+  const fullMessage = [
+    `거래유형: ${typeLabel}`,
+    `거래명: ${history.transactionName}`,
+    `거래금액: ${history.transactionAmount.toLocaleString()}원`,
+    `잔액: ${history.transactionBalance.toLocaleString()}원`,
+    `계좌번호: ${history.transactionAccount}`,
+    `거래일시: ${history.transactionDate}`,
+  ].join('\n\n');
+
   return (
     <View style={styles.container}>
       <DefaultPage
@@ -33,6 +47,7 @@ const CheckHistoryDetail = () => {
         LowerLeftText="돌아가기"
         LowerRightText={<CheckIcon width={80} height={80} />}
         MainText={
+          <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
           <View style={styles.historyContainer}>
             {/* 날짜 */}
             <View style={styles.historyDateContainer}>
@@ -86,11 +101,12 @@ const CheckHistoryDetail = () => {
               </Text>
             </View>
           </View>
+          </Pressable>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handlePressBack}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={undefined}
+        onLowerRightTextPress={undefined}
       />
     </View>
   );

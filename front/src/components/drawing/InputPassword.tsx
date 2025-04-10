@@ -7,7 +7,10 @@ import {
   useRoute,
   RouteProp,
 } from '@react-navigation/native';
-
+import {
+  TestAccountItemProps,
+  GoodsItemProps,
+} from '../../components/types/CheckAccount';
 import {useUserStore} from '../../stores/userStore';
 import { playTTS } from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
@@ -15,12 +18,27 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import { useTTSOnFocus } from '../utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
 
 interface Props {
   type: string;
+  selectedAccount?: TestAccountItemProps;
+  money?: number;
+  goods?: GoodsItemProps;
 }
 
-const InputPassword: React.FC<Props> = ({ type }) => {
+const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods }) => {
+
+  useTTSOnFocus(`
+    비밀번호를 입력하는 화면입니다.
+    숫자를 손으로 그려서 입력할 수 있습니다.
+    입력한 숫자를 지우려면 X자를 그려주세요.
+    입력이 끝났다면 V자를 그려서 마무리해주세요.
+    다음 단계로 넘어가시려면 오른쪽 아래를 눌러주세요.
+    왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
+  `)
+
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(true);
    
@@ -28,8 +46,11 @@ const InputPassword: React.FC<Props> = ({ type }) => {
     if (digit === "11") {
       console.log('"X" 지우기');
       deleteLastDigit();
+      playTTS('지우기');
     } else if (digit === "10") {
       closeModal();
+      playTTS('입력 완료');
+      playTTS(password);
     } else {
       setPassword(prev => {
         if (prev.length < 4) {
@@ -39,6 +60,8 @@ const InputPassword: React.FC<Props> = ({ type }) => {
           playTTS(digit); 
           if (updated.length === 4) {
             console.log('입력완료');
+            playTTS('입력 완료');
+            playTTS(password);
             setShowModal(false);
           }
           return updated;
@@ -67,15 +90,17 @@ const InputPassword: React.FC<Props> = ({ type }) => {
   };
 
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
-  const money = route.params?.money;
-  const selectedAccount = route.params?.selectedAccount;
 
   const handleSend = () => {
     console.log('비밀번호 완료');
-    navigation.navigate('RemittanceConfirm', {selectedAccount: selectedAccount,money: money,});  // password 비밀번호
+    if (selectedAccount && money){
+      navigation.navigate('RemittanceConfirm', {selectedAccount: selectedAccount, money: money,});  // password 비밀번호
+    } else if (goods) {
+      navigation.navigate('CreateAccountSuccess', {goods: goods});
+    }
   };
 
   return (
@@ -94,10 +119,10 @@ const InputPassword: React.FC<Props> = ({ type }) => {
                onPredict={handlePrediction} />
           </View>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handleSend}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
       />
     </View>
   );

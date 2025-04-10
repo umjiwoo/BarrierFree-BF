@@ -7,6 +7,7 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const SendMain = () => {
 
@@ -18,6 +19,8 @@ const SendMain = () => {
   `)
 
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
+
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const handleDirectInput = () => {
@@ -38,10 +41,10 @@ const SendMain = () => {
         LowerLeftText="직접 입력"
         LowerRightText="최근 보낸 계좌"
         MainText="송금하실 계좌를 선택해주세요."
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handleDirectInput}
-        onLowerRightTextPress={handleRecentAccount}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('직접 입력', undefined, handleDirectInput)}
+        onLowerRightTextPress={() => handleDefaultPress('최근 보낸 계좌', undefined, handleRecentAccount)}
       />
     </View>
   );

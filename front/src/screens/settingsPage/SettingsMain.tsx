@@ -8,12 +8,14 @@ import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import ArrowRight from '../../assets/icons/ArrowRight.svg';
 import Home from '../../assets/icons/Home.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
 const SettingMain = () => {
   // const navigation =
   //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
 
   return (
     <View style={styles.container}>
@@ -23,10 +25,10 @@ const SettingMain = () => {
         LowerLeftText={<ArrowLeft />}
         LowerRightText={<ArrowRight />}
         MainText={<Text>설정 메인페이지 입니다.</Text>}
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handlePressHome}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={undefined}
+        onLowerRightTextPress={undefined}
       />
     </View>
   );
