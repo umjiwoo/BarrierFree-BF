@@ -16,9 +16,9 @@ import {
 //   'HomeScreen'
 // >;
 
-const HomeScreen = () => {
-  // const HomeScreen = ({navigation}: {navigation: HomeScreenNavigationProp}) => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+// const HomeScreen = () => {
+const HomeScreen = ({navigation}: {navigation: any}) => {
+  // const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   // const [user, setUser] = useState<UserItemProps>({} as UserItemProps);
   const {setUser} = useUserStore();
