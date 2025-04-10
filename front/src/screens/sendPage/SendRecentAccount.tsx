@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import SendAccountBox from './SendAccountBox';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
@@ -7,8 +7,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
-import {getTransactionsHistory} from '../../api/axiosTransaction';
+import DrawIcon from '../../assets/icons/Draw.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
 import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {playTTS} from '../../components/utils/tts';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
+import {getTransactionsHistory} from '../../api/axiosTransaction';
 
 const SendFavoriteAccount = () => {
   useTTSOnFocus(`
@@ -20,6 +24,7 @@ const SendFavoriteAccount = () => {
   `);
 
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const [accountData, setAccountData] = useState<any>([]);
@@ -58,10 +63,43 @@ const SendFavoriteAccount = () => {
   // setAccountData(exampleAccountData);
   const [selectedAccount, setSelectedAccount] = useState<any>(accountData[0]);
 
+  // const handleSelectAccount = (account: any) => {
+  //   setSelectedAccount(account);
+  //   console.log('Selected account:', account);
+  // };
+
+  // 캐러셀
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentItem = accountData[currentIndex];
+
   const handleSelectAccount = (account: any) => {
+    const message = [
+      `${account.receiverName}`,
+      // `${account.accountBank}`,
+      `${account.receiverAccount}`,
+      `${account.transactionDate}`,
+      `송금`,
+    ].join('\n\n');
+
     setSelectedAccount(account);
     console.log('Selected account:', account);
+    console.log(message);
+    handleDefaultPress(message);
   };
+
+  useEffect(() => {
+    if (currentItem) {
+      const message = [
+        `${currentItem.receiverName}`,
+        // `${currentItem.accountBank}`,
+        `${currentItem.receiverAccount}`,
+        `${currentItem.transactionDate}`,
+        `송금`,
+      ].join('\n\n');
+
+      playTTS(message);
+    }
+  }, [currentIndex]);
 
   const handleSendMoney = () => {
     if (selectedAccount) {
@@ -82,10 +120,30 @@ const SendFavoriteAccount = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="직접 입력"
-        LowerRightText="선택 / 송금"
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <DrawIcon width={100} height={100} />
+            <Text style={styles.text}>입력</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>선택</Text>
+          </View>
+        }
         MainText={
           <SendAccountBox
             accountData={accountData}
@@ -94,10 +152,18 @@ const SendFavoriteAccount = () => {
             onSelectAccount={handleSelectAccount}
           />
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handleDirectInput}
-        onLowerRightTextPress={handleSendMoney}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('직접 입력', undefined, handleDirectInput)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('선택 완료', undefined, handleSendMoney)
+        }
       />
     </View>
   );
@@ -136,6 +202,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: 'black',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

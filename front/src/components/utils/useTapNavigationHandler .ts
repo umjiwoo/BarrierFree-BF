@@ -17,7 +17,8 @@ export const useTapNavigationHandler = () => {
     // doubleTap: string = 'double_tick',
     // singleTap: string = 'tick',
     message: string,
-    page?: keyof RootStackParamList,
+    page?: [keyof RootStackParamList, RootStackParamList[keyof RootStackParamList]?] | ['back'],
+    doubleTapAction?: () => void,
   ) => {
     const now = Date.now();
 
@@ -28,8 +29,14 @@ export const useTapNavigationHandler = () => {
       CustomVibration.vibrateCustomSequence('double_tick');  // 진동 (ex. 'double_tick')
       // CustomVibration.vibrateCustomSequence(doubleTap);  // 진동 (ex. 'double_tick')
       if (page) {
-        navigation.navigate(page as never); // 페이지 이동 (타입 안전성에 따라 조정)
+        const [name, params] = page;
+        if (name === 'back') {
+          navigation.goBack();
+        } else {
+          navigation.navigate(name, params as never);
+        }
       }
+      doubleTapAction?.(); // 콜백 실행
     } else {
       CustomVibration.vibrateCustomSequence('tick');  // 진동 (ex. 'tick')
       // CustomVibration.vibrateCustomSequence(singleTap);  // 진동 (ex. 'tick')

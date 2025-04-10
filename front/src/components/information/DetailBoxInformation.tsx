@@ -64,12 +64,12 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#7F35D4',
+    color: '#fff',
   },
   detailValue: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#24282B',
+    color: '#fff',
   },
   detailValueContainer: {
     display: 'flex',

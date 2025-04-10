@@ -8,14 +8,22 @@ import {RootStackParamList} from '../../navigation/types';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {useAccountStore} from '../../stores/accountStore';
 import CheckIcon from '../../assets/icons/Check.svg';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 
 const CreateAccountSuccess = () => {
+
   const {handlePressBack, handlePressHome} = useHandlePress();
   const route =
     useRoute<RouteProp<RootStackParamList, 'CreateAccountSuccess'>>();
   const goods = route.params?.goods;
 
   const {accounts} = useAccountStore();
+
+  useTTSOnFocus(`
+    통장 개설이 완료되었습니다.
+    ${goods.name}, 계좌 번호는 ${accounts[0].accountNo}입니다.
+  `)
+
   return (
     <View style={styles.container}>
       <DefaultPage
@@ -30,7 +38,8 @@ const CreateAccountSuccess = () => {
               <Text style={[styles.goodsDescription, styles.goodsName]}>
                 {goods.name}
               </Text>
-              <Text style={styles.goodsDescription}>{accounts.accountNo}</Text>
+              {/* accounts.accountNo 변경 */}
+              <Text style={styles.goodsDescription}>{accounts[0].accountNo}</Text>
               <Text style={[styles.goodsDescription, styles.goodSuccess]}>
                 개설이 완료되었습니다.
               </Text>

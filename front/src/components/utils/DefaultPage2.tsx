@@ -53,7 +53,7 @@ export default function DefaultPage({
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#7B61FF' }]} onPress={onLowerLeftTextPress}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#DC3545' }]} onPress={onLowerLeftTextPress}>
           {/* <Text style={styles.buttonText}>{LowerLeftText}</Text> */}
           {typeof LowerLeftText === 'string' ? (
             <Text style={styles.buttonText}>{LowerLeftText}</Text>

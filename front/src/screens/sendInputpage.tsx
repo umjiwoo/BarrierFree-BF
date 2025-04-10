@@ -14,6 +14,7 @@ import {
 } from '../components/types/CheckAccount';
 import {useHandlePress} from '../components/utils/handlePress';
 
+
 // 숫자 입력
 import InputAccount from '../components/drawing/InputAccount';
 import InputAmount from '../components/drawing/InputAmount';
@@ -37,6 +38,7 @@ const SendInputPage = () => {
   // 네비게이션 객체 가져오기
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const {handlePressBack} = useHandlePress();
+
 
   // 상태 관리 임시 추가
   const [accountNumber, _setAccountNumber] = React.useState('');
@@ -128,7 +130,7 @@ const SendInputPage = () => {
     } else if (type === 'money') {
       // 3. 금액 입력을 받는 경우
       return (
-        <InputAmount type={type} />
+        <InputAmount type={type} selectedAccount={selectedAccount}/>
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>금액 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>
@@ -153,7 +155,7 @@ const SendInputPage = () => {
     } else if (type === 'password') {
       // 4. 비밀번호 입력을 받는 경우
       return (
-        <InputPassword type={type} />
+        <InputPassword type={type} selectedAccount={selectedAccount} money={money} goods={goods}/>
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>

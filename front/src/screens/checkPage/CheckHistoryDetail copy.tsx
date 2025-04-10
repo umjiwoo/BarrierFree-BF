@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text, Pressable, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, Pressable} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {RootStackParamList} from '../../navigation/types';
@@ -11,7 +11,6 @@ import CheckIcon from '../../assets/icons/Check.svg';
 import formatDateManually from '../../components/utils/makeDate';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
-import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const CheckHistoryDetail = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -74,90 +73,61 @@ const CheckHistoryDetail = () => {
           </View>
         }
         MainText={
-          <TouchableOpacity
-          // onPress={() => ()}
-          >
-            <View style={styles.accountItem}>
-            <View style={styles.voiceButton}>
-                <VolumeIcon width={30} height={30} />
-                <Text style={styles.voiceButtonText}>계좌 상세 조회</Text>
+          <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
+          <View style={styles.historyContainer}>
+            {/* 날짜 */}
+            <View style={styles.historyDateContainer}>
+              <Text style={styles.historyDate}>
+                {formatDateManually(history.transactionDate).date}
+              </Text>
+              <Text style={styles.historyTime}>
+                {formatDateManually(history.transactionDate).time}
+              </Text>
             </View>
-          {/* 날짜 */}
-          <View style={styles.dateContainer}>
-            <Text style={styles.date}>{formatDateManually(history.transactionDate).date}</Text>
-            <Text style={styles.time}>{formatDateManually(history.transactionDate).time}</Text>
+
+            {/* 거래 장소 */}
+            <Text style={styles.historyWhere}>{history.transactionName}</Text>
+
+            {/* 거래 계좌 */}
+            {history.transactionAccount && (
+              <View style={styles.historyAccountContainer}>
+                <Text style={styles.historyAccountTitle}>내 계좌</Text>
+                <Text style={styles.historyAccount}>
+                  {history.transactionAccount}
+                </Text>
+              </View>
+            )}
+
+            {/* 거래 금액 */}
+            {history.transactionType === 'DEPOSIT' ? (
+              <View style={styles.historyAmountContainer}>
+                <Text style={[styles.historyAmount, styles.plusAmount]}>
+                  입금
+                </Text>
+                <Text style={[styles.historyAmount, styles.plusAmount]}>
+                  {history.transactionAmount} 원
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.historyAmountContainer}>
+                <Text style={[styles.historyAmount, styles.minusAmount]}>
+                  출금
+                </Text>
+                <Text style={[styles.historyAmount, styles.minusAmount]}>
+                  {history.transactionAmount} 원
+                </Text>
+              </View>
+            )}
+
+            {/* 거래 후 잔액 */}
+            <View style={styles.historyBalance}>
+              <Text style={styles.historyBalanceTitle}>거래 후 잔액</Text>
+              <Text style={styles.historyBalanceAmount}>
+                {history.transactionBalance} 원
+              </Text>
+            </View>
           </View>
-  
-          {/* 거래 이름 */}
-          <Text style={styles.name}>{history.transactionName}</Text>
-  
-          {/* 거래 금액 */}
-          <View style={styles.bankContainer}>
-            <Text style={[styles.bankType, history.transactionType === 'WITHDRAWAL' ? styles.withdrawalBg : styles.depositBg]}>
-              {typeLabel}
-            </Text>
-            <Text style={[styles.amount, history.transactionType === 'WITHDRAWAL' ? styles.withdrawal : styles.deposit]}>
-              {history.transactionAmount.toLocaleString()} 원
-            </Text>
-          </View>
-          </View>
-        </TouchableOpacity>
-
-          // <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
-          // <View style={styles.historyContainer}>
-          //   {/* 날짜 */}
-          //   <View style={styles.historyDateContainer}>
-          //     <Text style={styles.historyDate}>
-          //       {formatDateManually(history.transactionDate).date}
-          //     </Text>
-          //     <Text style={styles.historyTime}>
-          //       {formatDateManually(history.transactionDate).time}
-          //     </Text>
-          //   </View>
-
-          //   {/* 거래 장소 */}
-          //   <Text style={styles.historyWhere}>{history.transactionName}</Text>
-
-          //   {/* 거래 계좌 */}
-          //   {history.transactionAccount && (
-          //     <View style={styles.historyAccountContainer}>
-          //       <Text style={styles.historyAccountTitle}>내 계좌</Text>
-          //       <Text style={styles.historyAccount}>
-          //         {history.transactionAccount}
-          //       </Text>
-          //     </View>
-          //   )}
-
-          //   {/* 거래 금액 */}
-          //   {history.transactionType === 'DEPOSIT' ? (
-          //     <View style={styles.historyAmountContainer}>
-          //       <Text style={[styles.historyAmount, styles.plusAmount]}>
-          //         입금
-          //       </Text>
-          //       <Text style={[styles.historyAmount, styles.plusAmount]}>
-          //         {history.transactionAmount} 원
-          //       </Text>
-          //     </View>
-          //   ) : (
-          //     <View style={styles.historyAmountContainer}>
-          //       <Text style={[styles.historyAmount, styles.minusAmount]}>
-          //         출금
-          //       </Text>
-          //       <Text style={[styles.historyAmount, styles.minusAmount]}>
-          //         {history.transactionAmount} 원
-          //       </Text>
-          //     </View>
-          //   )}
-
-          //   {/* 거래 후 잔액 */}
-          //   <View style={styles.historyBalance}>
-          //     <Text style={styles.historyBalanceTitle}>거래 후 잔액</Text>
-          //     <Text style={styles.historyBalanceAmount}>
-          //       {history.transactionBalance} 원
-          //     </Text>
-          //   </View>
-          // </View>
-          // </Pressable>
+          </Pressable>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
@@ -176,98 +146,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
-  accountItem: {
-    width: '100%',
-    // marginVertical: 10,
-    // paddingVertical: 36,
-    paddingHorizontal: 24,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    // gap: 28,
-  },
-  dateContainer: {
-    gap: 8,
-  },
-  date: {
-    fontSize: 30,
-    color: '#ccc',
-    fontWeight: '600',
-  },
-  time: {
-    fontSize: 30,
-    color: '#ccc',
-    fontWeight: '500',
-  },
-  name: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'left',
-    marginTop: 8,
-  },
-  bankContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 26,
-  },
-  bankType: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: '#DC3545', // 기본은 출금 색상
-    color: '#fff',
-    textAlignVertical: 'center'
-  },
-  amount: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 8,
-    color: '#fff',
-    textAlignVertical: 'center'
-    // fontSize: 40,
-    // fontWeight: 'bold',
-    // color: '#fff',
-  },
-  withdrawalBg: {
-    backgroundColor: '#DC3545',
-    color: '#fff',
-  },
-  depositBg: {
-    backgroundColor: '#34C759',
-    color: '#fff',
-  },
-  withdrawal: {
-    color: '#DC3545',
-  },
-  deposit: {
-    color: '#34C759',
-  },
-  voiceButton: {
-    // marginTop: 20,
-    marginBottom: 32,
-    backgroundColor: '#333',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    alignSelf: 'center', 
-  },
-  voiceButtonText: {
-    color: '#fff',
-    fontSize: 25,
-    textAlignVertical: 'center'
-  },
-
-
-
-
   historyContainer: {
     width: '100%',
     height: '100%',
