@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import SendAccountBox from './SendAccountBox';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -22,46 +22,39 @@ const SendFavoriteAccount = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  const [accountData, setAccountData] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchRecentAccounts = async () => {
+      const recentAccounts = await getTransactionsHistory();
+      setAccountData(recentAccounts);
+      console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
+    };
+    fetchRecentAccounts();
+  }, []);
+
+  // 더미 데이터
   // const accountData = [
   //   {
-  //     name: '홍길동',
-  //     date: '2023-04-01',
-  //     accountBank: '신한은행',
-  //     accountNumber: '110-123-456789',
+  //     receiverAccount: '1190101022222222',
+  //     receiverAccountId: 1,
+  //     receiverName: '엄지우',
+  //     transactionDate: '2025-04-06T12:47:10',
   //   },
   //   {
-  //     name: '김철수',
-  //     date: '2023-04-02',
-  //     accountBank: '국민은행',
-  //     accountNumber: '123-45-678910',
+  //     receiverAccount: '1190101022222222',
+  //     receiverAccountId: 1,
+  //     receiverName: '엄지우',
+  //     transactionDate: '2025-04-06T12:47:10',
   //   },
   //   {
-  //     name: '이영희',
-  //     date: '2023-04-03',
-  //     accountBank: '우리은행',
-  //     accountNumber: '111-222-333444',
+  //     receiverAccount: '1190101022222222',
+  //     receiverAccountId: 1,
+  //     receiverName: '엄지우',
+  //     transactionDate: '2025-04-06T12:47:10',
   //   },
-  //   // 필요에 따라 더 많은 계정을 추가할 수 있습니다
   // ];
 
-  // const [accountData, setAccountData] = useState<any>([]);
-
-  // useEffect(() => {
-  //   const fetchRecentAccounts = async () => {
-  //     const recentAccounts = await getTransactionsHistory();
-  //     setAccountData(recentAccounts);
-  //     console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
-  //   };
-  //   fetchRecentAccounts();
-  // }, []);
-  const accountData = [
-    {
-      receiverAccount: '1190101022222222',
-      receiverAccountId: 1,
-      receiverName: '엄지우',
-      transactionDate: '2025-04-06T12:47:10',
-    },
-  ];
   // setAccountData(exampleAccountData);
   const [selectedAccount, setSelectedAccount] = useState<any>(accountData[0]);
 
@@ -84,6 +77,8 @@ const SendFavoriteAccount = () => {
     console.log('직접 입력 버튼 클릭');
   };
 
+  const carouselRef = useRef<any>(null);
+
   return (
     <View style={styles.container}>
       <DefaultPage
@@ -94,8 +89,9 @@ const SendFavoriteAccount = () => {
         MainText={
           <SendAccountBox
             accountData={accountData}
-            onSelectAccount={handleSelectAccount}
+            carouselRef={carouselRef}
             selectedAccount={selectedAccount}
+            onSelectAccount={handleSelectAccount}
           />
         }
         onUpperLeftTextPress={handlePressBack}
