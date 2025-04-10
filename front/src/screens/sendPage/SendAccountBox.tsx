@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   selectedAccount: {
     height: '100%',
-    backgroundColor: '#e0e0ff',
+    backgroundColor: '#000',
     // borderWidth: 2,
     // borderColor: '#007AFF',
   },
@@ -111,17 +111,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#7F35D4',
+    color: '#fff',
   },
   bank: {
-    fontSize: 30,
-    color: '#7F35D4',
+    fontSize: 35,
+    color: '#fff',
     fontWeight: 'bold',
     marginBottom: 5,
   },
   number: {
-    fontSize: 25,
-    color: '#7F35D4',
+    fontSize: 30,
+    color: '#fff',
     fontWeight: 'bold',
   },
   transactionDateContainer: {

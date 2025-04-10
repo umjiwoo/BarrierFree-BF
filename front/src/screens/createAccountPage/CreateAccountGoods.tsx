@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {GoodsItemProps} from '../../components/types/CheckAccount';
+import VolumeIcon from '../../assets/icons/Volume.svg';
 
 interface CreateAccountGoodsProps {
   data: GoodsItemProps[];
@@ -38,6 +39,11 @@ const CreateAccountGoods = ({
             <TouchableOpacity
               onPress={() => onSelect(item)}
               style={styles.accountItem}>
+            <View style={{ width: '100%' }}>
+              <View style={styles.voiceButton}>
+                <VolumeIcon width={30} height={30} />
+                <Text style={styles.voiceButtonText}>계좌 개설</Text>
+              </View>
               <Text style={styles.title}>{item.name}</Text>
               <View style={styles.descriptionContainer}>
                 <View style={styles.descriptionItemContainer}>
@@ -46,12 +52,12 @@ const CreateAccountGoods = ({
                     {item.description.상품개요}
                   </Text>
                 </View>
-                <View style={styles.descriptionItemContainer}>
+                {/* <View style={styles.descriptionItemContainer}>
                   <Text style={styles.descriptionTitle}>가입대상</Text>
                   <Text style={styles.descriptionContent}>
                     {item.description.가입대상}
                   </Text>
-                </View>
+                </View> */}
                 <View style={styles.descriptionItemContainer}>
                   <Text style={styles.descriptionTitle}>상품특징</Text>
                   <Text style={styles.descriptionContent}>
@@ -64,18 +70,19 @@ const CreateAccountGoods = ({
                     {item.description.예금과목}
                   </Text>
                 </View>
-                <View style={styles.descriptionItemContainer}>
+                {/* <View style={styles.descriptionItemContainer}>
                   <Text style={styles.descriptionTitle}>저축방법</Text>
                   <Text style={styles.descriptionContent}>
                     {item.description.저축방법}
                   </Text>
-                </View>
-                <View style={styles.descriptionItemContainer}>
+                </View> */}
+                {/* <View style={styles.descriptionItemContainer}>
                   <Text style={styles.descriptionTitle}>거래한도</Text>
                   <Text style={styles.descriptionContent}>
                     {item.description.거래한도}
                   </Text>
-                </View>
+                </View> */}
+              </View>
               </View>
             </TouchableOpacity>
           );
@@ -97,12 +104,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingVertical: 20,
-    paddingRight: 20,
-    paddingLeft: 20,
+    // paddingRight: 20,
+    // paddingLeft: 20,
     borderRadius: 10,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
+    color: '#fff',
     fontWeight: 'bold',
     marginBottom: 15,
   },
@@ -117,14 +125,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   descriptionTitle: {
-    fontSize: 18,
-    color: '#24282B',
+    fontSize: 22,
+    color: '#fff',
     fontWeight: 'bold',
     width: '30%',
   },
   descriptionContent: {
-    fontSize: 18,
-    color: '#24282B',
+    fontSize: 22,
+    color: '#fff',
     flex: 1,
     flexWrap: 'wrap',
     paddingRight: 20,
@@ -158,6 +166,23 @@ const styles = StyleSheet.create({
   },
   deposit: {
     color: '#B6010E',
+  },
+  voiceButton: {
+    // marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    alignSelf: 'center', 
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
   },
 });
 

@@ -75,50 +75,48 @@ const Main = () => {
       <DefaultPage
         UpperLeftText={
           <View style={styles.textContainer}>
-            <HistoryIcon width={100} height={100} />
-            <Text style={styles.text}>조회</Text>
-          </View>
+          <ChargeIcon width={100} height={100} />
+          <Text style={styles.text}>결제</Text>
+        </View>
         }
         // UpperLeftText="조회"
         UpperRightText={
-          <View style={styles.textContainer}>
-            <SendIcon width={100} height={100} />
-            <Text style={styles.text}>송금</Text>
-          </View>
-        }
-        // UpperRightText="송금"
-        LowerLeftText={
-          <View style={styles.textContainer}>
-            <ChargeIcon width={100} height={100} />
-            <Text style={styles.text}>결제</Text>
-          </View>
-        }
-        // LowerLeftText="결제"
-        LowerRightText={
           <View style={styles.textContainer}>
             <SettingIcon width={100} height={100} />
             <Text style={styles.text}>설정</Text>
           </View>
         }
+        // UpperRightText="송금"
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <HistoryIcon width={100} height={100} />
+            <Text style={styles.text}>조회</Text>
+          </View>
+        }
+        // LowerLeftText="결제"
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <SendIcon width={100} height={100} />
+            <Text style={styles.text}>송금</Text>
+          </View>
+        }
         // LowerRightText="설정"
         MainText={
           <View style={styles.welcomeBox}>
-            <Text style={styles.welcome}>{user.username} 님,{"\n"} 환영합니다.</Text>
-            <Text style={styles.subWelcome}>Barrier Free 금융을{"\n"} 시작합니다.</Text>
-            {/* <BarrierFree width={350} height={100} title="메인페이지" /> */}
             <View style={styles.voiceButton}>
               <VolumeIcon width={30} height={30} />
               <Text style={styles.voiceButtonText}>음성 안내 듣기</Text>
             </View>
+            <Text style={styles.welcome}>{user.username} 님,{"\n"} 환영합니다.</Text>
+            <Text style={styles.subWelcome}>Barrier Free 금융을{"\n"} 시작합니다.</Text>
+            {/* <BarrierFree width={350} height={100} title="메인페이지" /> */}
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={() => handleDefaultPress('조회', ['CheckHistory'])}
-        // onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={() => handleDefaultPress('송금',['SendMain'])}
-        // onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={() => handleDefaultPress('결제',['PayMain'])}
-        onLowerRightTextPress={() => handleDefaultPress('설정',['SettingsMain'])}
+        onUpperLeftTextPress={() => handleDefaultPress('결제',['PayMain'])}
+        onUpperRightTextPress={() => handleDefaultPress('설정',['SettingsMain'])}
+        onLowerLeftTextPress={() => handleDefaultPress('조회', ['CheckHistory'])}
+        onLowerRightTextPress={() => handleDefaultPress('송금',['SendMain'])}
       />
     </SafeAreaView>
   );
@@ -174,7 +172,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   voiceButton: {
-    marginTop: 20,
+    marginBottom: 20,
     backgroundColor: '#333',
     paddingVertical: 12,
     paddingHorizontal: 24,

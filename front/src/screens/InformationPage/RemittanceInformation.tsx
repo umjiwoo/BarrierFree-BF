@@ -8,7 +8,7 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import DefaultPage from '../../components/utils/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage2';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 35,
     fontWeight: 'bold',
-    color: '#7F35D4',
+    color: '#fff',
   },
   mainTextContainer: {
     flex: 1,

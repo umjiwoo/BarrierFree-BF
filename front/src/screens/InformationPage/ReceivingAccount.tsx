@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/native';
 import DetailBox from '../../components/information/DetailBoxAccount';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/utils/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage2';
 import {useHandlePress} from '../../components/utils/handlePress';
 import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 35,
     fontWeight: 'bold',
-    color: '#7F35D4',
+    color: '#fff',
   },
   mainTextContainer: {
     // flex: 1,

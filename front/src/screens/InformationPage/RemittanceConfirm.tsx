@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/utils/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage2';
 import DetailBox from '../../components/information/DetailBoxInformation';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     // marginTop: 20,
     marginBottom: 30,
     textAlign: 'center',
-    color: '#7F35D4',
+    color: '#fff',
   },
   mainTextContainer: {
     flex: 1,

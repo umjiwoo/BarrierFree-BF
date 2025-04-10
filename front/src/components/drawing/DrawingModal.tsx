@@ -62,7 +62,7 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
 
   // 캔버스 설정
   const paint = Skia.Paint();
-  paint.setColor(Skia.Color('black'));
+  paint.setColor(Skia.Color('white'));
   paint.setStyle(PaintStyle.Stroke);
   paint.setStrokeWidth(20);
   paint.setAntiAlias(true);

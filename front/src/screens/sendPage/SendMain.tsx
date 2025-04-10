@@ -8,6 +8,7 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import DrawIcon from '../../assets/icons/Draw.svg';
 import RecentIcon from '../../assets/icons/Recent.svg';
+import VolumeIcon from '../../assets/icons/Volume.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 
@@ -61,7 +62,16 @@ const SendMain = () => {
             <Text style={styles.text}>최근 계좌</Text>
           </View>
         }
-        MainText="송금하실 계좌를 선택해주세요."
+        MainText={
+          <View style={styles.welcomeBox}>
+            <View style={styles.voiceButton}>
+              <VolumeIcon width={30} height={30} />
+              <Text style={styles.voiceButtonText}>송금 하기</Text>
+            </View>
+            <Text style={styles.welcome}>송금할 계좌를{"\n"} 입력해주세요.</Text>
+            {/* <Text style={styles.subWelcome}>Barrier Free 금융을{"\n"} 시작합니다.</Text> */}
+          </View>
+        }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
         onLowerLeftTextPress={() => handleDefaultPress('직접 입력', undefined, handleDirectInput)}
@@ -115,6 +125,37 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  welcomeBox: {
+    alignItems: 'center',
+    marginVertical: 32,
+  },
+  welcome: {
+    color: '#fff',
+    fontSize: 55,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  subWelcome: {
+    color: '#ccc',
+    fontSize: 35,
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  voiceButton: {
+    marginBottom: 20,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
   },
 });
 

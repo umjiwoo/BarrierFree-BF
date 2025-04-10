@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 // import {useNavigation} from '@react-navigation/native';
 // import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // import {RootStackParamList} from '../../navigation/types';
-import DefaultPage from '../../components/utils/DefaultPage';
+import DefaultPage from '../../components/utils/DefaultPage2';
 import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import ArrowRight from '../../assets/icons/ArrowRight.svg';
 import Home from '../../assets/icons/Home.svg';

@@ -11,6 +11,7 @@ import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const CreateAccountGoodsDetail = () => {
 
@@ -83,6 +84,10 @@ const CreateAccountGoodsDetail = () => {
             <Text style={styles.goodsDescription}>
               {goods.description.약관}
             </Text> */}
+              <View style={styles.voiceButton}>
+                <VolumeIcon width={30} height={30} />
+                <Text style={styles.voiceButtonText}>계좌 개설</Text>
+              </View>
             <Text style={styles.goodsName}>{goods.name}</Text>
             <Text style={styles.goodsDescription}>
               {
@@ -131,10 +136,12 @@ const styles = StyleSheet.create({
   goodsName: {
     fontSize: 40,
     fontWeight: 'bold',
+    color: '#fff'
   },
   goodsDescription: {
     paddingTop: 20,
     fontSize: 30,
+    color: '#fff'
   },
   subContentContainer: {
     marginTop: 20,
@@ -144,10 +151,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#fff'
   },
   subContentText: {
     fontSize: 20,
     lineHeight: 30,
+    color: '#fff'
   },
   textContainer: {
     display: 'flex',
@@ -159,6 +168,23 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  voiceButton: {
+    // marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    alignSelf: 'center', 
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
   },
 });
 
