@@ -119,4 +119,27 @@ const logoutUser = async (): Promise<ApiResponse> => {
     throw error;
   }
 };
-export {signUpUser, checkId, loginUser, logoutUser};
+
+const sendFcmToken = async ({fcmToken,userId,}: {fcmToken: string; userId: number;}): Promise<any> => {
+  try {
+    const response: AxiosResponse<ApiResponse> = await axiosInstance.post(
+      '/api/fcm/save-token',
+      {
+        fcmToken,
+        userId,
+      }
+    );
+    console.log('결과 상태 조회 : ', response.data.result.code);
+    if (response.data.result.code === 200) {
+      console.log('FCM토큰 전송 성공: ', response.data.body);
+      return response.data;
+    } else {
+      console.log('FCM토큰 전송 실패: ', response.data.result.message);
+      return response.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export {signUpUser, checkId, loginUser, logoutUser, sendFcmToken};

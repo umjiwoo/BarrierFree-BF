@@ -1,29 +1,71 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React from 'react';
-import {loginUser} from '../api/axiosUser';
+import React, {useEffect, useState} from 'react';
+import {loginUser, sendFcmToken} from '../api/axiosUser';
 import {useUserStore} from '../stores/userStore';
 import {useAccountStore} from '../stores/accountStore';
 import {getAccounts} from '../api/axiosAccount';
+import {
+  getFCMToken,
+  foregroundMessageListener,
+  backgroundMessageOpenedListener,
+} from '../firebase/messaging';
 // import {UserItemProps} from '../components/types/UserInfo';
 
+// type HomeScreenNavigationProp = NativeStackNavigationProp<
+//   RootStackParamList,
+//   'HomeScreen'
+// >;
+
+// const HomeScreen = () => {
 const HomeScreen = ({navigation}: {navigation: any}) => {
+  // const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
   // const [user, setUser] = useState<UserItemProps>({} as UserItemProps);
   const {setUser} = useUserStore();
   const {setAccounts} = useAccountStore();
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchLoginUser = async () => {
+      try {
+        const response = await loginUser({
+          phoneNumber: '01011111111',
+          password: '1111',
+        });
+        console.log(response);
+        setUser(response.body);
+        setData(response);
+      } catch (error) {
+        console.error('Error fetching login user:', error);
+      }
+    };
+    foregroundMessageListener(navigation);
+    backgroundMessageOpenedListener(navigation);
+    fetchLoginUser();
+  }, [navigation, setUser]);
+
   const handleTestButtonPress = async () => {
-    const data = await loginUser({
-      phoneNumber: '01011111111',
-      password: '1111',
+    // const data = await loginUser({
+    //   phoneNumber: '01011111111',
+    //   password: '1111',
+    // });
+    // console.log(data);
+    // setUser(data.body);
+
+    const fcmToken = await sendFcmToken({
+      fcmToken: await getFCMToken(),
+      userId: data.body.id,
     });
-    console.log(data);
-    setUser(data.body);
+
+    console.log(fcmToken);
 
     const accountData = await getAccounts();
-    console.log(accountData);
+    console.log('계좌: ', accountData);
     setAccounts(accountData[0]);
 
     navigation.navigate('CreateAccountScreen');
   };
+
   return (
     <View style={styles.container}>
       {/* <View style={styles.grid}> */}

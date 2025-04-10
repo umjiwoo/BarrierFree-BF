@@ -104,7 +104,7 @@ const SendInputPage = () => {
     } else if (type === 'directOtherAccount') {
       // 2. 상대방 계좌 직접 입력을 받는 경우
       return (
-        <InputAccount type={type}/>
+        <InputAccount type={type} />
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>
@@ -126,7 +126,7 @@ const SendInputPage = () => {
     } else if (type === 'money') {
       // 3. 금액 입력을 받는 경우
       return (
-        <InputAmount type={type}/>
+        <InputAmount type={type} />
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>금액 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>
@@ -151,7 +151,7 @@ const SendInputPage = () => {
     } else if (type === 'password') {
       // 4. 비밀번호 입력을 받는 경우
       return (
-        <InputPassword type={type}/>
+        <InputPassword type={type} />
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>
