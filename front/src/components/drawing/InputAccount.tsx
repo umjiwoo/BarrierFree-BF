@@ -19,6 +19,7 @@ import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import { useTTSOnFocus } from '../utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
+import DrawIcon from '../../assets/icons/Draw.svg';
 
 interface Props {
   type: string;
@@ -76,6 +77,11 @@ const InputAccount: React.FC<Props> = ({ type }) => {
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
 
+  const handleDirectInput = () => {
+    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    console.log('직접 입력 버튼 클릭');
+  };
+
   const handleSend = () => {
     console.log('계좌 입력 완료');
     navigation.navigate('ReceivingAccountScreen', {selectedAccount}); // 입력한 계좌로 변경(accountNumber)
@@ -83,6 +89,7 @@ const InputAccount: React.FC<Props> = ({ type }) => {
 
   return (
     <View style={styles.container}>
+      {/* {showModal && <View style={styles.overlay} pointerEvents="auto" />} */}
       <DefaultPage
         UpperLeftText={
           <View style={styles.textContainer}>
@@ -98,8 +105,8 @@ const InputAccount: React.FC<Props> = ({ type }) => {
         }
         LowerLeftText={
           <View style={styles.textContainer}>
-            <CancelIcon width={100} height={100} />
-            <Text style={styles.text}>취소</Text>
+            <DrawIcon width={100} height={100} />
+            <Text style={styles.text}>입력</Text>
           </View>
         }
         LowerRightText={
@@ -112,14 +119,15 @@ const InputAccount: React.FC<Props> = ({ type }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>계좌번호 입력</Text>
             <Text style={styles.accountDisplay}>
-              {accountNumber || '계좌번호를 입력해주세요'}
+              {accountNumber || '계좌번호를 입력'}
             </Text>
+            <Text style={styles.description}>"X" 그려서 지우기{"\n"} "V" 그려서 완료</Text>
             <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handleDirectInput)}
         onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
       />
     </View>
@@ -174,6 +182,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
+  description: {
+    fontSize: 25,
+    padding: 10,
+    marginHorizontal: 10,
+    marginBottom: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    textAlign: 'center',
+    minWidth: 280,
+    color: 'white',
+  },
+  // overlay: {
+  //   ...StyleSheet.absoluteFillObject,
+  //   backgroundColor: 'rgba(0, 0, 0,  1)',
+  //   zIndex: 10,
+  // },
 });
 
 export default InputAccount;

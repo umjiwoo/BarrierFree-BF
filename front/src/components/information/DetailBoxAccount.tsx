@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     marginBottom: 10,
-    // gap: 10,
+    gap: 15,
   },
   detailLabel: {
     fontSize: 30,

@@ -15,6 +15,7 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
+import DrawIcon from '../../assets/icons/Draw.svg';
 
 import {
   TestAccountItemProps,
@@ -111,6 +112,11 @@ const InputPassword: React.FC<Props> = ({ type }) => {
   const receiverAccountId = route.params?.receiverAccountId;
   const wsNavigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  const handleDirectInput = () => {
+    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    console.log('직접 입력 버튼 클릭');
+  };
+
   const handleSend = async () => {
     console.log('비밀번호 완료');
     console.log('password: ', Number(password));
@@ -184,8 +190,8 @@ const InputPassword: React.FC<Props> = ({ type }) => {
         }
         LowerLeftText={
           <View style={styles.textContainer}>
-            <CancelIcon width={100} height={100} />
-            <Text style={styles.text}>취소</Text>
+            <DrawIcon width={100} height={100} />
+            <Text style={styles.text}>입력</Text>
           </View>
         }
         LowerRightText={
@@ -198,12 +204,13 @@ const InputPassword: React.FC<Props> = ({ type }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>비밀번호 입력</Text>
             <Text style={styles.accountDisplay}>{renderPasswordDots()}</Text>
+            <Text style={styles.description}>"X" 그려서 지우기{"\n"} "V" 그려서 완료</Text>
             <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handleDirectInput)}
         onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
       />
     </View>
@@ -257,6 +264,18 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  description: {
+    fontSize: 25,
+    padding: 10,
+    marginHorizontal: 10,
+    marginBottom: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    textAlign: 'center',
+    minWidth: 280,
+    color: 'white',
   },
 });
 

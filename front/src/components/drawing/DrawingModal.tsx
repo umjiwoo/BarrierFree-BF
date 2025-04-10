@@ -157,13 +157,14 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
   const saveAndProcess = async () => {
     setLoading(true);
     try {
-      const image = canvasRef.current?.makeImageSnapshot();
-      if (!image) throw new Error('이미지 캡처 실패');
+      // 그린 이미지 저장
+      // const image = canvasRef.current?.makeImageSnapshot();
+      // if (!image) throw new Error('이미지 캡처 실패');
 
-      const base64 = image.encodeToBase64();
-      const rawPath = `${RNFS.CachesDirectoryPath}/digit_raw.png`;
-      await RNFS.writeFile(rawPath, base64, 'base64');
-      await CameraRoll.saveAsset(rawPath, { type: 'photo', album: 'Digits' });
+      // const base64 = image.encodeToBase64();
+      // const rawPath = `${RNFS.CachesDirectoryPath}/digit_raw.png`;
+      // await RNFS.writeFile(rawPath, base64, 'base64');
+      // await CameraRoll.saveAsset(rawPath, { type: 'photo', album: 'Digits' });
 
       const imageTensor = await preprocessPathToImage(pathsRef.current);
       // console.log(Array.from(imageTensor).slice(350, 450).join(', '));

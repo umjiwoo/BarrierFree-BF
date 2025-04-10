@@ -65,15 +65,15 @@ export async function preprocessPathToImage(paths: SkPath[]): Promise<Float32Arr
   const image = surface.makeImageSnapshot();
 
   // 📸 디버깅용 저장
-  try {
-    const base64 = image.encodeToBase64();
-    const filePath = `${RNFS.CachesDirectoryPath}/debug_digit_${Date.now()}.png`;
-    await RNFS.writeFile(filePath, base64, 'base64');
-    await CameraRoll.saveAsset(filePath, { type: 'photo', album: 'Digits' });
-    console.log("🖼️ 디버깅 이미지 저장 완료:", filePath);
-  } catch (err) {
-    console.error("디버깅 이미지 저장 실패:", err);
-  }
+  // try {
+  //   const base64 = image.encodeToBase64();
+  //   const filePath = `${RNFS.CachesDirectoryPath}/debug_digit_${Date.now()}.png`;
+  //   await RNFS.writeFile(filePath, base64, 'base64');
+  //   await CameraRoll.saveAsset(filePath, { type: 'photo', album: 'Digits' });
+  //   console.log("🖼️ 디버깅 이미지 저장 완료:", filePath);
+  // } catch (err) {
+  //   console.error("디버깅 이미지 저장 실패:", err);
+  // }
 
   const imageInfo = {
     width: INPUT_SIZE,

@@ -13,6 +13,7 @@ import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 import {playTTS} from '../../components/utils/tts';
 import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {getTransactionsHistory} from '../../api/axiosTransaction';
+import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const SendFavoriteAccount = () => {
   useTTSOnFocus(`
@@ -145,12 +146,18 @@ const SendFavoriteAccount = () => {
           </View>
         }
         MainText={
+        <View style={styles.welcomeBox}>
+          <View style={styles.voiceButton}>
+            <VolumeIcon width={30} height={30} />
+            <Text style={styles.voiceButtonText}>송금 하기</Text>
+          </View>
           <SendAccountBox
             accountData={accountData}
             carouselRef={carouselRef}
             selectedAccount={selectedAccount}
             onSelectAccount={handleSelectAccount}
           />
+        </View>
         }
         onUpperLeftTextPress={() =>
           handleDefaultPress('이전', undefined, handlePressBack)
@@ -213,6 +220,25 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  voiceButton: {
+    marginBottom: 20,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
+  },
+  welcomeBox: {
+    alignItems: 'center',
+    // marginVertical: 32,
   },
 });
 

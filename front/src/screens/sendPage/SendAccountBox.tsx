@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     gap: 20,
     width: '100%',
     height: '100%',
-    paddingVertical: 20,
+    // paddingVertical: 20,
     paddingRight: 60,
     paddingLeft: 20,
     borderRadius: 10,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   bank: {
     fontSize: 35,
     color: '#fff',
-    marginBottom: 10,
+    marginBottom: 5,
     fontWeight: 'bold',
   },
   number: {
