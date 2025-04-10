@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   selectedAccount: {
-    backgroundColor: 'rgba(127,53,212, 0.1)',
+    // backgroundColor: 'rgba(127,53,212, 0.1)',
   },
   transactionDateContainer: {
     flexDirection: 'column',
@@ -88,13 +88,13 @@ const styles = StyleSheet.create({
   },
   bank: {
     fontSize: 35,
-    color: '#24282B',
+    color: '#fff',
     marginBottom: 10,
     fontWeight: 'bold',
   },
   number: {
     fontSize: 35,
-    color: '#24282B',
+    color: '#fff',
     marginBottom: 10,
     fontWeight: 'bold',
   },

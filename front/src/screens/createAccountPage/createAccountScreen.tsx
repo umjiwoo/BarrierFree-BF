@@ -196,12 +196,14 @@ const CreateAccountScreen = () => {
           </View>
         }
         MainText={
+          // <View style={styles.welcomeBox}>
           <CreateAccountGoods
             data={accountGoods}
             carouselRef={carouselRef}
             onSelect={handleSelectGoods}
             onSnapToItem={setCurrentIndex}
           />
+          // </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', ['back'])}
         onUpperRightTextPress={() => handleDefaultPress('홈', ['Main'])}
@@ -227,6 +229,10 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  welcomeBox: {
+    alignItems: 'center',
+    marginVertical: 32,
   },
 });
 

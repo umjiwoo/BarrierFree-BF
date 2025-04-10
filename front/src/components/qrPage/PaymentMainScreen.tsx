@@ -3,6 +3,7 @@ import {axiosInstance, ApiResponse} from '../../api/axios';
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import {useUserStore} from '../../stores/userStore';
 
 // QR 유효 시간
 const QR_VALID_DURATION_MS = 10 * 60 * 1000; // 10분
@@ -34,6 +35,9 @@ const PaymentScreen = () => {
   const updateTimerRef = useRef<NodeJS.Timeout | null>(null);
   const regenQRTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 사용자 정보
+  const {user} = useUserStore();
+
   // QR 생성
   const createNewQR = async () => {
     // const newId = uuid.v4() as string;
@@ -51,11 +55,9 @@ const PaymentScreen = () => {
       console.log('구매자 정보', buyerInfo);
 
       // TODO : 판매자용 페이지 넘어갈 수 있게 react 정적 배포 필요
-      setQrValue(`http://j12a208.p.ssafy.io?
-        expiresAt=${expiration.toISOString()}
-        &buyerId=${buyerInfo.userId}
-        &buyerName=${buyerInfo.username}`);
-
+      // setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&buyerId=${buyerInfo.userId}&buyerName=${buyerInfo.username}`);
+      setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${user.username}`);
+  
       // 이렇게 QR 생성 값 넣으면 찍고 바로 넘어가지는 거 확인
       // setQrValue('http://j12a208.p.ssafy.io:8080/api/swagger-ui/index.html');
 
@@ -129,10 +131,13 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 20, 
   },
   text: {
     fontSize: 25,
     marginBottom: 20,
-    // fontWeight: 'bold',
+    // color: 'white',
+    fontWeight: 'bold',
   },
 });

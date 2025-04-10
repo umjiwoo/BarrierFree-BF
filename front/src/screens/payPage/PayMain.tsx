@@ -13,6 +13,7 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 import PaymentMainScreen from '../../components/qrPage/PaymentMainScreen';
+import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const PayMain = () => {
   // const navigation =
@@ -54,8 +55,16 @@ const PayMain = () => {
             <Text style={styles.text}>확인</Text>
           </View>
         }
-        MainText={<Text>결제 메인페이지 입니다.</Text>}
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        MainText={
+          <View style={styles.welcomeBox}>
+            <View style={styles.voiceButton}>
+              <VolumeIcon width={30} height={30} />
+              <Text style={styles.voiceButtonText}>결제 하기</Text>
+            </View>
+            <PaymentMainScreen/>
+          </View>
+        }
+          onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
         onLowerLeftTextPress={undefined}
         onLowerRightTextPress={undefined}
@@ -79,6 +88,25 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  voiceButton: {
+    marginBottom: 20,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
+  },
+  welcomeBox: {
+    alignItems: 'center',
+    marginVertical: 32,
   },
 });
 

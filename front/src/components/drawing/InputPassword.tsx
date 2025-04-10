@@ -7,11 +7,6 @@ import {
   useRoute,
   RouteProp,
 } from '@react-navigation/native';
-import {
-  TestAccountItemProps,
-  GoodsItemProps,
-} from '../../components/types/CheckAccount';
-import {useUserStore} from '../../stores/userStore';
 import { playTTS } from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
@@ -20,17 +15,30 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
+
+import {
+  TestAccountItemProps,
+  GoodsItemProps,
+} from '../../components/types/CheckAccount';
+import {useUserStore} from '../../stores/userStore';
+
 import { useTTSOnFocus } from '../utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
 
+import {postCheckAccountPassword} from '../../api/axiosTransaction';
+import {useAccountStore} from '../../stores/accountStore';
+import {connectWebSocket} from '../../utils/websocket';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
 interface Props {
   type: string;
-  selectedAccount?: TestAccountItemProps;
-  money?: number;
-  goods?: GoodsItemProps;
+  // selectedAccount?: TestAccountItemProps;
+  // money?: number;
+  // goods?: GoodsItemProps;
 }
 
-const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods }) => {
+const InputPassword: React.FC<Props> = ({ type }) => {
+// const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods }) => {
 
   useTTSOnFocus(`
     비밀번호를 입력하는 화면입니다.
@@ -96,12 +104,66 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
   const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  const {accounts} = useAccountStore();
+  const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
+  const money = route.params?.money;
+  const selectedAccount = route.params?.selectedAccount;
+  const receiverAccountId = route.params?.receiverAccountId;
+  const wsNavigation = useNavigation<NativeStackNavigationProp<any>>();
+
   const handleSend = async () => {
     console.log('비밀번호 완료');
-    if (selectedAccount && money){
-      navigation.navigate('RemittanceConfirm', {selectedAccount: selectedAccount, money: money});  // password 비밀번호
-    } else if (goods) {
-      navigation.navigate('CreateAccountSuccess', {goods: goods});
+    console.log('password: ', Number(password));
+
+    const response = await postCheckAccountPassword(
+      accounts.id,
+      Number(password),
+    );
+
+    console.log('response: ', response);
+    if (response === true) {
+      connectWebSocket(
+        'remittance',
+        {
+          accountNumber: selectedAccount.receiverAccount,
+          amount: money,
+        },
+        selectedAccount.receiverAccount,
+        () => {
+          navigation.navigate('RemittanceConfirm', {
+            selectedAccount: selectedAccount,
+            money: money,
+            password: password,
+            accountId: accounts.id,
+            receiverAccountId: receiverAccountId,
+          });
+        },
+        wsNavigation,
+      );
+
+      // navigation.navigate('RemittanceConfirm', {
+      //   selectedAccount: selectedAccount,
+      //   money: money,
+      //   password: password,
+      //   accountId: accounts.id,
+      //   receiverAccountId: receiverAccountId,
+      // }); // password 비밀번호
+    } else if (response === 'wrong') {
+      Alert.alert('비밀번호가 틀렸습니다.');
+      playTTS('비밀번호가 틀렸습니다.');
+      setPassword('');
+      navigation.navigate('SendInputPage', {
+        type: 'password',
+        selectedAccount: selectedAccount,
+        money: money,
+        receiverAccountId: receiverAccountId,
+      });
+    } else if (response === 'locked') {
+      playTTS(
+        '비밀번호 5회 입력 실패로 계좌가 잠겼습니다. 메인페이지로 돌아갑니다.',
+      );
+      setPassword('');
+      navigation.navigate('Main');
     }
   };
 

@@ -98,9 +98,11 @@ const styles = StyleSheet.create({
   goodsName: {
     fontSize: 40,
     fontWeight: 'bold',
+    color: 'white',
   },
   goodsDescription: {
     fontSize: 30,
+    color: 'white',
   },
   goodsDescriptionContainer: {
     flexDirection: 'column',
