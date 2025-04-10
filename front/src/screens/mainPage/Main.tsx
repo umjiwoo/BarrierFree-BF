@@ -18,18 +18,17 @@ import ChargeIcon from '../../assets/icons/Charge.svg';
 import SettingIcon from '../../assets/icons/Settings.svg';
 import HistoryIcon from '../../assets/icons/History.svg';
 import SendIcon from '../../assets/icons/Send.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 
 const Main = () => {
-
   useTTSOnFocus(`
     메인 화면입니다.
     계좌 조회를 원하시면 왼쪽 위,
     송금을 원하시면 오른쪽 위,
     결제를 원하시면 왼쪽 아래,
     설정을 원하시면 오른쪽 아래를 눌러주세요.
-  `)
+  `);
 
   const {user} = useUserStore();
   const {accounts} = useAccountStore();
@@ -109,10 +108,10 @@ const Main = () => {
         // MainText="메인 텍스트 들어갈 자리"
         onUpperLeftTextPress={() => handleDefaultPress('조회', 'CheckHistory')}
         // onUpperLeftTextPress={handleUpperLeftTextPress}
-        onUpperRightTextPress={() => handleDefaultPress('송금','SendMain')}
+        onUpperRightTextPress={() => handleDefaultPress('송금', 'SendMain')}
         // onUpperRightTextPress={handleUpperRightTextPress}
-        onLowerLeftTextPress={() => handleDefaultPress('결제','PayMain')}
-        onLowerRightTextPress={() => handleDefaultPress('설정','SettingsMain')}
+        onLowerLeftTextPress={() => handleDefaultPress('결제', 'PayMain')}
+        onLowerRightTextPress={() => handleDefaultPress('설정', 'SettingsMain')}
       />
     </SafeAreaView>
   );
