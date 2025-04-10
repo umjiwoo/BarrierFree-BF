@@ -17,6 +17,7 @@ interface SendAccountBoxProps {
   accountData: Array<TestAccountItemProps>;
   onSelectAccount: (account: any) => void;
   selectedAccount: any;
+  onSnapToItem?: (index: number) => void;
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
@@ -26,6 +27,7 @@ const SendAccountBox = ({
   accountData,
   onSelectAccount,
   selectedAccount,
+  onSnapToItem,
 }: SendAccountBoxProps) => {
   const carouselRef = useRef<any>(null);
 
@@ -37,7 +39,19 @@ const SendAccountBox = ({
     ) {
       onSelectAccount(accountData[0]);
     }
+
   }, [accountData, selectedAccount, onSelectAccount]);
+
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffset = event.nativeEvent.contentOffset;
+    const currentIndex = Math.round(contentOffset.x / SCREEN_WIDTH);
+    if (currentIndex >= 0 && currentIndex < accountData.length) {
+      onSelectAccount(accountData[currentIndex]);
+      onSnapToItem?.(currentIndex);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -99,7 +113,7 @@ const styles = StyleSheet.create({
   },
   selectedAccount: {
     height: '100%',
-    backgroundColor: '#e0e0ff',
+    backgroundColor: '#000',
     // borderWidth: 2,
     // borderColor: '#007AFF',
   },
@@ -107,17 +121,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#7F35D4',
+    color: '#fff',
   },
   bank: {
-    fontSize: 30,
-    color: '#7F35D4',
+    fontSize: 35,
+    color: '#fff',
     fontWeight: 'bold',
     marginBottom: 5,
   },
   number: {
-    fontSize: 25,
-    color: '#7F35D4',
+    fontSize: 30,
+    color: '#fff',
     fontWeight: 'bold',
   },
   transactionDateContainer: {

@@ -37,16 +37,6 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
-      {/* 메인 페이지 */}
-      <Stack.Screen
-        name="Main"
-        component={Main}
-        options={{
-          title: '메인',
-          headerShown: false,
-          // 필요한 옵션 추가
-        }}
-      />
       {/* 계좌 생성 */}
       <Stack.Screen
         name="CreateAccountScreen"
@@ -87,6 +77,16 @@ const RootStack = () => {
         options={{
           title: 'DefaultButton',
           headerShown: false,
+        }}
+      />
+      {/* 메인 페이지 */}
+      <Stack.Screen
+        name="Main"
+        component={Main}
+        options={{
+          title: '메인',
+          headerShown: false,
+          // 필요한 옵션 추가
         }}
       />
       {/* 조회 페이지 */}

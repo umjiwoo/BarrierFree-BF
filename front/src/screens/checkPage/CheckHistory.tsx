@@ -13,7 +13,10 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import NextIcon from '../../assets/icons/Next.svg';
 import PreviousIcon from '../../assets/icons/Prev.svg';
-import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import { playTTS } from '../../components/utils/tts';
+import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import formatDateManually from '../../components/utils/makeDate';
 // const histories: HistoryItemProps[] = [
 //   {
 //     id: 1,
@@ -63,6 +66,7 @@ const CheckHistory = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {accounts} = useAccountStore();
   const {handlePressBack, handlePressHome} = useHandlePress();
+  const handleDefaultPress = useTapNavigationHandler();
 
   const [histories, setHistories] = useState<HistoryItemProps[]>([]);
   const [_isLoading, setIsLoading] = useState(true);
@@ -86,13 +90,50 @@ const CheckHistory = () => {
   }, [accounts?.id]);
 
   const carouselRef = useRef<any>(null);
+  
+  // 캐러셀
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentItem = histories[currentIndex];
 
   const handleSelectHistory = (item: HistoryItemProps) => {
-    // 계좌 선택 시 처리할 로직
-    navigation.navigate('CheckHistoryDetail', {
-      history: item as HistoryItemProps,
-    });
-  };
+    const typeLabel =
+      item.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+    const [hour, minute] = formatDateManually(item.transactionDate).time.split(':');
+
+    const message = [
+      `${formatDateManually(item.transactionDate).date}`,
+      `${hour}시 ${minute}분`,
+      `${item.transactionName}`,
+      `${item.transactionAmount.toLocaleString()}원`,
+      `${typeLabel}되었습니다.`,
+    ].join('\n\n');
+  
+      handleDefaultPress(message, ['CheckHistoryDetail', {history: item}])
+    };
+    
+  useEffect(() => {
+    if (currentItem) {
+      const typeLabel =
+      currentItem.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+      const [hour, minute] = formatDateManually(currentItem.transactionDate).time.split(':');
+      const message = [
+        `${formatDateManually(currentItem.transactionDate).date}`,
+        `${hour}시 ${minute}분`,
+        `${currentItem.transactionName}`,
+        `${currentItem.transactionAmount.toLocaleString()}원`,
+        `${typeLabel}되었습니다.`,
+      ].join('\n\n');
+      
+      playTTS(message);
+    }
+  }, [currentIndex]);
+
+  // const handleSelectHistory = (item: HistoryItemProps) => {
+  //   // 계좌 선택 시 처리할 로직
+  //   navigation.navigate('CheckHistoryDetail', {
+  //     history: item as HistoryItemProps,
+  //   });
+  // };
 
   const handleLowerLeftTextPress = () => {
     if (carouselRef.current) {
@@ -110,7 +151,13 @@ const CheckHistory = () => {
     return (
       <View style={styles.container}>
         <DefaultPage
-          UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+                UpperLeftText={
+                  <View style={styles.textContainer}>
+                    <ArrowLeftIcon width={100} height={100} />
+                    <Text style={styles.text}>조회</Text>
+                  </View>
+                }
+          // UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
           UpperRightText={<HomeIcon width={80} height={80} />}
           MainText={
             <View>
@@ -127,11 +174,30 @@ const CheckHistory = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        // UpperLeftText={<GoBackIcon width={100} height={100} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText={<PreviousIcon width={100} height={100} />}
-        LowerRightText={<NextIcon width={100} height={100} />}
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <PreviousIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <NextIcon width={100} height={100} />
+            <Text style={styles.text}>다음</Text>
+          </View>
+        }
         MainText={
           histories.length === 0 ? (
             <Text>거래 내역이 없습니다.</Text>
@@ -140,11 +206,12 @@ const CheckHistory = () => {
               data={histories}
               onSelect={handleSelectHistory}
               carouselRef={carouselRef}
+              onSnapToItem={setCurrentIndex}
             />
           )
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
         onLowerLeftTextPress={handleLowerLeftTextPress}
         onLowerRightTextPress={handleLowerRightTextPress}
       />
@@ -161,5 +228,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
