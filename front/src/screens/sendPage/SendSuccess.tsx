@@ -10,6 +10,7 @@ import HomeIcon from '../../assets/icons/Home.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import DrawIcon from '../../assets/icons/Draw.svg';
 
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -43,20 +44,20 @@ const SendSuccess = () => {
         }
         LowerLeftText={
           <View style={styles.textContainer}>
-            <ArrowLeftIcon width={100} height={100} />
-            <Text style={styles.text}>내역 조회</Text>
+            <DrawIcon width={100} height={100} />
+            <Text style={styles.text}>내역</Text>
           </View>
         }
         LowerRightText={
           <View style={styles.textContainer}>
-            <ArrowLeftIcon width={100} height={100} />
+            <CheckIcon width={100} height={100} />
             <Text style={styles.text}>확인</Text>
           </View>
         }
         MainText={
           <View style={styles.mainTextContainer}>
             <Text style={styles.mainText}>이체가 완료되었습니다.</Text>
-            <CheckCircle style={styles.checkCircle} />
+            <CheckIcon style={styles.checkCircle} />
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 40,
     fontWeight: '800',
-    color: '#7F35D4',
+    color: '#fff',
   },
   mainTextContainer: {
     display: 'flex',

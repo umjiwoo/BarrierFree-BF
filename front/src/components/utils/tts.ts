@@ -26,7 +26,7 @@ export const initializeTtsListeners = async () => {
   Tts.setDefaultLanguage('ko-KR'); 
 
   // Set the default speaking rate. Lower values are slower, and higher values are faster
-  Tts.setDefaultRate(1, true);
+  Tts.setDefaultRate(1.5, true);
 
   // Ignore the silent switch on the device, allowing TTS to play even if the device is set to silent
   Tts.setIgnoreSilentSwitch('ignore');
