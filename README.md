@@ -10,7 +10,7 @@
 
 ### 타겟층 🎯
 
-- 시각 장애인인🫂
+- 시각 장애인🫂
 - 저시력자👳🧓
 
 ### UCC 📽️
@@ -25,7 +25,7 @@
 
 ### 배경
 
-- **변화하는 시대에 맞춰 발전하는 폰뱅킹, 눈이 안좋아 사용하기 불편하다 .. **😢 좋은 방법이 있을까요❓
+- **변화하는 시대에 맞춰 발전하는 폰뱅킹, 눈이 안좋아 사용하기 불편하다 ..**😢 좋은 방법이 있을까요❓
 - **은행 비밀번호를 입력하려면 도우미가 필요하다. 개인정보 괜찮은 건가?**😨 
 
 
@@ -44,15 +44,15 @@
 
 ---
 
-### 📌송금 기능
+### 📌신분증 인식 - OCR 기능
 - 
 ---
 
-### 📌결제 기능
+### 📌시각장애인을 위한 진동 / 음성 피드백
 
 ---
 
-### 📌마이페이지
+### 📌직관적 UI / UX
 
 
 ## 4️⃣기술 스택
@@ -69,10 +69,14 @@
 - Firebase
 
 ### Frontend
-- React
-- AndroidStudio
+- VisualStudioCode / Android Studio
+- Node.js
+- NPM
 - TypeScript
-- Tailwind CSS
+- React Native
+- React
+- Axios
+- Zustand
 
 ### Infrastructure
 - Gitlab Actions
