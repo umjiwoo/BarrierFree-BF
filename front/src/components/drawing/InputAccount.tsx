@@ -8,19 +8,33 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 
-// import {useUserStore} from '../../stores/userStore';
+import {useUserStore} from '../../stores/userStore';
 import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import CancelIcon from '../../assets/icons/Cancel.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
+import { useTTSOnFocus } from '../utils/useTTSOnFocus';
+import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
 
 interface Props {
   type: string;
 }
 
-const InputAccount: React.FC<Props> = ({type}) => {
+const InputAccount: React.FC<Props> = ({ type }) => {
+
+  useTTSOnFocus(`
+    송금할 계좌를 입력하는 화면입니다.
+    숫자를 손으로 그려서 입력할 수 있습니다.
+    입력한 숫자를 지우려면 X자를 그려주세요.
+    입력이 끝났다면 V자를 그려서 마무리해주세요.
+    다음 단계로 넘어가시려면 오른쪽 아래를 눌러주세요.
+    왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
+  `)
+
   const [accountNumber, setAccountNumber] = useState('');
   const [showModal, setShowModal] = useState(true);
 
@@ -28,8 +42,11 @@ const InputAccount: React.FC<Props> = ({type}) => {
     if (digit === '11') {
       console.log('"X" 지우기');
       deleteLastDigit();
-    } else if (digit === '10') {
+      playTTS('지우기');
+    } else if (digit === "10") {
       closeModal();
+      playTTS('입력 완료');
+      playTTS(accountNumber);
     } else {
       console.log('digit', digit);
       setAccountNumber(prev => prev + digit);
@@ -51,7 +68,9 @@ const InputAccount: React.FC<Props> = ({type}) => {
   };
 
   const {handlePressBack, handlePressHome} = useHandlePress();
-  // const {user} = useUserStore();
+  const handleDefaultPress = useTapNavigationHandler();
+
+  const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
@@ -65,10 +84,30 @@ const InputAccount: React.FC<Props> = ({type}) => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="취소"
-        LowerRightText="입력 확인"
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <CancelIcon width={100} height={100} />
+            <Text style={styles.text}>취소</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>확인</Text>
+          </View>
+        }
         MainText={
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>계좌번호 입력</Text>
@@ -78,10 +117,10 @@ const InputAccount: React.FC<Props> = ({type}) => {
             <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
-        onUpperLeftTextPress={handlePressBack}
-        onUpperRightTextPress={handlePressHome}
-        onLowerLeftTextPress={handlePressBack}
-        onLowerRightTextPress={handleSend}
+        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
+        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
+        onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
       />
     </View>
   );
@@ -105,19 +144,35 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    fontSize: 30,
+    fontSize: 50,
     textAlign: 'left',
     fontWeight: 'bold',
     marginBottom: 30,
+    color: 'white',
   },
   accountDisplay: {
     fontSize: 30,
     padding: 10,
     marginHorizontal: 10,
     marginBottom: 16,
-    backgroundColor: 'rgba(127,53,212, 0.1)',
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
     textAlign: 'center',
     minWidth: 280,
+    color: 'white',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 
