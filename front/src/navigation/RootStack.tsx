@@ -29,6 +29,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootStack = () => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          title: 'Home',
+          headerShown: false,
+        }}
+      />
       {/* 메인 페이지 */}
       <Stack.Screen
         name="Main"
@@ -37,14 +45,6 @@ const RootStack = () => {
           title: '메인',
           headerShown: false,
           // 필요한 옵션 추가
-        }}
-      />
-      <Stack.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-        options={{
-          title: 'Home',
-          headerShown: false,
         }}
       />
       {/* 계좌 생성 */}
@@ -179,30 +179,6 @@ const RootStack = () => {
         component={SettingsMain}
         options={{
           title: '설정 페이지',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Payment"
-        component={PaymentScreen}
-        options={{
-          title: '결제',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="PaymentConfirm"
-        component={PaymentConfirmScreen}
-        options={{
-          title: '결제',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="AcceptPaymentScreen"
-        component={AcceptPaymentScreen}
-        options={{
-          title: '결제 승인 페이지',
           headerShown: false,
         }}
       />

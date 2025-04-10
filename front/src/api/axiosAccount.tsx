@@ -1,5 +1,4 @@
 import {HistoryItemProps} from '../components/types/CheckAccount';
-import {HistoryItemProps} from '../components/types/CheckAccount';
 import {AxiosResponse} from 'axios';
 import {axiosInstance} from './axios';
 
@@ -34,7 +33,6 @@ const makeAccounts = async (accountData: AccountCreateParams): Promise<any> => {
 
 // 계좌 조회 함수
 const getAccounts = async (): Promise<any> => {
-const getAccounts = async (): Promise<any> => {
   try {
     const response: AxiosResponse = await axiosInstance.get('/api/accounts');
     console.log('결과 상태 조회 : ', response.data.result.code);
@@ -47,7 +45,6 @@ const getAccounts = async (): Promise<any> => {
     }
   } catch (error) {
     console.error('계좌 조회 실패:', error);
-    return null; // 에러 발생 시 빈 배열 반환
     return null; // 에러 발생 시 빈 배열 반환
   }
 };
