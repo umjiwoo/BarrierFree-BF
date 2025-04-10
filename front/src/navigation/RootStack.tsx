@@ -26,10 +26,10 @@ const RootStack = () => {
     <Stack.Navigator>
       {/* 메인 페이지 */}
       <Stack.Screen
-        name="Main"
-        component={Main}
+        name="CreateAccountCheck"
+        component={CreateAccountCheck}
         options={{
-          title: '메인',
+          title: 'CreateAccountCheck',
           headerShown: false,
           // 필요한 옵션 추가
         }}
@@ -60,10 +60,10 @@ const RootStack = () => {
         }}
       />
       <Stack.Screen
-        name="CreateAccountCheck"
-        component={CreateAccountCheck}
+        name="Main"
+        component={Main}
         options={{
-          title: 'CreateAccountCheck',
+          title: 'Main',
           headerShown: false,
         }}
       />
