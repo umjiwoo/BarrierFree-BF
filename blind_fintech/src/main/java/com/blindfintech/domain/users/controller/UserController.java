@@ -1,7 +1,6 @@
 package com.blindfintech.domain.users.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
-import com.blindfintech.domain.bank.service.BankService;
 import com.blindfintech.domain.users.dto.LoginDto;
 import com.blindfintech.domain.users.dto.UserDto;
 import com.blindfintech.domain.users.entity.User;
@@ -9,7 +8,6 @@ import com.blindfintech.domain.users.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +26,7 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
-        System.out.println("회원가입요청");
         userService.signUp(userDto);
-        System.out.println("회원가입");
         return ResponseEntity.ok(ResponseDto.success(200, "회원가입 성공"));
     }
 

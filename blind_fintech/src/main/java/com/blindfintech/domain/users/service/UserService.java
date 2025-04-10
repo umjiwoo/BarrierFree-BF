@@ -37,7 +37,6 @@ public class UserService {
 
     // 회원가입
     public void signUp(UserDto userDto) {
-        System.out.println("회원가입 서비스 ");
         System.out.println(userDto);
 
         // 비밀번호 암호화
@@ -47,7 +46,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // 로그인
     // 로그인
     public User login(LoginDto loginDto, boolean isAutoLogin, HttpServletResponse response) {
         User user = authenticate(loginDto);

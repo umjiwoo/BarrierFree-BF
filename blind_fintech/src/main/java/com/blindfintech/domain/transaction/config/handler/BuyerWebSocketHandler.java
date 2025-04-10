@@ -17,7 +17,7 @@ public class BuyerWebSocketHandler extends BasicWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         URI uri = session.getUri();
         if (uri == null) {
-            log.warn("⚠️ 결제 승인에 필요한 transactionWebSocketId 전달 안됨");
+            log.warn("결제 승인에 필요한 transactionWebSocketId 전달 안됨");
             session.close();
             return;
         }
@@ -34,12 +34,12 @@ public class BuyerWebSocketHandler extends BasicWebSocketHandler {
         String transactionIdResponse = objectMapper.writeValueAsString(Map.of("transactionWebSocketId", transactionWebSocketId));
         session.sendMessage(new TextMessage(transactionIdResponse));
 
-        log.info("✅구매자 클라이언트 연결됨: " + session.getId());
+        log.info("구매자 클라이언트 연결됨: " + session.getId());
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         super.afterConnectionClosed(session, status);
-        log.info("❌구매자 클라이언트 연결 종료: " + session.getId());
+        log.info("구매자 클라이언트 연결 종료: " + session.getId());
     }
 }

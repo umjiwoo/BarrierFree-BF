@@ -43,3 +43,5 @@ vcs.xml
 
 ### local ###
 **/DevSecurityConfig.java
+
+**/firebase_service_key.json

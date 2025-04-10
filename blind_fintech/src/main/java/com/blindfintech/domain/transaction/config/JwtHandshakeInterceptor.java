@@ -39,13 +39,13 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
                     .findFirst();
 
             if (tokenOpt.isEmpty()) {
-                log.warn("❌ JWT 토큰 없음. 웹소켓 연결 거부");
+                log.warn("JWT 토큰 없음. 웹소켓 연결 거부");
                 return false;
             }
 
             String token = tokenOpt.get();
             if (!jwtUtil.validateToken(token)) {
-                log.warn("❌ 유효하지 않은 토큰. 웹소켓 연결 거부");
+                log.warn("유효하지 않은 토큰. 웹소켓 연결 거부");
                 return false;
             }
 
@@ -63,7 +63,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
-        log.info("✅ 웹소켓 연결 성공");
+        log.info("웹소켓 연결 성공");
     }
 }
 

@@ -1,8 +1,11 @@
 package com.blindfintech.domain.transaction.service;
 
+import com.blindfintech.common.dto.FcmMesssageDto;
 import com.blindfintech.common.dto.ResponseDto;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.common.exception.ExceptionResponse;
+import com.blindfintech.common.service.FcmMessageFactory;
+import com.blindfintech.common.service.FcmService;
 import com.blindfintech.domain.accounts.entity.Account;
 import com.blindfintech.domain.accounts.entity.AccountTransaction;
 import com.blindfintech.domain.accounts.repository.AccountRepository;
@@ -46,6 +49,7 @@ public class TransactionService {
 
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final UserService userService;
+    private final FcmService fcmService;
 
     private final List<BasicWebSocketHandler> webSocketHandlers;
 
@@ -90,7 +94,7 @@ public class TransactionService {
 
     @Async
     public void consumeSendMoney(TransactionRequestDto transactionRequestDto, String transactionUuid){
-        log.info("🟢 Received TransactionRequest: {}", transactionRequestDto.toString());
+        log.info("Received TransactionRequest: {}", transactionRequestDto.toString());
 
         // 메시지 처리
         try {
@@ -104,7 +108,7 @@ public class TransactionService {
                     handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
                 }
             } catch (Exception e) {
-                log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+                log.error("WebSocket 응답 전송 실패: {}", e.getMessage());
                 String transactionResponse = objectMapper.writeValueAsString(
                         ResponseDto.error(new ExceptionResponse(SOCKET_RESPONSE_FAILED.getCode(),
                                                                 SOCKET_RESPONSE_FAILED.getMessage())));
@@ -123,7 +127,7 @@ public class TransactionService {
                     handler.sendTransactionResult(transactionRequestDto.getTransactionWebSocketId(), transactionResponse);
                 }
             } catch (Exception ex) {
-                log.error("🔕WebSocket 응답 전송 실패: {}", e.getMessage());
+                log.error("WebSocket 응답 전송 실패: {}", e.getMessage());
             }
         }
     }
@@ -145,5 +149,10 @@ public class TransactionService {
     public BuyerInfoDto getBuyerInfo(){
         User user = userService.getCurrentUser();
         return BuyerInfoDto.from(user);
+    }
+
+    public void sendNotification(PushMessageDto pushMessageDto){
+        FcmMesssageDto fcmMessage = FcmMessageFactory.from(pushMessageDto);
+        fcmService.sendNotification(fcmMessage);
     }
 }

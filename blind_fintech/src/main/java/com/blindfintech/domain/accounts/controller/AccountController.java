@@ -45,13 +45,6 @@ public class AccountController {
         return ResponseEntity.ok()
                 .body(ResponseDto.success(accountState));
     }
-/*    @GetMapping("/search-ai-accountTransction")
-    public ResponseEntity<?> searchAiAccountTransction(@RequestParam Integer accountNo,
-                                                       @RequestParam String reponse) {
-        String aiResponsse = accountService.aiSearchAccountTransaction(accountNo, reponse);
-        System.out.println(aiResponsse);
-        return ResponseEntity.ok().body(aiResponsse);
-    }*/
 
     @PostMapping("{account_id}/check-pwd")
     public ResponseEntity<?> checkPassword(@PathVariable int account_id, @RequestBody PasswordInputDto passwordInputDto) {

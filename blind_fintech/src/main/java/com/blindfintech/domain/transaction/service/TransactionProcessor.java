@@ -50,15 +50,15 @@ public class TransactionProcessor {
         transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.WITHDRAW_COMPLETED));
         transactionLogRepository.save(transactionLog);
 
-        log.info("💲송금인 계좌 차액 완료");
+        log.info("송금인 계좌 차액 완료");
 
         // 2. 받는 계좌 amount 증액
-        updateReceiverBalance(receiver, sendAmount, transactionUuid);
+        updateReceiverBalance(receiver, sendAmount);
 
         transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.DEPOSIT_COMPLETED));
         transactionLogRepository.save(transactionLog);
 
-        log.info("💲수취인 계좌 증액 완료");
+        log.info("수취인 계좌 증액 완료");
 
         // 3. 송금한 유저, 입금 받은 유저 AccountTransaction 데이터 생성
         LocalDateTime transactionCompletedTime = transactionLog.getCreatedAt();
@@ -92,7 +92,7 @@ public class TransactionProcessor {
         sender.setAccountBalance(senderAccountBalance - sendAmount);
     }
 
-    private void updateReceiverBalance(Account receiver, long sendAmount, String transactionUuid) {
+    private void updateReceiverBalance(Account receiver, long sendAmount) {
         Long receiverAccountBalance = receiver.getAccountBalance();
         receiver.setAccountBalance(receiverAccountBalance + sendAmount);
     }

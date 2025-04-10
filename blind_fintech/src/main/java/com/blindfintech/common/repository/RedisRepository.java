@@ -11,11 +11,6 @@ import java.time.Duration;
 public class RedisRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    //데이터 저장
-/*    public void save(String key,Object data){
-        redisTemplate.opsForValue().set(key,data);
-    }*/
-
     //데이터 저장(일정 시간동안)
     public void save(String key,Object data,long ttl){
         redisTemplate.opsForValue().set(key,data, Duration.ofMinutes(ttl));
@@ -30,9 +25,4 @@ public class RedisRepository {
     public void delete(String key){
         redisTemplate.delete(key);
     }
-    //특정 키값 조회
-/*    public Set<String> getKeys(String pattern){
-        return redisTemplate.keys(pattern);
-    }*/
-
 }
