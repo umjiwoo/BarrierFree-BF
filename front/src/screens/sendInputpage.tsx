@@ -24,6 +24,7 @@ type SendInputPageParams = {
   SendInputPage: {
     type: 'directMyAccount' | 'directOtherAccount' | 'money' | 'password';
     selectedAccount?: TestAccountItemProps;
+    receiverAccountId?: number;
     money?: number;
     goods?: GoodsItemProps;
   };
@@ -43,9 +44,10 @@ const SendInputPage = () => {
 
   // 라우트 파라미터에서 type 가져오기
   const route = useRoute<SendInputPageRouteProp>();
-  const {type, selectedAccount} = route.params || {
+  const {type, selectedAccount, receiverAccountId} = route.params || {
     type: 'directMyAccount',
     selectedAccount: null,
+    receiverAccountId: null,
   }; // 기본값 설정
   const money = route.params?.money;
   const goods = route.params?.goods;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 // import {useNavigation} from '@react-navigation/native';
 // import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // import {RootStackParamList} from '../../navigation/types';
@@ -8,6 +8,7 @@ import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import ArrowRight from '../../assets/icons/ArrowRight.svg';
 import Home from '../../assets/icons/Home.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
+import PaymentMainScreen from '../../components/qrPage/PaymentMainScreen';
 
 const PayMain = () => {
   // const navigation =
@@ -22,7 +23,8 @@ const PayMain = () => {
         UpperRightText={<Home />}
         LowerLeftText={<ArrowLeft />}
         LowerRightText={<ArrowRight />}
-        MainText={<Text>결제 메인페이지 입니다.</Text>}
+        MainText={<PaymentMainScreen />}
+        // MainText={<Text>결제 메인페이지 입니다.</Text>}
         onUpperLeftTextPress={handlePressBack}
         onUpperRightTextPress={handlePressHome}
         onLowerLeftTextPress={handlePressBack}

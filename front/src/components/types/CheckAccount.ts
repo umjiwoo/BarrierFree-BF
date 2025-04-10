@@ -1,6 +1,8 @@
 export interface TestAccountItemProps {
+  receiverAccountId: number;
   receiverName: string;
   receiverAccount: string;
+  transactionDate: string;
 }
 
 export interface GoodsItemProps {

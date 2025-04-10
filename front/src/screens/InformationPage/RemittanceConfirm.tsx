@@ -1,11 +1,12 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, Alert} from 'react-native';
 import {
   NavigationProp,
   useNavigation,
   useRoute,
   RouteProp,
 } from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage';
 import DetailBox from '../../components/information/DetailBoxInformation';
@@ -14,14 +15,45 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {useUserStore} from '../../stores/userStore';
 import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {closeWebSocket, connectWebSocket} from '../../utils/websocket';
+import {postSendMoney} from '../../api/axiosTransaction';
 
 const ReceivingConfirmScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
   const {user} = useUserStore();
+  // const navigation = useNavigation<NavigationProp<any>>();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+  const accountPassword = route.params?.password;
+  const [transactionId, setTransactionId] = useState<string | null>(null);
+  const wsNavigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  useEffect(() => {
+    connectWebSocket(
+      'remittance',
+      {
+        accountNumber: selectedAccount.receiverAccount,
+        amount: money,
+      },
+      selectedAccount.receiverAccount,
+      (id: string) => {
+        console.log('Received transactionWebSocketId:', id);
+        setTransactionId(id);
+        console.log('transactionId:', id);
+        // navigation.navigate('SendSuccess');
+      },
+      wsNavigation,
+    );
+    return () => {
+      closeWebSocket();
+    };
+  }, [money, selectedAccount.receiverAccount, wsNavigation]);
+
+  // setTimeout(() => {
+  //   closeWebSocket();
+  // }, 1000);
 
   useTTSOnFocus(`
     ${selectedAccount.receiverName}님에게 ${money}원을 송금하시겠습니까?
@@ -29,9 +61,29 @@ const ReceivingConfirmScreen: React.FC = () => {
     왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
   `);
 
-  const handleSend = () => {
-    console.log('송금하기 버튼 클릭');
-    navigation.navigate('SendSuccess');
+  const handleSend = async () => {
+    try {
+      console.log('송금하기 버튼 클릭');
+      const response = await postSendMoney(
+        user.id,
+        selectedAccount.receiverAccountId,
+        money,
+        selectedAccount.receiverName,
+        String(transactionId),
+        accountPassword,
+      );
+      console.log('송금하기 응답:', response);
+      if (response.result.code === 200) {
+        console.log('송금하기 성공:', response.result.message);
+        navigation.navigate('SendSuccess');
+      } else {
+        console.log('송금하기 실패');
+        Alert.alert('송금에 실패했습니다.');
+      }
+    } catch (error) {
+      Alert.alert('송금에 실패했습니다. 다시 시도해주세요.');
+      navigation.navigate('SendMain');
+    }
   };
 
   return (

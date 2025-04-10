@@ -7,18 +7,17 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
-import {getTransactionsHistory} from '../../api/axiosAccount';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import {getTransactionsHistory} from '../../api/axiosTransaction';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 
 const SendFavoriteAccount = () => {
-
   useTTSOnFocus(`
     최근 송금한 계좌 목록입니다.
     화면 가운데를 좌우로 움직여 송금할 계좌를 선택해주세요.
     계좌 번호를 직접 입력하시려면 왼쪽 아래를,
     선택을 완료하시려면 오른쪽 아래를 눌러주세요.
     왼쪽 위에는 이전 버튼이, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const {handlePressBack, handlePressHome} = useHandlePress();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -45,17 +44,25 @@ const SendFavoriteAccount = () => {
   //   // 필요에 따라 더 많은 계정을 추가할 수 있습니다
   // ];
 
-  const [accountData, setAccountData] = useState<any>([]);
+  // const [accountData, setAccountData] = useState<any>([]);
 
-  useEffect(() => {
-    const fetchRecentAccounts = async () => {
-      const recentAccounts = await getTransactionsHistory();
-      setAccountData(recentAccounts);
-      console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
-    };
-    fetchRecentAccounts();
-  }, []);
-
+  // useEffect(() => {
+  //   const fetchRecentAccounts = async () => {
+  //     const recentAccounts = await getTransactionsHistory();
+  //     setAccountData(recentAccounts);
+  //     console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
+  //   };
+  //   fetchRecentAccounts();
+  // }, []);
+  const accountData = [
+    {
+      receiverAccount: '1190101022222222',
+      receiverAccountId: 1,
+      receiverName: '엄지우',
+      transactionDate: '2025-04-06T12:47:10',
+    },
+  ];
+  // setAccountData(exampleAccountData);
   const [selectedAccount, setSelectedAccount] = useState<any>(accountData[0]);
 
   const handleSelectAccount = (account: any) => {
@@ -65,6 +72,7 @@ const SendFavoriteAccount = () => {
 
   const handleSendMoney = () => {
     if (selectedAccount) {
+      console.log('selectedAccount: ', selectedAccount);
       navigation.navigate('ReceivingAccountScreen', {selectedAccount});
     } else {
       console.log('계좌를 선택해주세요');

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/native';
 
 import {useUserStore} from '../../stores/userStore';
-import { playTTS } from '../utils/tts';
+import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -18,23 +18,25 @@ import HomeIcon from '../../assets/icons/Home.svg';
 
 interface Props {
   type: string;
+  receiverAccountId?: number;
+  selectedAccount?: any;
 }
 
-const InputAmount: React.FC<Props> = ({ type }) => {
+const InputAmount: React.FC<Props> = ({type}) => {
   const [amountNumber, setAmountNumber] = useState('');
   const [showModal, setShowModal] = useState(true);
-  
+
   const handlePrediction = (digit: string) => {
-    if (digit === "11") {
+    if (digit === '11') {
       console.log('"X" 지우기');
       deleteLastDigit();
-    } else if (digit === "10") {
+    } else if (digit === '10') {
       closeModal();
     } else {
-      console.log('digit', digit)
+      console.log('digit', digit);
       setAmountNumber(prev => prev + digit);
-      playTTS(digit);    // 현재 digit 읽기    
-    }    
+      playTTS(digit); // 현재 digit 읽기
+    }
   };
 
   const deleteLastDigit = () => {
@@ -53,17 +55,24 @@ const InputAmount: React.FC<Props> = ({ type }) => {
   const {handlePressBack, handlePressHome} = useHandlePress();
   const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'SendInputPage'>>();
+  // const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
+  const receiverAccountId = route.params?.receiverAccountId;
 
   const handleSend = () => {
     console.log('금액 입력 완료');
-    navigation.navigate('RemittanceInformation', {money: Number(amountNumber), selectedAccount: selectedAccount});  // 입력한 계좌로 변경
+    navigation.navigate('RemittanceInformation', {
+      money: Number(amountNumber),
+      selectedAccount: selectedAccount,
+      receiverAccountId: receiverAccountId,
+    }); // 입력한 계좌로 변경
   };
 
   const renderAmountNumber = () => {
-    if (!amountNumber || isNaN(Number(amountNumber))) return '송금할 금액을 입력해주세요';
+    if (!amountNumber || isNaN(Number(amountNumber)))
+      return '송금할 금액을 입력해주세요';
     return Number(amountNumber).toLocaleString('ko-KR') + '원';
   };
 
@@ -78,9 +87,7 @@ const InputAmount: React.FC<Props> = ({ type }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>금액 입력</Text>
             <Text style={styles.accountDisplay}>{renderAmountNumber()}</Text>
-            <DrawingModal 
-               visible={showModal}
-               onPredict={handlePrediction} />
+            <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
         onUpperLeftTextPress={handlePressBack}
