@@ -32,7 +32,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/**",
-                                "/accounts/**",
                                 "/swagger-ui/**",          // Swagger UI 허용
                                 "/v3/api-docs/**").permitAll()  // 허용할 API 목록
                         .anyRequest().authenticated()  // 나머지는 인증 필요
@@ -50,8 +49,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // configuration.setAllowedOrigins(List.of("http://localhost", "https://localhost", "ws://localhost",
-        //         "http://j12a208.p.ssafy.io", "https://j12a208.p.ssafy.io", "ws://j12a208.p.ssafy.io"));
 
         configuration.addAllowedOriginPattern("*"); // 모든 origin 허용
         

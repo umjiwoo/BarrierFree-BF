@@ -53,7 +53,7 @@ public class TransactionProcessor {
         log.info("송금인 계좌 차액 완료");
 
         // 2. 받는 계좌 amount 증액
-        updateReceiverBalance(receiver, sendAmount, transactionUuid);
+        updateReceiverBalance(receiver, sendAmount);
 
         transactionLog = TransactionLog.from(TransactionLogDto.from(transactionUuid, TransactionState.DEPOSIT_COMPLETED));
         transactionLogRepository.save(transactionLog);
@@ -92,7 +92,7 @@ public class TransactionProcessor {
         sender.setAccountBalance(senderAccountBalance - sendAmount);
     }
 
-    private void updateReceiverBalance(Account receiver, long sendAmount, String transactionUuid) {
+    private void updateReceiverBalance(Account receiver, long sendAmount) {
         Long receiverAccountBalance = receiver.getAccountBalance();
         receiver.setAccountBalance(receiverAccountBalance + sendAmount);
     }

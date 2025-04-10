@@ -1,6 +1,5 @@
 package com.blindfintech.domain.accounts.service;
 
-//import com.blindfintech.common.ai.OpenAiClient;
 import com.blindfintech.common.exception.BadRequestException;
 import com.blindfintech.common.service.SmsService;
 import com.blindfintech.domain.accounts.constants.BranchCode;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.blindfintech.domain.accounts.exception.AccountExceptionCode.*;
 
@@ -97,17 +95,6 @@ public class AccountService {
 
         return accountNumber.toString();
     }
-
-//    private final OpenAiClient openAiClient;
-
-   /* public String aiSearchAccountTransaction(Integer accountNo, String input) {
-
-        String prompt = "Search Account";
-        System.out.println("openAi");
-//        AccountTransactionRepository.findAiAccountTransactioon(Optional<AccountProjection>)
-        return openAiClient.sendRequest(prompt, input);
-    }*/
-
 
     @Transactional
     public IsCorrectPwdDto validatePassword(int account_id, String accountPassword) {

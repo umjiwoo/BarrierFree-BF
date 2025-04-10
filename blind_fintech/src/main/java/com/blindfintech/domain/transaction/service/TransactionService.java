@@ -94,7 +94,7 @@ public class TransactionService {
 
     @Async
     public void consumeSendMoney(TransactionRequestDto transactionRequestDto, String transactionUuid){
-        log.info("🟢 Received TransactionRequest: {}", transactionRequestDto.toString());
+        log.info("Received TransactionRequest: {}", transactionRequestDto.toString());
 
         // 메시지 처리
         try {

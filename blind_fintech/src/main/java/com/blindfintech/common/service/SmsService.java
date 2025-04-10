@@ -3,7 +3,6 @@ package com.blindfintech.common.service;
 
 import com.blindfintech.common.repository.RedisRepository;
 import com.blindfintech.domain.users.exception.UserStatusCode;
-//import com.blindfintech.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import com.blindfintech.common.exception.BadRequestException;
@@ -24,12 +23,8 @@ public class SmsService {
     private static final int CODE_TTL = 5; // 5분 TimeToLimit 설정
 
     private final RedisRepository redisRepository;
-//    private final UserRepository userRepository;
 
     public void sendMessage(String phoneNum) {
-//        if (userRepository.exisByPhone(phoneNum)){
-//        throw new Exception()
-//    }
         String verificationCode = generateVerificationCode();
          Message message = new Message();
         message.setFrom(smsSender);

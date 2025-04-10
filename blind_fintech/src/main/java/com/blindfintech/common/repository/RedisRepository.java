@@ -25,10 +25,4 @@ public class RedisRepository {
     public void delete(String key){
         redisTemplate.delete(key);
     }
-
-    //특정 키값 조회
-/*    public Set<String> getKeys(String pattern){
-        return redisTemplate.keys(pattern);
-    }*/
-
 }

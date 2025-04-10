@@ -27,7 +27,4 @@ public class FcmController {
         fcmService.sendNotification(fcmMesssageDto);
         return ResponseEntity.ok(ResponseDto.success(200, "토큰 저장 성공"));
     }
-
-
-
 }
