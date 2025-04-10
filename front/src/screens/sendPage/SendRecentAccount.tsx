@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import SendAccountBox from './SendAccountBox';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -9,11 +9,10 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import DrawIcon from '../../assets/icons/Draw.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { playTTS } from '../../components/utils/tts';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {playTTS} from '../../components/utils/tts';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {getTransactionsHistory} from '../../api/axiosTransaction';
-
 
 const SendFavoriteAccount = () => {
   useTTSOnFocus(`
@@ -28,46 +27,39 @@ const SendFavoriteAccount = () => {
   const handleDefaultPress = useTapNavigationHandler();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  const [accountData, setAccountData] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchRecentAccounts = async () => {
+      const recentAccounts = await getTransactionsHistory();
+      setAccountData(recentAccounts);
+      console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
+    };
+    fetchRecentAccounts();
+  }, []);
+
+  // 더미 데이터
   // const accountData = [
   //   {
-  //     name: '홍길동',
-  //     date: '2023-04-01',
-  //     accountBank: '신한은행',
-  //     accountNumber: '110-123-456789',
+  //     receiverAccount: '1190101022222222',
+  //     receiverAccountId: 1,
+  //     receiverName: '엄지우',
+  //     transactionDate: '2025-04-06T12:47:10',
   //   },
   //   {
-  //     name: '김철수',
-  //     date: '2023-04-02',
-  //     accountBank: '국민은행',
-  //     accountNumber: '123-45-678910',
+  //     receiverAccount: '1190101022222222',
+  //     receiverAccountId: 1,
+  //     receiverName: '엄지우',
+  //     transactionDate: '2025-04-06T12:47:10',
   //   },
   //   {
-  //     name: '이영희',
-  //     date: '2023-04-03',
-  //     accountBank: '우리은행',
-  //     accountNumber: '111-222-333444',
+  //     receiverAccount: '1190101022222222',
+  //     receiverAccountId: 1,
+  //     receiverName: '엄지우',
+  //     transactionDate: '2025-04-06T12:47:10',
   //   },
-  //   // 필요에 따라 더 많은 계정을 추가할 수 있습니다
   // ];
 
-  // const [accountData, setAccountData] = useState<any>([]);
-
-  // useEffect(() => {
-  //   const fetchRecentAccounts = async () => {
-  //     const recentAccounts = await getTransactionsHistory();
-  //     setAccountData(recentAccounts);
-  //     console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
-  //   };
-  //   fetchRecentAccounts();
-  // }, []);
-  const accountData = [
-    {
-      receiverAccount: '1190101022222222',
-      receiverAccountId: 1,
-      receiverName: '엄지우',
-      transactionDate: '2025-04-06T12:47:10',
-    },
-  ];
   // setAccountData(exampleAccountData);
   const [selectedAccount, setSelectedAccount] = useState<any>(accountData[0]);
 
@@ -76,27 +68,24 @@ const SendFavoriteAccount = () => {
   //   console.log('Selected account:', account);
   // };
 
-    // 캐러셀
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const currentItem = accountData[currentIndex];
+  // 캐러셀
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentItem = accountData[currentIndex];
 
   const handleSelectAccount = (account: any) => {
-
     const message = [
       `${account.receiverName}`,
       // `${account.accountBank}`,
       `${account.receiverAccount}`,
       `${account.transactionDate}`,
-      `송금`
+      `송금`,
     ].join('\n\n');
-    
+
     setSelectedAccount(account);
     console.log('Selected account:', account);
     console.log(message);
-    handleDefaultPress(message)
+    handleDefaultPress(message);
   };
-
-  
 
   useEffect(() => {
     if (currentItem) {
@@ -105,13 +94,12 @@ const SendFavoriteAccount = () => {
         // `${currentItem.accountBank}`,
         `${currentItem.receiverAccount}`,
         `${currentItem.transactionDate}`,
-        `송금`
+        `송금`,
       ].join('\n\n');
 
       playTTS(message);
     }
   }, [currentIndex]);
-
 
   const handleSendMoney = () => {
     if (selectedAccount) {
@@ -126,6 +114,8 @@ const SendFavoriteAccount = () => {
     navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
     console.log('직접 입력 버튼 클릭');
   };
+
+  const carouselRef = useRef<any>(null);
 
   return (
     <View style={styles.container}>
@@ -157,15 +147,23 @@ const SendFavoriteAccount = () => {
         MainText={
           <SendAccountBox
             accountData={accountData}
-            onSelectAccount={handleSelectAccount}
+            carouselRef={carouselRef}
             selectedAccount={selectedAccount}
-            onSnapToItem={setCurrentIndex}
+            onSelectAccount={handleSelectAccount}
           />
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('직접 입력', undefined, handleDirectInput)}
-        onLowerRightTextPress={() => handleDefaultPress('선택 완료', undefined, handleSendMoney)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('직접 입력', undefined, handleDirectInput)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('선택 완료', undefined, handleSendMoney)
+        }
       />
     </View>
   );

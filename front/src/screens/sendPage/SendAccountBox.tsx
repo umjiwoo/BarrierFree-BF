@@ -1,31 +1,23 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-} from 'react-native';
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
+import {TestAccountItemProps} from '../../components/types/CheckAccount';
 import formatDateManually from '../../components/utils/makeDate';
-import {TestAccountItemProps} from '../../components/types/CheckAccount.ts';
 
 interface SendAccountBoxProps {
-  accountData: Array<TestAccountItemProps>;
-  onSelectAccount: (account: any) => void;
-  selectedAccount: any;
-  onSnapToItem?: (index: number) => void;
+  accountData: TestAccountItemProps[];
+  carouselRef: any;
+  selectedAccount: TestAccountItemProps | null;
+  onSelectAccount: (account: TestAccountItemProps) => void;
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
-const ITEM_WIDTH = SCREEN_WIDTH * 0.89;
 
 const SendAccountBox = ({
   accountData,
-  onSelectAccount,
+  carouselRef,
   selectedAccount,
-  onSnapToItem,
+  onSelectAccount,
 }: SendAccountBoxProps) => {
   useEffect(() => {
     if (accountData.length > 0) {
@@ -33,49 +25,40 @@ const SendAccountBox = ({
     }
   }, [accountData, onSelectAccount]);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const contentOffset = event.nativeEvent.contentOffset;
-    const currentIndex = Math.round(contentOffset.x / SCREEN_WIDTH);
-    if (currentIndex >= 0 && currentIndex < accountData.length) {
-      onSelectAccount(accountData[currentIndex]);
-      onSnapToItem?.(currentIndex);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={handleScroll}
-        contentContainerStyle={styles.scrollContent}>
-        {accountData.map((item, index) => {
+      <Carousel
+        ref={carouselRef}
+        loop={false}
+        width={SCREEN_WIDTH}
+        data={accountData}
+        onSnapToItem={index => {
+          if (index >= 0 && index < accountData.length) {
+            onSelectAccount(accountData[index]);
+          }
+        }}
+        renderItem={({item}) => {
           const isSelected =
             selectedAccount &&
             selectedAccount.receiverAccount === item.receiverAccount;
-
           const {date, time} = formatDateManually(item.transactionDate);
 
           return (
             <View
-              key={index}
               style={[
                 styles.accountItem,
                 isSelected && styles.selectedAccount,
               ]}>
-              {/* <Text style={styles.name}>{item.name}</Text> */}
               <View style={styles.transactionDateContainer}>
                 <Text style={styles.number}>{date}</Text>
                 <Text style={styles.number}>{time}</Text>
               </View>
               <Text style={styles.bank}>{item.receiverName}</Text>
-              {/* <Text style={styles.bank}>1190101022222222</Text> */}
               <Text style={styles.bank}>{item.receiverAccount}</Text>
             </View>
           );
-        })}
-      </ScrollView>
+        }}
+      />
     </View>
   );
 };
@@ -83,52 +66,37 @@ const SendAccountBox = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     width: '100%',
-  },
-  scrollContent: {
-    alignItems: 'center',
+    height: '100%',
   },
   accountItem: {
-    width: ITEM_WIDTH,
+    flex: 1,
+    gap: 20,
+    width: '100%',
     height: '100%',
-    padding: 20,
+    paddingVertical: 20,
+    paddingRight: 60,
+    paddingLeft: 20,
     borderRadius: 10,
-    backgroundColor: '#f0f0f0',
-    gap: 10,
-    // marginHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   selectedAccount: {
-    height: '100%',
-    backgroundColor: '#000',
-    // borderWidth: 2,
-    // borderColor: '#007AFF',
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#fff',
-  },
-  bank: {
-    fontSize: 35,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  number: {
-    fontSize: 30,
-    color: '#fff',
-    fontWeight: 'bold',
+    backgroundColor: 'rgba(127,53,212, 0.1)',
   },
   transactionDateContainer: {
     flexDirection: 'column',
-    // justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: 'space-between',
+  },
+  bank: {
+    fontSize: 35,
+    color: '#24282B',
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  number: {
+    fontSize: 35,
+    color: '#24282B',
+    marginBottom: 10,
+    fontWeight: 'bold',
   },
 });
 
