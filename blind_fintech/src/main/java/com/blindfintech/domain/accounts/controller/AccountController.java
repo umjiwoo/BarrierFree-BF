@@ -1,18 +1,17 @@
 package com.blindfintech.domain.accounts.controller;
 
 import com.blindfintech.common.dto.ResponseDto;
-import com.blindfintech.domain.accounts.dto.AccountDetailsDto;
-import com.blindfintech.domain.accounts.dto.AccountInputDto;
-import com.blindfintech.domain.accounts.dto.AccountListDto;
-import com.blindfintech.domain.accounts.dto.IsCorrectPwdDto;
+import com.blindfintech.domain.accounts.dto.*;
 import com.blindfintech.domain.accounts.service.AccountService;
 import com.blindfintech.domain.users.dto.SmsDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
@@ -55,8 +54,9 @@ public class AccountController {
     }*/
 
     @PostMapping("{account_id}/check-pwd")
-    public ResponseEntity<?> checkPassword(@PathVariable int account_id, String accountPassword) {
-        IsCorrectPwdDto isCorrect = accountService.validatePassword(account_id, accountPassword);
+    public ResponseEntity<?> checkPassword(@PathVariable int account_id, @RequestBody PasswordInputDto passwordInputDto) {
+        log.info("account_id: {}", account_id);
+        IsCorrectPwdDto isCorrect = accountService.validatePassword(account_id, passwordInputDto.getAccountPassword());
         return ResponseEntity.ok()
                 .body(ResponseDto.success(isCorrect));
     }
