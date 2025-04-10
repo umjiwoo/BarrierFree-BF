@@ -50,6 +50,9 @@ const postCheckAccountPassword = async (
   account_password: number,
 ): Promise<any> => {
   try {
+    // const response = await axiosInstance.post(
+    //   `/api/accounts/${account_id}/check-pwd?accountPassword=${account_password}`,
+    // );
     const response = await axiosInstance.post(
       `/api/accounts/${account_id}/check-pwd`,
       {accountPassword: account_password},
@@ -58,10 +61,10 @@ const postCheckAccountPassword = async (
 
     if (response.data.result.code === 200) {
       console.log('계좌 비밀번호 확인 성공: ', response.data.body);
-      if (response.data.body.isCorrect) {
+      if (response.data.body.correct) {
         return true;
       } else {
-        if (response.data.body.isLocked) {
+        if (response.data.body.locked) {
           return 'locked';
         } else {
           return 'wrong';
@@ -72,23 +75,23 @@ const postCheckAccountPassword = async (
     }
   } catch (error: any) {
     console.log('계좌 비밀번호 확인 실패:', error);
-    console.log('error.response: ', error.response.data);
+    console.log('error.response: ', error.response);
     return [];
   }
 };
 
 // 송금하기
 const postSendMoney = async (
-  senderId: string,
-  receiverAccountId: string,
-  transactionAmount: string,
+  senderAccountId: number,
+  receiverAccountId: number,
+  transactionAmount: number,
   transactionName: string,
   transactionWebSocketId: string,
   accountPassword: string,
 ): Promise<any> => {
   try {
     const response = await axiosInstance.post('/api/transactions/send-money', {
-      senderId: senderId,
+      senderAccountId: senderAccountId,
       receiverAccountId: receiverAccountId,
       transactionAmount: transactionAmount,
       transactionName: transactionName,
@@ -96,12 +99,18 @@ const postSendMoney = async (
       accountPassword: accountPassword,
     });
 
+    console.log('송금하기 응답: ', response);
     if (response.data.result.code === 200) {
       console.log('송금하기 성공: ', response.data.body);
+      return response.data;
     } else {
       console.log('송금하기 실패');
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log('송금하기 실패:', error);
+    console.log('error.response: ', error.response);
+    return [];
+  }
 };
 
 export {

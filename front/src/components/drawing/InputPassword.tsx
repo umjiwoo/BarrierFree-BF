@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -16,6 +16,9 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import {postCheckAccountPassword} from '../../api/axiosTransaction';
 import {useAccountStore} from '../../stores/accountStore';
+import {connectWebSocket} from '../../utils/websocket';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
 interface Props {
   type: string;
 }
@@ -73,25 +76,56 @@ const InputPassword: React.FC<Props> = ({type}) => {
   const money = route.params?.money;
   const selectedAccount = route.params?.selectedAccount;
   const receiverAccountId = route.params?.receiverAccountId;
+  const wsNavigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const handleSend = async () => {
     console.log('비밀번호 완료');
+
+    console.log('password: ', Number(password));
 
     const response = await postCheckAccountPassword(
       accounts.id,
       Number(password),
     );
+
+    console.log('response: ', response);
     if (response === true) {
-      navigation.navigate('RemittanceConfirm', {
-        selectedAccount: selectedAccount,
-        money: money,
-        password: password,
-        accountId: accounts.id,
-        receiverAccountId: receiverAccountId,
-      }); // password 비밀번호
+      connectWebSocket(
+        'remittance',
+        {
+          accountNumber: selectedAccount.receiverAccount,
+          amount: money,
+        },
+        selectedAccount.receiverAccount,
+        () => {
+          navigation.navigate('RemittanceConfirm', {
+            selectedAccount: selectedAccount,
+            money: money,
+            password: password,
+            accountId: accounts.id,
+            receiverAccountId: receiverAccountId,
+          });
+        },
+        wsNavigation,
+      );
+
+      // navigation.navigate('RemittanceConfirm', {
+      //   selectedAccount: selectedAccount,
+      //   money: money,
+      //   password: password,
+      //   accountId: accounts.id,
+      //   receiverAccountId: receiverAccountId,
+      // }); // password 비밀번호
     } else if (response === 'wrong') {
+      Alert.alert('비밀번호가 틀렸습니다.');
       playTTS('비밀번호가 틀렸습니다.');
       setPassword('');
+      navigation.navigate('SendInputPage', {
+        type: 'password',
+        selectedAccount: selectedAccount,
+        money: money,
+        receiverAccountId: receiverAccountId,
+      });
     } else if (response === 'locked') {
       playTTS(
         '비밀번호 5회 입력 실패로 계좌가 잠겼습니다. 메인페이지로 돌아갑니다.',

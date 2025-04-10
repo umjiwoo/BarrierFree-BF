@@ -1,5 +1,5 @@
 // src/utils/websocket.ts
-import axios, {AxiosResponse} from 'axios';
+import {AxiosResponse} from 'axios';
 import {axiosInstance, ApiResponse} from '../api/axios';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -9,15 +9,17 @@ export const connectWebSocket = (
   transaction: string,
   messageData: any,
   accountId: any,
-  onTransaction: (data: any) => void,
-  navigation: NativeStackNavigationProp<any>,
+  _onTransaction: (data: any) => void,
+  _navigation: NativeStackNavigationProp<any>,
 ) => {
   if (transaction === 'accept-payment') {
     socket = new WebSocket(
-      `ws://10.0.2.2:8080/api/ws/${transaction}?transactionWebSocketId=${messageData.transactionWebSocketId}`,
+      `ws://j12a208.p.ssafy.io:8080/api/ws/${transaction}?transactionWebSocketId=${messageData.transactionWebSocketId}`,
     ); // 웹 소켓 연결
   } else {
-    socket = new WebSocket(`ws://10.0.2.2:8080/api/ws/${transaction}`); // 웹 소켓 연결
+    socket = new WebSocket(
+      `ws://j12a208.p.ssafy.io:8080/api/ws/${transaction}`,
+    ); // 웹 소켓 연결
   }
   console.log('Connecting to:', socket.url);
   console.log('receivedData: ', messageData);
@@ -55,9 +57,14 @@ export const connectWebSocket = (
   socket.onmessage = event => {
     const message = JSON.parse(event.data);
     console.log('WebSocket 메시지 수신:', message);
+    if (transaction === 'remittance') {
+      console.log('결제 승인 성공:', message.transactionWebSocketId);
+      _onTransaction(message.transactionWebSocketId);
+    }
 
-    if (message.result.message === 'success') {
-      console.log('결제 승인 성공:', message.body);
+    if (message) {
+      console.log('결제 승인 성공:', message);
+      // return message.body.transactionWebSocketId;
       // TODO 결제 성공 페이지로 이동
     }
 
