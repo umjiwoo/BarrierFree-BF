@@ -108,7 +108,7 @@ const postSendMoney = async (
     }
   } catch (error) {
     console.log('송금하기 실패:', error);
-    console.log('error.response: ', error.response);
+    // console.log('error.response: ', error.response);
     return [];
   }
 };

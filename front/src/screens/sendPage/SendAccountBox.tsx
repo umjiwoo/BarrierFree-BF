@@ -1,15 +1,17 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  // ScrollView,
   Dimensions,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
+  // NativeSyntheticEvent,
+  // NativeScrollEvent,
 } from 'react-native';
 import formatDateManually from '../../components/utils/makeDate';
 import {TestAccountItemProps} from '../../components/types/CheckAccount.ts';
+// import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 
 interface SendAccountBoxProps {
   accountData: Array<TestAccountItemProps>;
@@ -18,36 +20,36 @@ interface SendAccountBoxProps {
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
-const ITEM_WIDTH = SCREEN_WIDTH * 0.89;
+// const ITEM_WIDTH = SCREEN_WIDTH * 0.89;
 
 const SendAccountBox = ({
   accountData,
   onSelectAccount,
   selectedAccount,
 }: SendAccountBoxProps) => {
+  const carouselRef = useRef<any>(null);
+
   useEffect(() => {
-    if (accountData.length > 0) {
+    if (
+      accountData.length > 0 &&
+      (!selectedAccount ||
+        selectedAccount.receiverAccount !== accountData[0].receiverAccount)
+    ) {
       onSelectAccount(accountData[0]);
     }
-  }, [accountData, onSelectAccount]);
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const contentOffset = event.nativeEvent.contentOffset;
-    const currentIndex = Math.round(contentOffset.x / SCREEN_WIDTH);
-    if (currentIndex >= 0 && currentIndex < accountData.length) {
-      onSelectAccount(accountData[currentIndex]);
-    }
-  };
+  }, [accountData, selectedAccount, onSelectAccount]);
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={handleScroll}
-        contentContainerStyle={styles.scrollContent}>
-        {accountData.map((item, index) => {
+      <Carousel
+        ref={carouselRef}
+        loop={false}
+        width={SCREEN_WIDTH}
+        data={accountData}
+        onSnapToItem={(index: number) => {
+          onSelectAccount(accountData[index]);
+        }}
+        renderItem={({item}: {item: TestAccountItemProps}) => {
           const isSelected =
             selectedAccount &&
             selectedAccount.receiverAccount === item.receiverAccount;
@@ -56,23 +58,20 @@ const SendAccountBox = ({
 
           return (
             <View
-              key={index}
               style={[
                 styles.accountItem,
                 isSelected && styles.selectedAccount,
               ]}>
-              {/* <Text style={styles.name}>{item.name}</Text> */}
               <View style={styles.transactionDateContainer}>
                 <Text style={styles.number}>{date}</Text>
                 <Text style={styles.number}>{time}</Text>
               </View>
               <Text style={styles.bank}>{item.receiverName}</Text>
-              {/* <Text style={styles.bank}>1190101022222222</Text> */}
               <Text style={styles.bank}>{item.receiverAccount}</Text>
             </View>
           );
-        })}
-      </ScrollView>
+        }}
+      />
     </View>
   );
 };
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   accountItem: {
-    width: ITEM_WIDTH,
+    width: SCREEN_WIDTH,
     height: '100%',
     padding: 20,
     borderRadius: 10,
