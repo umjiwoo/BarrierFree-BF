@@ -2,6 +2,7 @@ import {
   HistoryItemProps,
   TestAccountItemProps,
   GoodsItemProps,
+  DirectAccountItemProps,
 } from '../components/types/CheckAccount';
 
 export type RootStackParamList = {
@@ -26,7 +27,7 @@ export type RootStackParamList = {
   SendRecentAccount: undefined;
   SendSuccess: undefined;
   ReceivingAccountScreen: {
-    selectedAccount: TestAccountItemProps;
+    selectedAccount: DirectAccountItemProps;
   };
   RemittanceConfirm: {
     money: number;

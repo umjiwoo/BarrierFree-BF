@@ -1,12 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
-import {
-  NavigationProp,
-  useNavigation,
-  useRoute,
-  RouteProp,
-} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 // import {useUserStore} from '../../stores/userStore';
 import {playTTS} from '../utils/tts';
@@ -15,6 +10,7 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import {DirectAccountItemProps} from '../../components/types/CheckAccount';
 
 interface Props {
   type: string;
@@ -53,13 +49,22 @@ const InputAccount: React.FC<Props> = ({type}) => {
   const {handlePressBack, handlePressHome} = useHandlePress();
   // const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
-  const money = route.params?.money;
-  const selectedAccount = route.params?.selectedAccount;
+  // const route = useRoute<RouteProp<RootStackParamList, 'RemittanceConfirm'>>();
+  // const money = route.params?.money;
+  // const selectedAccount = route.params?.selectedAccount;
+  const [selectedAccount, setSelectedAccount] =
+    useState<DirectAccountItemProps | null>(null);
 
   const handleSend = () => {
     console.log('계좌 입력 완료');
-    navigation.navigate('ReceivingAccountScreen', {selectedAccount}); // 입력한 계좌로 변경(accountNumber)
+    console.log('account: ', accountNumber);
+    setSelectedAccount({
+      receiverAccount: accountNumber,
+      receiverName: '엄지우',
+    });
+    if (selectedAccount) {
+      navigation.navigate('ReceivingAccountScreen', {selectedAccount});
+    }
   };
 
   return (

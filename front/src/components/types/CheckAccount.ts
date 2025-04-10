@@ -5,6 +5,11 @@ export interface TestAccountItemProps {
   transactionDate: string;
 }
 
+export interface DirectAccountItemProps {
+  receiverName: string;
+  receiverAccount: string;
+}
+
 export interface GoodsItemProps {
   id: number;
   name: string;
