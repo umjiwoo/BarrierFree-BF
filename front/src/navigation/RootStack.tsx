@@ -12,6 +12,11 @@ import RemittanceInformation from '../screens/InformationPage/RemittanceInformat
 import CheckHistory from '../screens/checkPage/CheckHistory';
 import CheckHistoryDetail from '../screens/checkPage/CheckHistoryDetail';
 import DefaultButton from '../components/utils/DefaultPage';
+
+import PaymentScreen from '../components/qrPage/PaymentMainScreen';
+import PaymentConfirmScreen from '../components/qrPage/PaymentConfirmScreen';
+import AcceptPaymentScreen from '../screens/payment/acceptPayment';
+
 import SendRecentAccount from '../screens/sendPage/SendRecentAccount';
 import CreateAccountScreen from '../screens/createAccountPage/createAccountScreen';
 import CreateAccountGoodsDetail from '../screens/createAccountPage/CreateAccountGoodsDetail';
@@ -30,6 +35,16 @@ const RootStack = () => {
         options={{
           title: 'Home',
           headerShown: false,
+        }}
+      />
+      {/* 메인 페이지 */}
+      <Stack.Screen
+        name="Main"
+        component={Main}
+        options={{
+          title: '메인',
+          headerShown: false,
+          // 필요한 옵션 추가
         }}
       />
       {/* 계좌 생성 */}
@@ -72,16 +87,6 @@ const RootStack = () => {
         options={{
           title: 'DefaultButton',
           headerShown: false,
-        }}
-      />
-      {/* 메인 페이지 */}
-      <Stack.Screen
-        name="Main"
-        component={Main}
-        options={{
-          title: '메인',
-          headerShown: false,
-          // 필요한 옵션 추가
         }}
       />
       {/* 조회 페이지 */}
@@ -174,6 +179,30 @@ const RootStack = () => {
         component={SettingsMain}
         options={{
           title: '설정 페이지',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{
+          title: '결제',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentConfirm"
+        component={PaymentConfirmScreen}
+        options={{
+          title: '결제',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AcceptPaymentScreen"
+        component={AcceptPaymentScreen}
+        options={{
+          title: '결제 승인 페이지',
           headerShown: false,
         }}
       />

@@ -49,4 +49,13 @@ export type RootStackParamList = {
   };
   PayMain: undefined;
   SettingsMain: undefined;
+  Payment: undefined;
+  PaymentConfirm: {
+    accountNumber: string;
+    amount: number;
+    sessionId: string;
+  };
+  AcceptPaymentScreen: {
+    messageData: JSON;
+  };
 };

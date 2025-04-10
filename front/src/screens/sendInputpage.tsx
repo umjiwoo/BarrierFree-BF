@@ -128,11 +128,7 @@ const SendInputPage = () => {
     } else if (type === 'money') {
       // 3. 금액 입력을 받는 경우
       return (
-        <InputAmount
-          type={type}
-          receiverAccountId={receiverAccountId}
-          selectedAccount={selectedAccount}
-        />
+        <InputAmount type={type} />
         // <View style={styles.contentContainer}>
         //   <Text style={styles.text}>금액 입력 화면입니다.</Text>
         //   <View style={styles.buttonContainer}>
