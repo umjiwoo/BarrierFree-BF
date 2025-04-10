@@ -40,10 +40,22 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
       password: '1111',
     });
     console.log(data);
-    setUser(data.body);
+
+    // setUser(data.body);
+    // const fcmToken = await sendFcmToken({
+    //   fcmToken: await getFCMToken(),
+    //   userId: data.body.id,
+    // });
+
+    const token = await getFCMToken(); // FCM 토큰 발급
+    
+    setUser({
+      ...data.body,
+      fcmToken: token,
+    });
 
     const fcmToken = await sendFcmToken({
-      fcmToken: await getFCMToken(),
+      fcmToken: token,
       userId: data.body.id,
     });
 

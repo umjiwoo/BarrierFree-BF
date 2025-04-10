@@ -10,4 +10,5 @@ export interface UserItemProps {
   accountNonLocked: boolean;
   accountNonExpired: boolean;
   credentialsNonExpired: boolean;
+  fcmToken: string;
 }
