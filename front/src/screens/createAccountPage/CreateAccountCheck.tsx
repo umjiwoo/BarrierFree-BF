@@ -167,84 +167,119 @@ const CreateAccountCheck = () => {
     }
   };
 
-  // OCR API 호출 함수
-  const sendImageToOCR = useCallback(async (photoPath: string) => {
-    if (!isMounted.current) return null; // 컴포넌트 언마운트 확인
-    
+//   // OCR API 호출 함수
+//   const sendImageToOCR = useCallback(async (photoPath: string) => {
+//     if (!isMounted.current) return null; // 컴포넌트 언마운트 확인
+//
+//     try {
+//       console.log('OCR 처리 시작:', photoPath);
+//
+//       // 네트워크 상태 다시 확인
+//       const netInfoState = await NetInfo.fetch();
+//       if (!netInfoState.isConnected) {
+//         throw new Error('네트워크 연결이 끊어졌습니다. 인터넷 연결을 확인해주세요.');
+//       }
+//
+//       // 이미지 최적화 (720픽셀 해상도로 조정)
+//       const optimizedPath = await optimizeImage(photoPath);
+//       console.log('최적화된 이미지 경로:', optimizedPath);
+//
+//       // 파일 URI 준비 (플랫폼에 따라 처리)
+//       const fileUri = Platform.OS === 'ios'
+//         ? optimizedPath.replace('file://', '')
+//         : optimizedPath;
+//
+//       console.log('최종 파일 URI:', fileUri);
+//
+//       // FormData 객체 생성
+//       const formData = new FormData();
+//
+//       // 'image' 필드에 파일 추가 (파일만 전송)
+//       formData.append('image', {
+//         uri: fileUri,
+//         type: 'image/jpeg',
+//         name: 'image.jpg',
+//       } as any);
+//
+//       console.log('FormData 구성 완료, 서버 요청 준비');
+//
+//       // API 요청 URL
+//       const apiUrl = 'http://43.201.95.134:8000/ocr';
+//       console.log('API URL:', apiUrl);
+//
+//       // axios로 POST 요청 전송
+//       const response = await axios.post(apiUrl, formData, {
+//         headers: {
+//           'Content-Type': 'multipart/form-data',
+//           'Accept': 'application/json',
+//         },
+//         timeout: API_CONFIG.TIMEOUT,
+//       });
+//
+//       console.log('서버 응답 상태:', response.status);
+//       console.log('서버 응답 데이터:', response.data);
+//
+//       // 응답 데이터 반환
+//       return response.data as { isCorrect?: boolean; name?: string; birth?: string };
+//     } catch (error: any) {
+//       console.error('OCR 처리 오류:', error);
+//
+//       // Axios 오류 처리
+//       if (axios.isAxiosError(error)) {
+//         if (error.response) {
+//           // 서버가 응답을 반환했지만 2xx 외의 상태 코드
+//           console.error('서버 오류 응답:', error.response.status, error.response.data);
+//           throw new Error(`서버 오류: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+//         } else if (error.request) {
+//           // 요청은 이루어졌지만 응답을 받지 못함
+//           console.error('서버 응답 없음:', error.request);
+//           throw new Error('서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요.');
+//         } else {
+//           // 요청 설정 중 오류 발생
+//           console.error('요청 오류:', error.message);
+//           throw new Error('요청 생성 중 오류: ' + error.message);
+//         }
+//       }
+//
+//       // 일반 오류
+//       throw new Error('OCR 처리 중 오류 발생: ' + error.message);
+//     }
+//   }, []);
+  const sendImageToOCR = async (photoPath: string) => {
     try {
-      console.log('OCR 처리 시작:', photoPath);
-      
-      // 네트워크 상태 다시 확인
-      const netInfoState = await NetInfo.fetch();
-      if (!netInfoState.isConnected) {
-        throw new Error('네트워크 연결이 끊어졌습니다. 인터넷 연결을 확인해주세요.');
-      }
-      
-      // 이미지 최적화 (720픽셀 해상도로 조정)
-      const optimizedPath = await optimizeImage(photoPath);
-      console.log('최적화된 이미지 경로:', optimizedPath);
-      
-      // 파일 URI 준비 (플랫폼에 따라 처리)
-      const fileUri = Platform.OS === 'ios' 
-        ? optimizedPath.replace('file://', '') 
-        : optimizedPath;
-      
-      console.log('최종 파일 URI:', fileUri);
-      
-      // FormData 객체 생성
-      const formData = new FormData();
-      
-      // 'image' 필드에 파일 추가 (파일만 전송)
-      formData.append('image', {
-        uri: fileUri,
-        type: 'image/jpeg',
-        name: 'image.jpg',
-      } as any);
-      
-      console.log('FormData 구성 완료, 서버 요청 준비');
-      
-      // API 요청 URL
-      const apiUrl = getApiUrl();
-      console.log('API URL:', apiUrl);
-      
-      // axios로 POST 요청 전송
-      const response = await axios.post(apiUrl, formData, {
+      console.log('이미지 읽기 시작:', photoPath);
+
+      // 파일을 base64로 읽음
+      const base64Data = await RNFS.readFile(photoPath, 'base64');
+
+      console.log("Base64 길이:", base64Data.length); // <- base64 제대로 읽히는지 확인
+
+      // 서버에 전송할 데이터 구성
+      const payload = {
+        image: base64Data,
+        filename: photoPath.split('/').pop(),
+        mimetype: 'image/jpeg', // 필요하면 png 등으로 변경
+      };
+
+      const apiUrl = 'http://43.201.95.134:8000/ocr';
+      const response = await axios.post(apiUrl, payload, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-        timeout: API_CONFIG.TIMEOUT,
       });
-      
-      console.log('서버 응답 상태:', response.status);
-      console.log('서버 응답 데이터:', response.data);
-      
-      // 응답 데이터 반환
-      return response.data as { isCorrect?: boolean; name?: string; birth?: string };
+
+      console.log('서버 응답:', response.data);
+      return response.data;
+
     } catch (error: any) {
-      console.error('OCR 처리 오류:', error);
-      
-      // Axios 오류 처리
+      console.error('이미지 전송 오류:', error.message);
       if (axios.isAxiosError(error)) {
-        if (error.response) {
-          // 서버가 응답을 반환했지만 2xx 외의 상태 코드
-          console.error('서버 오류 응답:', error.response.status, error.response.data);
-          throw new Error(`서버 오류: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
-        } else if (error.request) {
-          // 요청은 이루어졌지만 응답을 받지 못함
-          console.error('서버 응답 없음:', error.request);
-          throw new Error('서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요.');
-        } else {
-          // 요청 설정 중 오류 발생
-          console.error('요청 오류:', error.message);
-          throw new Error('요청 생성 중 오류: ' + error.message);
-        }
+        console.log('axios error response:', error.response?.data);
       }
-      
-      // 일반 오류
-      throw new Error('OCR 처리 중 오류 발생: ' + error.message);
+      throw error;
     }
-  }, []);
+  };
 
   const handleTakePhoto = async () => {
     if (!camera.current) return;
@@ -261,7 +296,7 @@ const CreateAccountCheck = () => {
       
       // 비동기 작업: 고화질 사진 촬영 (await 사용)
       const photo = await camera.current.takePhoto({
-        flash: 'on',                   // 플래시 켜기
+        flash: 'off',                   // 플래시 켜기
         enableShutterSound: false,     // 셔터 소리 비활성화
       });
       
