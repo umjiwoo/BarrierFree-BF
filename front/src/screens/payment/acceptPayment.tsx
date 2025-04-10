@@ -1,21 +1,29 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import { connectWebSocket, closeWebSocket } from '../../utils/websocket';
+import { useAccountStore } from '../../stores/accountStore';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
 
 const AcceptPaymentScreen = ({route}: {route: any;}) => {
     const messageData = route?.params;
     console.log("결제 승인 페이지 진입, 전달받은 데이터:", messageData);
-    
-    // TODO : 웹소켓 각 구성요소 역할 확인, http api 호출 어디서 하는지 확인
+
+    const { accounts } = useAccountStore();
+    console.log("accounts:", accounts);
+
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
     // TODO : 웹소켓 연결 후 계좌 선택 및 비밀번호 입력 페이지로 이동?
     // or 계좌 선택 및 비밀번호 입력 후 웹소켓 연결 & 결제 승인 api 호출? 정하기
     // TODO : 암튼 계좌 선택 및 비밀번호 입력 페이지 필요
     const handleAcceptPaymentButtonPress = async () => {
-        connectWebSocket("accept-payment", messageData.transactionWebSocketId,
+        connectWebSocket("accept-payment", messageData, accounts.id,
             ({}) => {
-        // navigation.navigate('PaymentConfirm', { accountNumber, amount, sessionId: newId });
+                // 결제 처리 중 페이지로 이동
             },
+            navigation,
         );
     };
   

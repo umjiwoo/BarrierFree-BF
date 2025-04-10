@@ -8,11 +8,7 @@ import {
   getFCMToken,
   foregroundMessageListener,
   backgroundMessageOpenedListener,
-  // checkInitialNotification,
 } from '../firebase/messaging';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-//  import {RootStackParamList} from '../navigation/types';
-import {useNavigation} from '@react-navigation/native';
 // import {UserItemProps} from '../components/types/UserInfo';
 
 // type HomeScreenNavigationProp = NativeStackNavigationProp<
@@ -64,7 +60,7 @@ const HomeScreen = () => {
     console.log(fcmToken);
 
     const accountData = await getAccounts();
-    console.log(accountData);
+    console.log('계좌: ', accountData);
     setAccounts(accountData[0]);
 
     navigation.navigate('CreateAccountScreen');
