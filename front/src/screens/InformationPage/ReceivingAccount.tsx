@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {
   NavigationProp,
   ParamListBase,
@@ -19,6 +19,7 @@ import CheckIcon from '../../assets/icons/Check.svg';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 import {postCheckAccount} from '../../api/axiosTransaction';
 import {useAccountStore} from '../../stores/accountStore';
+import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const ReceivingAccountScreen: React.FC = () => {
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -92,13 +93,57 @@ const ReceivingAccountScreen: React.FC = () => {
           </View>
         }
         MainText={
-          <View style={styles.mainTextContainer}>
+          <TouchableOpacity style={styles.welcomeBox}>
+            <View style={styles.voiceButton}>
+              <VolumeIcon width={30} height={30} />
+              <Text style={styles.voiceButtonText}>송금 하기</Text>
+            </View>
             <Text style={styles.mainText}>받는 사람 정보를 확인하세요.</Text>
             <DetailBox
-              receiverName={accountInfo.receiverName}
-              receiverAccount={accountInfo.receiverAccount}
+                receiverName={accountInfo.receiverName}
+                receiverAccount={accountInfo.receiverAccount}
             />
-          </View>
+          </TouchableOpacity>
+
+          // <TouchableOpacity
+          // onPress={() => ()}
+          // >
+          //   <View style={styles.accountItem}>
+          //   <View style={styles.voiceButton}>
+          //       <VolumeIcon width={30} height={30} />
+          //       <Text style={styles.voiceButtonText}>송금 하기</Text>
+          //   </View>
+          // {/* 날짜 */}
+          // <View style={styles.dateContainer}>
+          //   <Text style={styles.date}>{date}</Text>
+          //   <Text style={styles.time}>{time}</Text>
+          // </View>
+  
+          // {/* 거래 이름 */}
+          // <Text style={styles.name}>{item.transactionName}</Text>
+  
+          // {/* 거래 금액 */}
+          // <View style={styles.bankContainer}>
+          //   <Text style={[styles.bankType, isWithdrawal ? styles.withdrawalBg : styles.depositBg]}>
+          //     {typeLabel}
+          //   </Text>
+          //   <Text style={[styles.amount, isWithdrawal ? styles.withdrawal : styles.deposit]}>
+          //     {item.transactionAmount.toLocaleString()} 원
+          //   </Text>
+          // </View>
+          // </View>
+          //   {/* <View style={styles.voiceButton}>
+                // <VolumeIcon width={30} height={30} />
+                // <Text style={styles.voiceButtonText}>음성 안내 듣기</Text>
+            // </View> */}
+        // </TouchableOpacity>
+          // <View style={styles.mainTextContainer}>
+          //   <Text style={styles.mainText}>받는 사람 정보를 확인하세요.</Text>
+          //   <DetailBox
+          //     receiverName={accountInfo.receiverName}
+          //     receiverAccount={accountInfo.receiverAccount}
+          //   />
+          // </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
@@ -143,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   mainText: {
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -165,6 +210,106 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 10,
+  },
+
+  accountItem: {
+    width: '100%',
+    // marginVertical: 10,
+    // paddingVertical: 36,
+    paddingHorizontal: 24,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    // gap: 28,
+  },
+  dateContainer: {
+    gap: 8,
+  },
+  date: {
+    fontSize: 30,
+    color: '#ccc',
+    fontWeight: '600',
+  },
+  time: {
+    fontSize: 30,
+    color: '#ccc',
+    fontWeight: '500',
+  },
+  name: {
+    fontSize: 50,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'left',
+    marginTop: 8,
+  },
+  bankContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 26,
+  },
+  bankType: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#DC3545', // 기본은 출금 색상
+    color: '#fff',
+    textAlignVertical: 'center'
+  },
+  amount: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 8,
+    color: '#fff',
+    textAlignVertical: 'center'
+    // fontSize: 40,
+    // fontWeight: 'bold',
+    // color: '#fff',
+  },
+  withdrawalBg: {
+    backgroundColor: '#DC3545',
+    color: '#fff',
+  },
+  depositBg: {
+    backgroundColor: '#34C759',
+    color: '#fff',
+  },
+  withdrawal: {
+    color: '#DC3545',
+  },
+  deposit: {
+    color: '#34C759',
+  },
+  voiceButton: {
+    // marginTop: 20,
+    marginBottom: 32,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    alignSelf: 'center', 
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
+  },
+
+  welcomeBox: {
+    alignItems: 'center',
+    marginVertical: 32,
+  },
+  welcome: {
+    color: '#fff',
+    fontSize: 55,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
