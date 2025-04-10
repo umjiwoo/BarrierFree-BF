@@ -39,14 +39,6 @@ const CheckAccountBox = ({
             <TouchableOpacity
               onPress={() => onSelect(item)}
               style={styles.accountItem}>
-              <View style={styles.dateContainer}>
-                <Text style={styles.date}>
-                  {formatDateManually(item.transactionDate).date}
-                </Text>
-                <Text style={styles.time}>
-                  {formatDateManually(item.transactionDate).time}
-                </Text>
-              </View>
               <Text style={styles.name}>{item.transactionName}</Text>
               {item.transactionType === 'WITHDRAWAL' ? (
                 <View style={styles.bankContainer}>
@@ -63,6 +55,14 @@ const CheckAccountBox = ({
                   </Text>
                 </View>
               )}
+              <View style={styles.dateContainer}>
+                <Text style={styles.date}>
+                  {formatDateManually(item.transactionDate).date}
+                </Text>
+                <Text style={styles.time}>
+                  {formatDateManually(item.transactionDate).time}
+                </Text>
+              </View>
             </TouchableOpacity>
           );
         }}
@@ -77,64 +77,63 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    backgroundColor: '#000', // 고대비 배경
   },
   accountItem: {
     flex: 1,
-    gap: 20,
-    width: '100%',
+    justifyContent: 'center',
+    width: '90%',
     height: '100%',
-    // padding: 20,
-    paddingVertical: 20,
-    paddingRight: 60,
-    paddingLeft: 20,
-    borderRadius: 10,
-    // margin: 10,
+    paddingVertical: 32,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    // marginHorizontal: '5%',
+    backgroundColor: '#000', // 카드 배경
   },
   name: {
-    fontSize: 35,
+    fontSize: 60,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#fff',
+    textAlign: 'center',
   },
   dateContainer: {
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    // alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   date: {
-    fontSize: 35,
-    color: '#24282B',
-    marginBottom: 10,
-    fontWeight: 'bold',
+    fontSize: 40,
+    color: '#fff',
+    marginBottom: 4,
+    fontWeight: '600',
   },
   time: {
-    fontSize: 30,
-    color: '#24282B',
-    marginBottom: 10,
-    fontWeight: 'bold',
+    fontSize: 40,
+    color: '#fff',
+    marginBottom: 8,
+    fontWeight: '500',
   },
   bankContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
+    marginTop: 8,
+    // marginTop: 'auto',
   },
   bank: {
-    fontSize: 35,
-    color: '#24282B',
-    marginBottom: 10,
-    fontWeight: 'bold',
+    fontSize: 45,
+    fontWeight: '600',
   },
   number: {
-    fontSize: 35,
-    color: '#24282B',
-    fontWeight: 'bold',
-    flexShrink: 1,
+    fontSize: 45,
+    fontWeight: '600',
     textAlign: 'right',
+    flexShrink: 1,
   },
   withdrawal: {
-    color: '#373DCC',
+    color: '#DC3545', // 빨간 계열 출금
   },
   deposit: {
-    color: '#B6010E',
+    color: '#B6010E', // 녹색 계열 입금
   },
 });
 

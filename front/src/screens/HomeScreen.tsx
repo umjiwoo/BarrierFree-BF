@@ -7,6 +7,7 @@ import {getAccounts} from '../api/axiosAccount';
 // import {UserItemProps} from '../components/types/UserInfo';
 import { useTTSOnFocus } from '../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../components/utils/useTapNavigationHandler ';
+import VolumeIcon from '../assets/icons/Volume.svg';
 
 const HomeScreen = ({navigation}: {navigation: any}) => {
 
@@ -38,16 +39,20 @@ const HomeScreen = ({navigation}: {navigation: any}) => {
   };
 
   return (
+    
     <View style={styles.container}>
-      {/* <View style={styles.grid}> */}
       <TouchableOpacity
         style={styles.button}
         // navigation.navigate('~~') : ~~ 안에 test 버튼 누르면 이동하고 싶은 스크린 이름 적기
         onPress={() => handleDefaultPress('화면을 두 번 터치해서 시작하세요', undefined, handleTestButtonPress)}>
-        <Text style={styles.text}>시작하기</Text>
-        <Text style={styles.touchText}>화면을 두 번 터치하세요!</Text>
+      {/* <BarrierFree width={350} height={100} title="메인페이지" /> */}
+      <Text style={styles.welcome}>시작하기</Text>
+      <Text style={styles.subWelcome}>화면을 두 번 터치하세요!</Text>
+      <View style={styles.voiceButton}>
+        <VolumeIcon width={30} height={30} />
+        <Text style={styles.voiceButtonText}>음성 안내 듣기</Text>
+      </View>
       </TouchableOpacity>
-      {/* </View> */}
     </View>
   );
 };
@@ -60,7 +65,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'black',
   },
   grid: {
     width: '100%',
@@ -69,15 +74,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    width: '100%',
     height: '100%',
-    gap: 30,
-    // backgroundColor: '#7F35D4',
-    borderWidth: 2,
-    borderColor: '#7F35D4',
-    borderRadius: 10,
-    justifyContent: 'center',
+    width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 32,
+    // gap: 30,
+    // backgroundColor: '#7F35D4',
+    // borderWidth: 2,
+    // borderColor: '#7F35D4',
+    // borderRadius: 10,
   },
   text: {
     fontSize: 40,
@@ -88,5 +94,32 @@ const styles = StyleSheet.create({
     fontSize: 35,
     color: '#7F35D4',
     fontWeight: 'bold',
+  },
+  welcome: {
+    color: '#fff',
+    fontSize: 60,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  subWelcome: {
+    color: '#ccc',
+    fontSize: 35,
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  voiceButton: {
+    marginTop: 100,
+    backgroundColor: '#333',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  voiceButtonText: {
+    color: '#fff',
+    fontSize: 25,
+    textAlignVertical: 'center'
   },
 });

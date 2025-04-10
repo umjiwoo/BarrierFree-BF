@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import SendAccountBox from './SendAccountBox';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useNavigation} from '@react-navigation/native';
@@ -7,6 +7,8 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import DrawIcon from '../../assets/icons/Draw.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
 import {getTransactionsHistory} from '../../api/axiosAccount';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { playTTS } from '../../components/utils/tts';
@@ -119,10 +121,30 @@ const SendFavoriteAccount = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="직접 입력"
-        LowerRightText="선택 / 송금"
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <DrawIcon width={100} height={100} />
+            <Text style={styles.text}>입력</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>선택</Text>
+          </View>
+        }
         MainText={
           <SendAccountBox
             accountData={accountData}
@@ -173,6 +195,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: 'black',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

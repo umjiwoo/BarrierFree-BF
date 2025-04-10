@@ -18,6 +18,8 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import CancelIcon from '../../assets/icons/Cancel.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
 import { useTTSOnFocus } from '../utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
 
@@ -106,10 +108,30 @@ const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods })
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="취소"
-        LowerRightText="입력 확인"
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <CancelIcon width={100} height={100} />
+            <Text style={styles.text}>취소</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>확인</Text>
+          </View>
+        }
         MainText={
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>비밀번호 입력</Text>
@@ -159,6 +181,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(127,53,212, 0.1)',
     textAlign: 'center',
     minWidth: 280,
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

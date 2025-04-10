@@ -152,7 +152,13 @@ const CheckHistory = () => {
     return (
       <View style={styles.container}>
         <DefaultPage
-          UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
+                UpperLeftText={
+                  <View style={styles.textContainer}>
+                    <ArrowLeftIcon width={100} height={100} />
+                    <Text style={styles.text}>조회</Text>
+                  </View>
+                }
+          // UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
           UpperRightText={<HomeIcon width={80} height={80} />}
           MainText={
             <View>
@@ -169,11 +175,30 @@ const CheckHistory = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        // UpperLeftText={<GoBackIcon width={100} height={100} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText={<PreviousIcon width={100} height={100} />}
-        LowerRightText={<NextIcon width={100} height={100} />}
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <PreviousIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <NextIcon width={100} height={100} />
+            <Text style={styles.text}>다음</Text>
+          </View>
+        }
         MainText={
           histories.length === 0 ? (
             <Text>거래 내역이 없습니다.</Text>
@@ -204,5 +229,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });

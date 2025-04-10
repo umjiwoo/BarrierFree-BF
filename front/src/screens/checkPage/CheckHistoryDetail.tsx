@@ -6,6 +6,7 @@ import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import formatDateManually from '../../components/utils/makeDate';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
@@ -42,10 +43,30 @@ const CheckHistoryDetail = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="돌아가기"
-        LowerRightText={<CheckIcon width={80} height={80} />}
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <CancelIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>확인</Text>
+          </View>
+        }
         MainText={
           <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
           <View style={styles.historyContainer}>
@@ -235,5 +256,16 @@ const styles = StyleSheet.create({
   },
   minusAmount: {
     color: '#373DCC',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });

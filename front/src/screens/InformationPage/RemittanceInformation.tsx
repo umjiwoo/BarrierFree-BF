@@ -13,6 +13,8 @@ import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
+import CancelIcon from '../../assets/icons/Cancel.svg';
+import CheckIcon from '../../assets/icons/Check.svg';
 import {useUserStore} from '../../stores/userStore';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
@@ -45,10 +47,30 @@ const ReceivingInformationScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
-        UpperRightText={<HomeIcon width={80} height={80} />}
-        LowerLeftText="취소"
-        LowerRightText="송금하기"
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <CancelIcon width={100} height={100} />
+            <Text style={styles.text}>취소</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>확인</Text>
+          </View>
+        }
         MainText={
           <View style={styles.mainTextContainer}>
             <Text style={styles.mainText}>송금 정보를 확인하세요.</Text>
@@ -91,6 +113,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     // justifyContent: 'center',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

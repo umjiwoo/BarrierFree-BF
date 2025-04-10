@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
@@ -171,10 +171,30 @@ const CreateAccountScreen = () => {
   return (
     <View style={styles.container}>
       <DefaultPage
-        UpperLeftText={<ArrowLeftIcon width={110} height={110} />}
-        UpperRightText={<HomeIcon width={110} height={110} />}
-        LowerLeftText={<PreviousIcon width={110} height={110} />}
-        LowerRightText={<NextIcon width={110} height={110} />}
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <PreviousIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <NextIcon width={100} height={100} />
+            <Text style={styles.text}>다음</Text>
+          </View>
+        }
         MainText={
           <CreateAccountGoods
             data={accountGoods}
@@ -196,6 +216,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

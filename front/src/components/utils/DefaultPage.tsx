@@ -27,7 +27,7 @@ export default function DefaultPage({
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={onUpperLeftTextPress}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#7B61FF' }]} onPress={onUpperLeftTextPress}>
           {/* <Text style={styles.buttonText}>{UpperLeftText}</Text> */}
           {typeof UpperLeftText === 'string' ? (
             <Text style={styles.buttonText}>{UpperLeftText}</Text>
@@ -35,7 +35,7 @@ export default function DefaultPage({
             UpperLeftText
           )}
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onUpperRightTextPress}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#34C759' }]} onPress={onUpperRightTextPress}>
           {/* <Text style={styles.buttonText}>{UpperRightText}</Text> */}
           {typeof UpperRightText === 'string' ? (
             <Text style={styles.buttonText}>{UpperRightText}</Text>
@@ -53,7 +53,7 @@ export default function DefaultPage({
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={onLowerLeftTextPress}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#1C2C58' }]} onPress={onLowerLeftTextPress}>
           {/* <Text style={styles.buttonText}>{LowerLeftText}</Text> */}
           {typeof LowerLeftText === 'string' ? (
             <Text style={styles.buttonText}>{LowerLeftText}</Text>
@@ -61,7 +61,7 @@ export default function DefaultPage({
             LowerLeftText
           )}
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onLowerRightTextPress}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#3A3A3C' }]} onPress={onLowerRightTextPress}>
           {/* <Text style={styles.buttonText}>{LowerRightText}</Text> */}
           {typeof LowerRightText === 'string' ? (
             <Text style={styles.buttonText}>{LowerRightText}</Text>
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     width: '100%',
+    backgroundColor: 'black',
     // height: '100%',
     // justifyContent: 'center',
     // alignItems: 'center',
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
-    gap: 10,
+    gap: 12,
     // backgroundColor: 'blue',
     // borderRadius: 10,
     // borderWidth: 1,
@@ -97,11 +98,13 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     // backgroundColor: 'blue',
-    borderRadius: 10,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#7F35D4',
-    backgroundColor: '#7F35D4',
-    padding: 10,
+    borderColor: '#000000',
+    backgroundColor: '#000000',
+    // padding: 10,
+    paddingVertical: 24,
+    paddingHorizontal: 12,
     justifyContent: 'center',
     alignItems: 'center',
     // margin: 10,
@@ -110,7 +113,8 @@ const styles = StyleSheet.create({
     flex: 1.5,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#7F35D4',
+    borderColor: '#000000',
+    backgroundColor: '#000000',
     padding: 10,
     margin: 10,
     justifyContent: 'center',
@@ -119,11 +123,11 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   mainText: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#7F35D4',
+    color: 'white',
   },
 });
