@@ -1,4 +1,10 @@
-import {View, Text, TouchableOpacity, StyleSheet, SafeAreaView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from 'react-native';
 import React from 'react';
 import {connectWebSocket, closeWebSocket} from '../../utils/websocket';
 import {useAccountStore} from '../../stores/accountStore';
@@ -10,8 +16,8 @@ import Home from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import VolumeIcon from '../../assets/icons/Volume.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {useHandlePress} from '../../components/utils/handlePress';
 
 const AcceptPaymentScreen = ({route}: {route: any}) => {
@@ -77,32 +83,41 @@ const AcceptPaymentScreen = ({route}: {route: any}) => {
               <Text style={styles.voiceButtonText}>결제 확인</Text>
             </View>
             {messageData && (
-        <View >
-          {/* <Text style={styles.infoText}>User ID: {messageData.userId}</Text> */}
-          <Text style={styles.welcome}>
-            {messageData.transactionName}
-          </Text >
-          <Text  style={styles.welcome}>
-            {messageData.transactionAmount}원
-          </Text>
-          <Text style={styles.subWelcome}>SSAFY 은행{"\n"} 1190101022222222</Text>
-          {/* <Text style={styles.subWelcome}>
+              <View>
+                {/* <Text style={styles.infoText}>User ID: {messageData.userId}</Text> */}
+                <Text style={styles.welcome}>
+                  {messageData.transactionName}
+                </Text>
+                <Text style={styles.welcome}>
+                  {messageData.transactionAmount}원
+                </Text>
+                <Text style={styles.subWelcome}>
+                  SSAFY 은행{'\n'} 1190101022222222
+                </Text>
+                {/* <Text style={styles.subWelcome}>
             은행 : SSAFY
             은행 코드: {messageData.sellerAccountBankCode}
           </Text> */}
-          {/* <Text style={styles.infoText}>
+                {/* <Text style={styles.infoText}>
             WebSocket ID: {messageData.transactionWebSocketId}
           </Text> */}
-        </View>
-      )}
-
+              </View>
+            )}
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('취소', undefined, handlePressBack)}
-        onLowerRightTextPress={() => handleDefaultPress('취소', undefined, handleAcceptPaymentButtonPress)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('취소', undefined, handlePressBack)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('확인', undefined, handleAcceptPaymentButtonPress)
+        }
       />
     </SafeAreaView>
   );
@@ -170,7 +185,7 @@ const styles = StyleSheet.create({
   voiceButtonText: {
     color: '#fff',
     fontSize: 25,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
 
   infoBox: {
@@ -180,27 +195,15 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 18,
     marginVertical: 2,
-    color: 'white'
+    color: 'white',
   },
 });
 
 export default AcceptPaymentScreen;
 
-
-
-
-
-
-
-
-
-
-
-
-
 //   return (
 //     <View style={styles.container}>
-      
+
 //       <View style={styles.grid}>
 //         <TouchableOpacity
 //           style={styles.button}

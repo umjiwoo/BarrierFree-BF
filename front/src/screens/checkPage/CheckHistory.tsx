@@ -13,9 +13,9 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import NextIcon from '../../assets/icons/Next.svg';
 import PreviousIcon from '../../assets/icons/Prev.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { playTTS } from '../../components/utils/tts';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {playTTS} from '../../components/utils/tts';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import formatDateManually from '../../components/utils/makeDate';
 // const histories: HistoryItemProps[] = [
 //   {
@@ -90,15 +90,16 @@ const CheckHistory = () => {
   }, [accounts?.id]);
 
   const carouselRef = useRef<any>(null);
-  
+
   // 캐러셀
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentItem = histories[currentIndex];
 
   const handleSelectHistory = (item: HistoryItemProps) => {
-    const typeLabel =
-      item.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
-    const [hour, minute] = formatDateManually(item.transactionDate).time.split(':');
+    const typeLabel = item.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+    const [hour, minute] = formatDateManually(item.transactionDate).time.split(
+      ':',
+    );
 
     const message = [
       `${formatDateManually(item.transactionDate).date}`,
@@ -107,15 +108,17 @@ const CheckHistory = () => {
       `${item.transactionAmount.toLocaleString()}원`,
       `${typeLabel}되었습니다.`,
     ].join('\n\n');
-  
-      handleDefaultPress(message, ['CheckHistoryDetail', {history: item}])
-    };
-    
+
+    handleDefaultPress(message, ['CheckHistoryDetail', {history: item}]);
+  };
+
   useEffect(() => {
     if (currentItem) {
       const typeLabel =
-      currentItem.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
-      const [hour, minute] = formatDateManually(currentItem.transactionDate).time.split(':');
+        currentItem.transactionType === 'WITHDRAWAL' ? '출금' : '입금';
+      const [hour, minute] = formatDateManually(
+        currentItem.transactionDate,
+      ).time.split(':');
       const message = [
         `${formatDateManually(currentItem.transactionDate).date}`,
         `${hour}시 ${minute}분`,
@@ -123,7 +126,7 @@ const CheckHistory = () => {
         `${currentItem.transactionAmount.toLocaleString()}원`,
         `${typeLabel}되었습니다.`,
       ].join('\n\n');
-      
+
       playTTS(message);
     }
   }, [currentIndex]);
@@ -151,12 +154,12 @@ const CheckHistory = () => {
     return (
       <View style={styles.container}>
         <DefaultPage
-                UpperLeftText={
-                  <View style={styles.textContainer}>
-                    <ArrowLeftIcon width={100} height={100} />
-                    <Text style={styles.text}>조회</Text>
-                  </View>
-                }
+          UpperLeftText={
+            <View style={styles.textContainer}>
+              <ArrowLeftIcon width={100} height={100} />
+              <Text style={styles.text}>조회</Text>
+            </View>
+          }
           // UpperLeftText={<ArrowLeftIcon width={80} height={80} />}
           UpperRightText={<HomeIcon width={80} height={80} />}
           MainText={
@@ -210,10 +213,18 @@ const CheckHistory = () => {
             />
           )
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전 내역', undefined, handleLowerLeftTextPress)}
-        onLowerRightTextPress={() => handleDefaultPress('이전 내역', undefined, handleLowerRightTextPress)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('이전 내역', undefined, handleLowerLeftTextPress)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('다음 내역', undefined, handleLowerRightTextPress)
+        }
       />
     </View>
   );

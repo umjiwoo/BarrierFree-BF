@@ -314,10 +314,10 @@ const CreateAccountCheck = () => {
                     if (!isMounted.current) return; // 컴포넌트 언마운트 확인
 
                     // 다음 화면으로 이동
-                    navigation.navigate('SendInputPage', {
-                      type: 'password',
-                      goods: goods,
-                    });
+                    // navigation.navigate('SendInputPage', {
+                    //   type: 'password',
+                    //   goods: goods,
+                    // });
 
                     // 임시 파일 정리
                     cleanupTempFiles();
@@ -333,29 +333,26 @@ const CreateAccountCheck = () => {
         } else if (ocrResult.isCorrect === false) {
           // 신분증은 인식됐으나 인증 실패 (isCorrect가 명시적으로 false)
           const alertPromise = new Promise(resolve => {
-            Alert.alert(
-              '본인 인증 실패 ❌',
-              `이름: ${ocrResult.name || '정보 없음'}\n생년월일: ${
-                ocrResult.birth || '정보 없음'
-              }\n\nisCorrect: false (인증 실패)`,
-              [
-                {
-                  text: '다시 시도',
-                  onPress: () => {
-                    resolve(true);
-
-                    if (!isMounted.current) return; // 컴포넌트 언마운트 확인
-
-                    // 카메라 다시 열기
-                    setShowCamera(true);
-
-                    // 임시 파일 정리
-                    cleanupTempFiles();
-                  },
-                },
-              ],
-              {cancelable: false},
-            );
+            // Alert.alert(
+            //   '본인 인증 실패 ❌',
+            //   `이름: ${ocrResult.name || '정보 없음'}\n생년월일: ${
+            //     ocrResult.birth || '정보 없음'
+            //   }\n\nisCorrect: false (인증 실패)`,
+            //   [
+            //     {
+            //       text: '다시 시도',
+            //       onPress: () => {
+            //         resolve(true);
+            //         if (!isMounted.current) return; // 컴포넌트 언마운트 확인
+            //         // 카메라 다시 열기
+            //         setShowCamera(true);
+            //         // 임시 파일 정리
+            //         cleanupTempFiles();
+            //       },
+            //     },
+            //   ],
+            //   {cancelable: false},
+            // );
           });
 
           // Alert가 처리될 때까지 대기
@@ -394,27 +391,24 @@ const CreateAccountCheck = () => {
 
         const errorMessage = error.message || '신분증 인식에 실패했습니다';
         const alertPromise = new Promise(resolve => {
-          Alert.alert(
-            'OCR 처리 실패',
-            errorMessage,
-            [
-              {
-                text: '다시 시도',
-                onPress: () => {
-                  resolve(true);
-
-                  if (!isMounted.current) return; // 컴포넌트 언마운트 확인
-
-                  // 카메라 다시 열기
-                  setShowCamera(true);
-
-                  // 임시 파일 정리
-                  cleanupTempFiles();
-                },
-              },
-            ],
-            {cancelable: false},
-          );
+          // Alert.alert(
+          //   'OCR 처리 실패',
+          //   errorMessage,
+          //   [
+          //     {
+          //       text: '다시 시도',
+          //       onPress: () => {
+          //         resolve(true);
+          //         if (!isMounted.current) return; // 컴포넌트 언마운트 확인
+          //         // 카메라 다시 열기
+          //         setShowCamera(true);
+          //         // 임시 파일 정리
+          //         cleanupTempFiles();
+          //       },
+          //     },
+          //   ],
+          //   {cancelable: false},
+          // );
         });
 
         // Alert가 처리될 때까지 대기

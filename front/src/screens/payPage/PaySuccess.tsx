@@ -58,10 +58,10 @@ const PaySuccess = () => {
               <VolumeIcon width={30} height={30} />
               <Text style={styles.voiceButtonText}>결제 완료</Text>
             </View>
-          <View style={styles.mainTextContainer}>
-            <Text style={styles.mainText}>결제가 완료되었습니다.</Text>
-            <CheckIcon style={styles.checkCircle} />
-          </View>
+            <View style={styles.mainTextContainer}>
+              <Text style={styles.mainText}>결제가 완료되었습니다.</Text>
+              <CheckIcon style={styles.checkCircle} />
+            </View>
             {/* <PaymentMainScreen /> */}
           </View>
         }
@@ -73,7 +73,7 @@ const PaySuccess = () => {
         }
         onLowerLeftTextPress={undefined}
         onLowerRightTextPress={() =>
-          handleDefaultPress('홈', undefined, handlePressHome)
+          handleDefaultPress('확인', undefined, handlePressHome)
         }
       />
     </View>
