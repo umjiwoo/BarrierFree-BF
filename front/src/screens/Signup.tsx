@@ -25,7 +25,6 @@ const SignupScreen = () => {
     try {
       // 아이디 중복 검사
       const checkIdResponse = await checkId(formData.phoneNumber);
-      console.log('아이디 중복 검사 결과:', checkIdResponse);
 
       // 아이디 중복 검사 성공 시
       if (checkIdResponse.result.code === 200) {
@@ -36,22 +35,17 @@ const SignupScreen = () => {
 
         // 회원가입 요청
         const response = await signUpUser(formData);
-        console.log('회원가입 결과:', response);
 
         // 회원가입 성공 시
         if (response.result.code === 200) {
-          console.log('회원가입 성공:', response.body);
           navigation.navigate('Main');
         } else {
           // 회원가입 실패 시
-          console.log('회원가입 실패:', response.result.message);
         }
       } else {
         // 아이디 중복 검사 실패 시
-        console.log('아이디 중복 검사 실패:', checkIdResponse.result.message);
       }
     } catch (error) {
-      console.error('오류 발생:', error);
     }
   };
 

@@ -34,20 +34,17 @@ const SendFavoriteAccount = () => {
 
   const handleSelectAccount = (account: any) => {
     setSelectedAccount(account);
-    console.log('Selected account:', account);
   };
 
   const handleSendMoney = () => {
     if (selectedAccount) {
       navigation.navigate('ReceivingAccountScreen', {selectedAccount});
     } else {
-      console.log('계좌를 선택해주세요');
     }
   };
 
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
-    console.log('직접 입력 버튼 클릭');
   };
 
   return (

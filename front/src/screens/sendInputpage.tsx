@@ -79,13 +79,6 @@ const SendInputPage = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.text}>계좌 직접 입력 화면입니다.</Text>
           <View>
-            {/* <TextInput
-              style={styles.input}
-              value={accountNumber}
-              onChangeText={setAccountNumber}
-              placeholder="계좌번호를 입력해주세요."
-              keyboardType="numeric"
-            /> */}
           </View>
           <View style={styles.buttonContainer}>
             <BackButton
@@ -109,79 +102,16 @@ const SendInputPage = () => {
       // 2. 상대방 계좌 직접 입력을 받는 경우
       return (
         <InputAccount type={type} />
-        // <View style={styles.contentContainer}>
-        //   <Text style={styles.text}>상대방 계좌 직접 입력 화면입니다.</Text>
-        //   <View style={styles.buttonContainer}>
-        //     <BackButton
-        //       text="확인"
-        //       type="input"
-        //       onPress={() => {
-        //         navigation.navigate('SendInputPage', {type: 'money'});
-        //       }}
-        //     />
-        //     <BackButton
-        //       text="뒤로 가기"
-        //       type="back"
-        //       onPress={handlePressBack}
-        //     />
-        //   </View>
-        // </View>
       );
     } else if (type === 'money') {
       // 3. 금액 입력을 받는 경우
       return (
         <InputAmount type={type} selectedAccount={selectedAccount}/>
-        // <View style={styles.contentContainer}>
-        //   <Text style={styles.text}>금액 입력 화면입니다.</Text>
-        //   <View style={styles.buttonContainer}>
-        //     <BackButton
-        //       text="확인"
-        //       type="input"
-        //       onPress={() => {
-        //         navigation.navigate('RemittanceInformation', {
-        //           money: 0,
-        //           selectedAccount: selectedAccount,
-        //         });
-        //       }}
-        //     />
-        //     <BackButton
-        //       text="뒤로 가기"
-        //       type="back"
-        //       onPress={handlePressBack}
-        //     />
-        //   </View>
-        // </View>
       );
     } else if (type === 'password') {
       // 4. 비밀번호 입력을 받는 경우
       return (
         <InputPassword type={type} selectedAccount={selectedAccount} money={money} goods={goods}/>
-        // <View style={styles.contentContainer}>
-        //   <Text style={styles.text}>비밀번호 입력 화면입니다.</Text>
-        //   <View style={styles.buttonContainer}>
-        //     <BackButton
-        //       text="확인"
-        //       type="input"
-        //       onPress={() => {
-        //         if (selectedAccount) {
-        //           navigation.navigate('RemittanceConfirm', {
-        //             selectedAccount: selectedAccount,
-        //             money: money,
-        //           });
-        //         } else {
-        //           navigation.navigate('CreateAccountSuccess', {
-        //             goods: goods,
-        //           });
-        //         }
-        //       }}
-        //     />
-        //     <BackButton
-        //       text="뒤로 가기"
-        //       type="back"
-        //       onPress={handlePressBack}
-        //     />
-        //   </View>
-        // </View>
       );
     }
   };

@@ -13,7 +13,6 @@ const App = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    console.log(params);
     setExpiresAt(params.get("expiresAt") || "");
     setUsername(params.get("userName") || "");
     setuserId(params.get("userId") || "");
@@ -24,12 +23,9 @@ const App = () => {
     const socket = new WebSocket(
       `ws://j12a208.p.ssafy.io:8080/api/ws/request-payment`
     );
-    // const socket = new WebSocket(`ws://j12a208.p.ssafy.io:8080/api/ws/request-payment?transactionWebSocketId=${newWsId}`);
     socketRef.current = socket;
 
-    socket.onopen = () => {
-      // socket.send(JSON.stringify({ type: 'register', wsId: newWsId }));
-    };
+    socket.onopen = () => {};
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);

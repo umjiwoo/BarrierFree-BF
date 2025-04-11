@@ -1,12 +1,11 @@
 import {
   View,
   Text,
-  TouchableOpacity,
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
 import React from 'react';
-import {connectWebSocket, closeWebSocket} from '../../utils/websocket';
+import {connectWebSocket} from '../../utils/websocket';
 import {useAccountStore} from '../../stores/accountStore';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -16,17 +15,12 @@ import Home from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import VolumeIcon from '../../assets/icons/Volume.svg';
-import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {useHandlePress} from '../../components/utils/handlePress';
 
 const AcceptPaymentScreen = ({route}: {route: any}) => {
   const messageData = route?.params;
-  console.log('결제 승인 페이지 진입, 전달받은 데이터:', messageData);
-
   const {accounts} = useAccountStore();
-  console.log('accounts:', accounts);
-
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const {handlePressBack, handlePressHome} = useHandlePress();
@@ -75,7 +69,6 @@ const AcceptPaymentScreen = ({route}: {route: any}) => {
             <Text style={styles.text}>확인</Text>
           </View>
         }
-        // LowerRightText="설정"
         MainText={
           <View style={styles.welcomeBox}>
             <View style={styles.voiceButton}>
@@ -84,7 +77,6 @@ const AcceptPaymentScreen = ({route}: {route: any}) => {
             </View>
             {messageData && (
               <View>
-                {/* <Text style={styles.infoText}>User ID: {messageData.userId}</Text> */}
                 <Text style={styles.welcome}>
                   {messageData.transactionName}
                 </Text>
@@ -94,13 +86,6 @@ const AcceptPaymentScreen = ({route}: {route: any}) => {
                 <Text style={styles.subWelcome}>
                   SSAFY 은행{'\n'} 1190101022222222
                 </Text>
-                {/* <Text style={styles.subWelcome}>
-            은행 : SSAFY
-            은행 코드: {messageData.sellerAccountBankCode}
-          </Text> */}
-                {/* <Text style={styles.infoText}>
-            WebSocket ID: {messageData.transactionWebSocketId}
-          </Text> */}
               </View>
             )}
           </View>
@@ -200,48 +185,3 @@ const styles = StyleSheet.create({
 });
 
 export default AcceptPaymentScreen;
-
-//   return (
-//     <View style={styles.container}>
-
-//       <View style={styles.grid}>
-//         <TouchableOpacity
-//           style={styles.button}
-//           onPress={handleAcceptPaymentButtonPress}>
-//           <Text style={styles.text}>결제 승인</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
-
-// export default AcceptPaymentScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//   },
-//   grid: {
-//     width: '100%',
-//     flexDirection: 'row',
-//     flexWrap: 'wrap',
-//     justifyContent: 'center',
-//   },
-//   button: {
-//     width: '45%',
-//     height: '45%',
-//     backgroundColor: 'blue',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     margin: 5,
-//   },
-//   text: {
-//     fontSize: 24,
-//     color: 'white',
-//     fontWeight: 'bold',
-//   },
-
-// });

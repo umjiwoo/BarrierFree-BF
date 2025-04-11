@@ -1,8 +1,5 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage2';
 import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import Home from '../../assets/icons/Home.svg';
@@ -14,9 +11,7 @@ import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHa
 import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const PaySuccess = () => {
-  // const navigation =
-  //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  
   useTTSOnFocus(`
       결제에 성공하였습니니다.
       아래 오른쪽 버튼을 눌러 메인페이지에 이동하시겠습니까?
@@ -62,7 +57,6 @@ const PaySuccess = () => {
               <Text style={styles.mainText}>결제가 완료되었습니다.</Text>
               <CheckIcon style={styles.checkCircle} />
             </View>
-            {/* <PaymentMainScreen /> */}
           </View>
         }
         onUpperLeftTextPress={() =>

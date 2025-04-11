@@ -22,9 +22,8 @@ interface CarouselProps {
 }
 
 const {width: screenWidth} = Dimensions.get('window');
-// const ITEM_SPACING = 5; // 아이템 간 간격
+
 const CONTAINER_PADDING = 15; // 컨테이너 패딩 (SendAccountBox의 padding과 동일)
-// const VISIBLE_ITEMS = 1.0; // 한 화면에 보여질 아이템 개수 (정확히 한 개만 보이게)
 
 // 아이템 너비 계산 수정 - 화면에 딱 맞도록 계산
 const ITEM_WIDTH = (screenWidth - CONTAINER_PADDING * 2) * 0.97;
@@ -94,17 +93,6 @@ const SendAccountCarousel: React.FC<CarouselProps> = ({
     // 하지만 여기선 스냅 기능에 의존하므로 구현하지 않음
   };
 
-  // 특정 인덱스로 스크롤하는 함수
-  // const scrollToIndex = (index: number) => {
-  //   if (flatListRef.current && index >= 0 && index < accountData.length) {
-  //     flatListRef.current.scrollToIndex({
-  //       index,
-  //       animated: true,
-  //     });
-  //     setActiveIndex(index);
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -137,20 +125,13 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    // paddingHorizontal: CONTAINER_PADDING, // 컨테이너에 패딩 추가
   },
   flatListContent: {
-    // paddingHorizontal: 0,
   },
   item: {
     width: ITEM_WIDTH, // 아이템 너비 적용
     height: '100%',
-    // marginRight: ITEM_SPACING, // 마진 제거
     padding: 30,
-    // borderRadius: 12,
-    // backgroundColor: '#f8f8f8',
-    // borderWidth: 1,
-    // borderColor: '#24282B',
   },
   accountName: {
     fontSize: 25,

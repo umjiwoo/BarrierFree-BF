@@ -13,19 +13,11 @@ import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
-import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import DrawIcon from '../../assets/icons/Draw.svg';
-
-import {
-  TestAccountItemProps,
-  GoodsItemProps,
-} from '../../components/types/CheckAccount';
 import {useUserStore} from '../../stores/userStore';
-
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
-
 import {postCheckAccountPassword} from '../../api/axiosTransaction';
 import {useAccountStore} from '../../stores/accountStore';
 import {connectWebSocket} from '../../utils/websocket';
@@ -33,13 +25,9 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface Props {
   type: string;
-  // selectedAccount?: TestAccountItemProps;
-  // money?: number;
-  // goods?: GoodsItemProps;
 }
 
 const PayPassword: React.FC<Props> = ({ type }) => {
-// const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods }) => {
 
   useTTSOnFocus(`
     비밀번호를 입력하는 화면입니다.
@@ -55,7 +43,6 @@ const PayPassword: React.FC<Props> = ({ type }) => {
 
   const handlePrediction = (digit: string) => {
     if (digit === '11') {
-      console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
     } else if (digit === "10") {
@@ -66,11 +53,8 @@ const PayPassword: React.FC<Props> = ({ type }) => {
       setPassword(prev => {
         if (prev.length < 4) {
           const updated = prev + digit;
-          console.log('digit', digit);
-          console.log('updated', updated);
           playTTS(digit);
           if (updated.length === 4) {
-            console.log('입력완료');
             playTTS('입력 완료');
             playTTS(password);
             setShowModal(false);
@@ -114,19 +98,15 @@ const PayPassword: React.FC<Props> = ({ type }) => {
 
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'password'});
-    console.log('직접 입력 버튼 클릭');
   };
 
   const handleSend = async () => {
-    console.log('비밀번호 완료');
-    console.log('password: ', Number(password));
-
+    
     const response = await postCheckAccountPassword(
       accounts.id,
       Number(password),
     );
 
-    console.log('response: ', response);
     if (response === true) {
       connectWebSocket(
         'remittance',
@@ -146,14 +126,6 @@ const PayPassword: React.FC<Props> = ({ type }) => {
         },
         wsNavigation,
       );
-
-      // navigation.navigate('RemittanceConfirm', {
-      //   selectedAccount: selectedAccount,
-      //   money: money,
-      //   password: password,
-      //   accountId: accounts.id,
-      //   receiverAccountId: receiverAccountId,
-      // }); // password 비밀번호
     } else if (response === 'wrong') {
       Alert.alert('비밀번호가 틀렸습니다.');
       playTTS('비밀번호가 틀렸습니다.');
@@ -220,13 +192,8 @@ const PayPassword: React.FC<Props> = ({ type }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: '100%',
-    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 20,
-    // marginTop: 50,
   },
   mainTextContainer: {
     flex: 1,
@@ -246,7 +213,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 10,
     marginBottom: 16,
-    // backgroundColor: '#333',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,

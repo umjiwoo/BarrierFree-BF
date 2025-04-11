@@ -74,13 +74,11 @@ const styles = StyleSheet.create({
     gap: 20,
     width: '100%',
     height: '100%',
-    // paddingVertical: 20,
     paddingRight: 60,
     paddingLeft: 20,
     borderRadius: 10,
   },
   selectedAccount: {
-    // backgroundColor: 'rgba(127,53,212, 0.1)',
   },
   transactionDateContainer: {
     flexDirection: 'column',
