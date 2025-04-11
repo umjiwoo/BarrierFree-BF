@@ -73,7 +73,7 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   
   const handleDirectInput = () => {
-    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    navigation.navigate('SendInputPage', {type: 'money'});
     console.log('직접 입력 버튼 클릭');
   };
  
