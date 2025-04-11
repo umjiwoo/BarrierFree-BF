@@ -7,6 +7,7 @@ import {
   PanResponder,
   ActivityIndicator,
   StyleSheet,
+  NativeModules
 } from 'react-native';
 import {
   Canvas,
@@ -27,6 +28,8 @@ interface Props {
   visible: boolean;
   onPredict: (digit: string) => void;
 }
+
+const {CustomVibration} = NativeModules;
 
 const DrawingMdoal = ({ visible, onPredict }: Props) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
@@ -93,6 +96,7 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
         path.moveTo(locationX, locationY);
         currentPathRef.current = path;
         setPaths(prev => [...prev, path]);
+        CustomVibration.vibrateCustomSequence('heartbeat_start'); 
       
       },
       onPanResponderMove: (evt) => {
@@ -129,6 +133,7 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
           
         }
         currentPathRef.current = null;
+        CustomVibration.vibrateCustomSequence('cancel');
 
         // 터치 종료 후 1초 후 자동 처리
         startPostTouchTimer();

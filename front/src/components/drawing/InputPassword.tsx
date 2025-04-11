@@ -113,7 +113,7 @@ const InputPassword: React.FC<Props> = ({ type }) => {
   const wsNavigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const handleDirectInput = () => {
-    navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
+    navigation.navigate('SendInputPage', {type: 'password'});
     console.log('직접 입력 버튼 클릭');
   };
 
@@ -210,8 +210,8 @@ const InputPassword: React.FC<Props> = ({ type }) => {
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handleDirectInput)}
-        onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
+        onLowerLeftTextPress={() => handleDefaultPress('입력', undefined, handleDirectInput)}
+        onLowerRightTextPress={() => handleDefaultPress('확인', undefined, handleSend)}
       />
     </View>
   );
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 10,
     marginBottom: 16,
-    backgroundColor: '#333',
+    // backgroundColor: '#333',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,

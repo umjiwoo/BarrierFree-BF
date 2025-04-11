@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, NativeModules} from 'react-native';
+import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -11,6 +11,8 @@ import CheckIcon from '../../assets/icons/Check.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
 import DrawIcon from '../../assets/icons/Draw.svg';
+
+const {CustomVibration} = NativeModules;
 
 const SendSuccess = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -26,6 +28,10 @@ const SendSuccess = () => {
     송금이 완료 되었습니다.
     내역을 확인하시려면 왼쪽 아래를, 메인 화면으로 돌아가시려면 오른쪽 아래를 눌러주세요.
   `);
+
+    useEffect(() => {
+      CustomVibration.vibrateCustomSequence("success"); 
+    }, []);
 
   return (
     <View style={styles.container}>
