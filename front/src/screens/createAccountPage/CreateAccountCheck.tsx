@@ -529,7 +529,7 @@ const CreateAccountCheck = () => {
         onUpperRightTextPress={() => handleDefaultPress('홈', ['Main'])}
         onLowerLeftTextPress={() => handleDefaultPress('이전', ['back'])}
         onLowerRightTextPress={() =>
-          handleDefaultPress('다음 상품', undefined, handleLowerRightTextPress)
+          handleDefaultPress('확인', undefined, handleLowerRightTextPress)
         }
       />
     </View>

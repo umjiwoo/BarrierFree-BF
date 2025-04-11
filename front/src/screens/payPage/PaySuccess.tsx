@@ -58,7 +58,10 @@ const PaySuccess = () => {
               <VolumeIcon width={30} height={30} />
               <Text style={styles.voiceButtonText}>결제 완료</Text>
             </View>
-            <Text style={styles.voiceButtonText}>결제 완료료</Text>
+          <View style={styles.mainTextContainer}>
+            <Text style={styles.mainText}>결제가 완료되었습니다.</Text>
+            <CheckIcon style={styles.checkCircle} />
+          </View>
             {/* <PaymentMainScreen /> */}
           </View>
         }
@@ -111,6 +114,24 @@ const styles = StyleSheet.create({
   welcomeBox: {
     alignItems: 'center',
     marginVertical: 32,
+  },
+  mainTextContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 50,
+  },
+  checkCircle: {
+    alignSelf: 'center',
+    width: 100,
+    height: 100,
+    color: '#7F35D4',
+  },
+  mainText: {
+    fontSize: 40,
+    fontWeight: '800',
+    color: '#fff',
   },
 });
 

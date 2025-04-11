@@ -14,6 +14,7 @@ import {playTTS} from '../../components/utils/tts';
 import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {getTransactionsHistory} from '../../api/axiosTransaction';
 import VolumeIcon from '../../assets/icons/Volume.svg';
+import formatDateManually from '../../components/utils/makeDate';
 
 const SendFavoriteAccount = () => {
   useTTSOnFocus(`
@@ -90,17 +91,20 @@ const SendFavoriteAccount = () => {
 
   useEffect(() => {
     if (currentItem) {
+      const dateInfo = formatDateManually(currentItem.transactionDate);
+
       const message = [
         `${currentItem.receiverName}`,
         // `${currentItem.accountBank}`,
-        `${currentItem.receiverAccount}`,
-        `${currentItem.transactionDate}`,
-        `송금`,
+        `${currentItem.receiverAccount.split('').join(' ')}`,
+        `$${dateInfo.date} ${dateInfo.time}에`,
+        `송금한 계좌입니다.`,
       ].join('\n\n');
 
       playTTS(message);
     }
   }, [currentIndex]);
+
 
   const handleSendMoney = () => {
     if (selectedAccount) {

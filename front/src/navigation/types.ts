@@ -58,5 +58,6 @@ export type RootStackParamList = {
   AcceptPaymentScreen: {
     messageData: JSON;
   };
+  PayPassword: undefined;
   PaySuccess: undefined;
 };
