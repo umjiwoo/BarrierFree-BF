@@ -119,7 +119,7 @@
 <br>
 
 ## 6️⃣서비스 아키텍처
-
+![architecture](./images/architecture.png)
 
 <br>
 
