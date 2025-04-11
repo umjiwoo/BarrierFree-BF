@@ -81,7 +81,6 @@ const CheckHistory = () => {
         const data = await getHistories(accounts.id);
         setHistories(data);
       } catch (error) {
-        console.error('거래 내역 조회 실패:', error);
       } finally {
         setIsLoading(false);
       }

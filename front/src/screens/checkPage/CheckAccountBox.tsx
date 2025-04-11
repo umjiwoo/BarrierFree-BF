@@ -9,7 +9,7 @@ import {
 import Carousel from 'react-native-reanimated-carousel';
 import {HistoryItemProps} from '../../components/types/CheckAccount';
 import formatDateManually from '../../components/utils/makeDate';
-import { center } from '@shopify/react-native-skia';
+import {center} from '@shopify/react-native-skia';
 import VolumeIcon from '../../assets/icons/Volume.svg';
 
 interface CheckAccountBoxProps {
@@ -27,56 +27,61 @@ const CheckAccountBox = ({
   onSelect,
   onSnapToItem,
 }: CheckAccountBoxProps) => {
-  console.log('data', data);
   return (
     <View style={styles.container}>
       <Carousel
-  ref={carouselRef}
-  loop={false}
-  width={SCREEN_WIDTH}
-  data={data}
-  renderItem={({item}) => {
-    const {date, time} = formatDateManually(item.transactionDate);
-    const isWithdrawal = item.transactionType === 'WITHDRAWAL';
-    const typeLabel = isWithdrawal ? '출금' : '입금';
+        ref={carouselRef}
+        loop={false}
+        width={SCREEN_WIDTH}
+        data={data}
+        renderItem={({item}) => {
+          const {date, time} = formatDateManually(item.transactionDate);
+          const isWithdrawal = item.transactionType === 'WITHDRAWAL';
+          const typeLabel = isWithdrawal ? '출금' : '입금';
 
-    return (
-      <TouchableOpacity
-        onPress={() => onSelect(item)}
-        >
-          <View style={styles.accountItem}>
-          <View style={styles.voiceButton}>
-              <VolumeIcon width={30} height={30} />
-              <Text style={styles.voiceButtonText}>계좌 조회</Text>
-          </View>
-        {/* 날짜 */}
-        <View style={styles.dateContainer}>
-          <Text style={styles.date}>{date}</Text>
-          <Text style={styles.time}>{time}</Text>
-        </View>
+          return (
+            <TouchableOpacity onPress={() => onSelect(item)}>
+              <View style={styles.accountItem}>
+                <View style={styles.voiceButton}>
+                  <VolumeIcon width={30} height={30} />
+                  <Text style={styles.voiceButtonText}>계좌 조회</Text>
+                </View>
+                {/* 날짜 */}
+                <View style={styles.dateContainer}>
+                  <Text style={styles.date}>{date}</Text>
+                  <Text style={styles.time}>{time}</Text>
+                </View>
 
-        {/* 거래 이름 */}
-        <Text style={styles.name}>{item.transactionName}</Text>
+                {/* 거래 이름 */}
+                <Text style={styles.name}>{item.transactionName}</Text>
 
-        {/* 거래 금액 */}
-        <View style={styles.bankContainer}>
-          <Text style={[styles.bankType, isWithdrawal ? styles.withdrawalBg : styles.depositBg]}>
-            {typeLabel}
-          </Text>
-          <Text style={[styles.amount, isWithdrawal ? styles.withdrawal : styles.deposit]}>
-            {item.transactionAmount.toLocaleString()} 원
-          </Text>
-        </View>
-        </View>
-          {/* <View style={styles.voiceButton}>
+                {/* 거래 금액 */}
+                <View style={styles.bankContainer}>
+                  <Text
+                    style={[
+                      styles.bankType,
+                      isWithdrawal ? styles.withdrawalBg : styles.depositBg,
+                    ]}>
+                    {typeLabel}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.amount,
+                      isWithdrawal ? styles.withdrawal : styles.deposit,
+                    ]}>
+                    {item.transactionAmount.toLocaleString()} 원
+                  </Text>
+                </View>
+              </View>
+              {/* <View style={styles.voiceButton}>
               <VolumeIcon width={30} height={30} />
               <Text style={styles.voiceButtonText}>음성 안내 듣기</Text>
           </View> */}
-      </TouchableOpacity>
-    );
-  }}
-  onSnapToItem={onSnapToItem}
-/>
+            </TouchableOpacity>
+          );
+        }}
+        onSnapToItem={onSnapToItem}
+      />
     </View>
   );
 };
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#DC3545', // 기본은 출금 색상
     color: '#fff',
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
   amount: {
     fontSize: 40,
@@ -140,7 +145,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
     color: '#fff',
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
     // fontSize: 40,
     // fontWeight: 'bold',
     // color: '#fff',
@@ -169,12 +174,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   voiceButtonText: {
     color: '#fff',
     fontSize: 25,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
 });
 

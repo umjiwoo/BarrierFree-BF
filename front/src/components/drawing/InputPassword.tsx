@@ -7,7 +7,7 @@ import {
   useRoute,
   RouteProp,
 } from '@react-navigation/native';
-import { playTTS } from '../utils/tts';
+import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import DefaultPage from '../../components/utils/DefaultPage';
@@ -23,8 +23,8 @@ import {
 } from '../../components/types/CheckAccount';
 import {useUserStore} from '../../stores/userStore';
 
-import { useTTSOnFocus } from '../utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../utils/useTapNavigationHandler ';
 
 import {postCheckAccountPassword} from '../../api/axiosTransaction';
 import {useAccountStore} from '../../stores/accountStore';
@@ -38,8 +38,8 @@ interface Props {
   // goods?: GoodsItemProps;
 }
 
-const InputPassword: React.FC<Props> = ({ type }) => {
-// const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods }) => {
+const InputPassword: React.FC<Props> = ({type}) => {
+  // const InputPassword: React.FC<Props> = ({ type, selectedAccount, money, goods }) => {
 
   useTTSOnFocus(`
     비밀번호를 입력하는 화면입니다.
@@ -48,17 +48,16 @@ const InputPassword: React.FC<Props> = ({ type }) => {
     입력이 끝났다면 V자를 그려서 마무리해주세요.
     다음 단계로 넘어가시려면 오른쪽 아래를 눌러주세요.
     왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(true);
 
   const handlePrediction = (digit: string) => {
     if (digit === '11') {
-      console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
-    } else if (digit === "10") {
+    } else if (digit === '10') {
       closeModal();
       playTTS('입력 완료');
       playTTS(password);
@@ -66,11 +65,8 @@ const InputPassword: React.FC<Props> = ({ type }) => {
       setPassword(prev => {
         if (prev.length < 4) {
           const updated = prev + digit;
-          console.log('digit', digit);
-          console.log('updated', updated);
           playTTS(digit);
           if (updated.length === 4) {
-            console.log('입력완료');
             playTTS('입력 완료');
             playTTS(password);
             setShowModal(false);
@@ -114,19 +110,14 @@ const InputPassword: React.FC<Props> = ({ type }) => {
 
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'password'});
-    console.log('직접 입력 버튼 클릭');
   };
 
   const handleSend = async () => {
-    console.log('비밀번호 완료');
-    console.log('password: ', Number(password));
-
     const response = await postCheckAccountPassword(
       accounts.id,
       Number(password),
     );
 
-    console.log('response: ', response);
     if (response === true) {
       connectWebSocket(
         'remittance',
@@ -204,14 +195,24 @@ const InputPassword: React.FC<Props> = ({ type }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>비밀번호 입력</Text>
             <Text style={styles.accountDisplay}>{renderPasswordDots()}</Text>
-            <Text style={styles.description}>"X" 그려서 지우기{"\n"} "V" 그려서 완료</Text>
+            <Text style={styles.description}>
+              "X" 그려서 지우기{'\n'} "V" 그려서 완료
+            </Text>
             <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('입력', undefined, handleDirectInput)}
-        onLowerRightTextPress={() => handleDefaultPress('확인', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('입력', undefined, handleDirectInput)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('확인', undefined, handleSend)
+        }
       />
     </View>
   );

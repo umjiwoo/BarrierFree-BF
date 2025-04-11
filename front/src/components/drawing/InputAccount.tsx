@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet,} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
 import {
   NavigationProp,
@@ -17,16 +17,15 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
-import { useTTSOnFocus } from '../utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../utils/useTapNavigationHandler ';
 import DrawIcon from '../../assets/icons/Draw.svg';
 
 interface Props {
   type: string;
 }
 
-const InputAccount: React.FC<Props> = ({ type }) => {
-
+const InputAccount: React.FC<Props> = ({type}) => {
   useTTSOnFocus(`
     송금할 계좌를 입력하는 화면입니다.
     숫자를 손으로 그려서 입력할 수 있습니다.
@@ -34,22 +33,20 @@ const InputAccount: React.FC<Props> = ({ type }) => {
     입력이 끝났다면 V자를 그려서 마무리해주세요.
     다음 단계로 넘어가시려면 오른쪽 아래를 눌러주세요.
     왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const [accountNumber, setAccountNumber] = useState('');
   const [showModal, setShowModal] = useState(true);
 
   const handlePrediction = (digit: string) => {
     if (digit === '11') {
-      console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
-    } else if (digit === "10") {
+    } else if (digit === '10') {
       closeModal();
       playTTS('입력 완료');
       playTTS(accountNumber);
     } else {
-      console.log('digit', digit);
       setAccountNumber(prev => prev + digit);
       playTTS(digit); // 현재 digit 읽기
     }
@@ -79,11 +76,9 @@ const InputAccount: React.FC<Props> = ({ type }) => {
 
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
-    console.log('직접 입력 버튼 클릭');
   };
 
   const handleSend = () => {
-    console.log('계좌 입력 완료');
     navigation.navigate('ReceivingAccountScreen', {selectedAccount}); // 입력한 계좌로 변경(accountNumber)
   };
 
@@ -121,14 +116,24 @@ const InputAccount: React.FC<Props> = ({ type }) => {
             <Text style={styles.accountDisplay}>
               {accountNumber || '계좌번호를 입력'}
             </Text>
-            <Text style={styles.description}>"X" 그려서 지우기{"\n"} "V" 그려서 완료</Text>
+            <Text style={styles.description}>
+              "X" 그려서 지우기{'\n'} "V" 그려서 완료
+            </Text>
             <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handleDirectInput)}
-        onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handleDirectInput)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('입력 확인', undefined, handleSend)
+        }
       />
     </View>
   );

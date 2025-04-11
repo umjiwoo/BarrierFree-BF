@@ -18,7 +18,6 @@ interface CarouselProps {
 }
 
 const {width: screenWidth} = Dimensions.get('window');
-// const ITEM_SPACING = 5; // 아이템 간 간격
 const CONTAINER_PADDING = 15; // 컨테이너 패딩 (SendAccountBox의 padding과 동일)
 // const VISIBLE_ITEMS = 1.0; // 한 화면에 보여질 아이템 개수 (정확히 한 개만 보이게)
 

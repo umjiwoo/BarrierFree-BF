@@ -5,7 +5,7 @@ import {
   View,
   Text,
   TextInput,
-  Button
+  Button,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -14,10 +14,10 @@ import DefaultPage from '../../components/utils/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
 import VolumeIcon from '../../assets/icons/Volume.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
-import { useRoute } from '@react-navigation/native';
-import { closeWebSocket } from '../../utils/websocket';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
+import {useRoute} from '@react-navigation/native';
+import {closeWebSocket} from '../../utils/websocket';
 import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import Home from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
@@ -35,8 +35,6 @@ const PaymentConfirm = () => {
 
   const {user} = useUserStore();
   const {accounts} = useAccountStore();
-  console.log(user);
-  console.log(accounts);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -45,7 +43,7 @@ const PaymentConfirm = () => {
   const handleDefaultPress = useTapNavigationHandler();
 
   const [password, setPassword] = useState('');
-  const { accountNumber, amount, sessionId } = useRoute().params;
+  const {accountNumber, amount, sessionId} = useRoute().params;
 
   const handleSend = async () => {
     // const res = await sendMoney({ accountNumber, amount, password });
@@ -105,10 +103,18 @@ const PaymentConfirm = () => {
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('취소', undefined, handlePressBack)}
-        onLowerRightTextPress={() => handleDefaultPress('취소', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('취소', undefined, handlePressBack)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('취소', undefined, handleSend)
+        }
       />
     </SafeAreaView>
   );
@@ -176,7 +182,7 @@ const styles = StyleSheet.create({
   voiceButtonText: {
     color: '#fff',
     fontSize: 25,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
 });
 

@@ -79,7 +79,6 @@ const CreateAccountCheck = () => {
       if (isMounted.current) {
         setNetworkAvailable(state.isConnected ?? false);
         if (!state.isConnected) {
-          console.warn('네트워크 연결이 끊어졌습니다.');
         }
       }
     });
@@ -88,10 +87,6 @@ const CreateAccountCheck = () => {
     NetInfo.fetch().then(state => {
       if (isMounted.current) {
         setNetworkAvailable(state.isConnected ?? false);
-        console.log(
-          '현재 네트워크 상태:',
-          state.isConnected ? '연결됨' : '연결 안됨',
-        );
       }
     });
 
@@ -125,16 +120,9 @@ const CreateAccountCheck = () => {
       for (const file of tempImages) {
         try {
           await RNFS.unlink(file.path);
-          console.log('임시 파일 삭제:', file.path);
-        } catch (e) {
-          console.warn('임시 파일 삭제 실패:', file.path, e);
-        }
+        } catch (e) {}
       }
-
-      console.log(`${tempImages.length}개의 임시 파일 정리 완료`);
-    } catch (error) {
-      console.warn('임시 파일 정리 실패:', error);
-    }
+    } catch (error) {}
   };
 
   const handleLowerRightTextPress = async () => {
@@ -167,11 +155,6 @@ const CreateAccountCheck = () => {
     try {
       // 원본 파일 정보 확인
       const fileInfo = await RNFS.stat(photoPath);
-      console.log(
-        '원본 이미지 크기:',
-        (fileInfo.size / 1024 / 1024).toFixed(2),
-        'MB',
-      );
 
       // 최적화된 이미지 생성 (720픽셀 해상도로 변경)
       const resizedImage = await ImageResizer.createResizedImage(
@@ -186,35 +169,16 @@ const CreateAccountCheck = () => {
         {onlyScaleDown: true}, // 이미 작은 이미지는 확대하지 않음
       );
 
-      console.log('이미지 최적화 완료');
-      console.log('- 최적화 후 경로:', resizedImage.uri);
-      console.log(
-        '- 최적화 후 크기:',
-        (resizedImage.size / 1024 / 1024).toFixed(2),
-        'MB',
-      );
-      console.log(
-        '- 최적화 후 너비/높이:',
-        resizedImage.width,
-        'x',
-        resizedImage.height,
-      );
-
       return resizedImage.uri;
     } catch (error) {
-      console.warn('이미지 최적화 실패:', error);
       return photoPath; // 오류 시 원본 경로 반환
     }
   };
 
   const sendImageToOCR = async (photoPath: string) => {
     try {
-      console.log('이미지 읽기 시작:', photoPath);
-
       // 파일을 base64로 읽음
       const base64Data = await RNFS.readFile(photoPath, 'base64');
-
-      console.log('Base64 길이:', base64Data.length); // <- base64 제대로 읽히는지 확인
 
       // 서버에 전송할 데이터 구성
       const payload = {
@@ -231,12 +195,9 @@ const CreateAccountCheck = () => {
         },
       });
 
-      console.log('서버 응답:', response.data);
       return response.data;
     } catch (error: any) {
-      // console.error('이미지 전송 오류:', error.message);
       if (axios.isAxiosError(error)) {
-        console.log('axios error response:', error.response?.data);
       }
       throw error;
     }
@@ -266,21 +227,11 @@ const CreateAccountCheck = () => {
 
       if (!isMounted.current) return; // 컴포넌트 언마운트 확인
 
-      // 파일 정보 출력
-      console.log('사진 촬영 완료');
-      console.log('- 파일 경로:', photo.path);
-      console.log('- 이미지 너비/높이:', photo.width, 'x', photo.height);
-      console.log('※ 임시 파일이므로 앱 종료 시 삭제될 수 있음');
-
       try {
-        console.log('OCR 요청 시작...');
-
         // 비동기 작업: OCR 요청 (await 사용)
         const ocrResult = await sendImageToOCR(photo.path);
 
         if (!isMounted.current) return; // 컴포넌트 언마운트 확인
-
-        console.log('OCR 요청 완료!');
 
         // OCR 처리 완료 후 카메라 닫기
         setShowCamera(false);
@@ -289,11 +240,6 @@ const CreateAccountCheck = () => {
         if (!ocrResult) {
           return;
         }
-
-        // 결과 로그
-        console.log('isCorrect 값:', ocrResult.isCorrect);
-        console.log('name 값:', ocrResult.name);
-        console.log('birth 값:', ocrResult.birth);
 
         // OCR 결과 확인 (서버 응답 형식: {isCorrect, name, birth})
         if (ocrResult.isCorrect === true) {
@@ -312,12 +258,6 @@ const CreateAccountCheck = () => {
                     resolve(true);
 
                     if (!isMounted.current) return; // 컴포넌트 언마운트 확인
-
-                    // 다음 화면으로 이동
-                    // navigation.navigate('SendInputPage', {
-                    //   type: 'password',
-                    //   goods: goods,
-                    // });
 
                     // 임시 파일 정리
                     cleanupTempFiles();
@@ -417,7 +357,6 @@ const CreateAccountCheck = () => {
     } catch (error) {
       if (!isMounted.current) return; // 컴포넌트 언마운트 확인
 
-      // console.error('사진 촬영 실패:', error);
       const alertPromise = new Promise(resolve => {
         Alert.alert(
           '오류',

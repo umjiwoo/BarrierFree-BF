@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import DrawingModal from './DrawingModal'; // 손글씨 입력 컴포넌트 (예: Skia 사용)
-import {
-  NavigationProp,
-  useNavigation,
-} from '@react-navigation/native';
-import { TestAccountItemProps } from '../../components/types/CheckAccount';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {TestAccountItemProps} from '../../components/types/CheckAccount';
 import {useUserStore} from '../../stores/userStore';
 import {playTTS} from '../utils/tts';
 import {RootStackParamList} from '../../navigation/types';
@@ -15,8 +12,8 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
-import { useTTSOnFocus } from '../utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../utils/useTapNavigationHandler ';
 import DrawIcon from '../../assets/icons/Draw.svg';
 
 interface Props {
@@ -24,8 +21,7 @@ interface Props {
   selectedAccount?: TestAccountItemProps;
 }
 
-const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
-
+const InputAmount: React.FC<Props> = ({type, selectedAccount}) => {
   useTTSOnFocus(`
     송금할 금액을 입력하는 화면입니다.
     숫자를 손으로 그려서 입력할 수 있습니다.
@@ -33,22 +29,20 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
     입력이 끝났다면 V자를 그려서 마무리해주세요.
     다음 단계로 넘어가시려면 오른쪽 아래를 눌러주세요.
     왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const [amountNumber, setAmountNumber] = useState('');
   const [showModal, setShowModal] = useState(true);
 
   const handlePrediction = (digit: string) => {
     if (digit === '11') {
-      console.log('"X" 지우기');
       deleteLastDigit();
       playTTS('지우기');
-    } else if (digit === "10") {
+    } else if (digit === '10') {
       closeModal();
       playTTS('입력 완료');
       // playTTS(Number(amountNumber) + '원');
     } else {
-      console.log('digit', digit);
       setAmountNumber(prev => prev + digit);
       playTTS(digit); // 현재 digit 읽기
     }
@@ -71,16 +65,18 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
   const handleDefaultPress = useTapNavigationHandler();
   const {user} = useUserStore();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  
+
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'money'});
-    console.log('직접 입력 버튼 클릭');
   };
- 
+
   const handleSend = () => {
-    console.log('금액 입력 완료');
-    if (selectedAccount) {  // 입력한 계좌 있어야만 함
-      navigation.navigate('RemittanceInformation', {money: Number(amountNumber), selectedAccount: selectedAccount});  // 입력한 계좌로 변경
+    if (selectedAccount) {
+      // 입력한 계좌 있어야만 함
+      navigation.navigate('RemittanceInformation', {
+        money: Number(amountNumber),
+        selectedAccount: selectedAccount,
+      }); // 입력한 계좌로 변경
     }
   };
 
@@ -121,14 +117,24 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
           <View style={styles.mainTextContainer}>
             <Text style={styles.title}>금액 입력</Text>
             <Text style={styles.accountDisplay}>{renderAmountNumber()}</Text>
-            <Text style={styles.description}>"X" 그려서 지우기{"\n"} "V" 그려서 완료</Text>
+            <Text style={styles.description}>
+              "X" 그려서 지우기{'\n'} "V" 그려서 완료
+            </Text>
             <DrawingModal visible={showModal} onPredict={handlePrediction} />
           </View>
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handleDirectInput)}
-        onLowerRightTextPress={() => handleDefaultPress('입력 확인', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handleDirectInput)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('입력 확인', undefined, handleSend)
+        }
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   Dimensions,
@@ -7,7 +7,7 @@ import {
   PanResponder,
   ActivityIndicator,
   StyleSheet,
-  NativeModules
+  NativeModules,
 } from 'react-native';
 import {
   Canvas,
@@ -20,9 +20,9 @@ import {
   StrokeJoin,
 } from '@shopify/react-native-skia';
 import RNFS from 'react-native-fs';
-import { CameraRoll } from '@react-native-camera-roll/camera-roll';
-import { TensorflowModel, loadTensorflowModel } from 'react-native-fast-tflite';
-import { preprocessPathToImage } from './PreprocessPathToImage';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {TensorflowModel, loadTensorflowModel} from 'react-native-fast-tflite';
+import {preprocessPathToImage} from './PreprocessPathToImage';
 
 interface Props {
   visible: boolean;
@@ -31,13 +31,13 @@ interface Props {
 
 const {CustomVibration} = NativeModules;
 
-const DrawingMdoal = ({ visible, onPredict }: Props) => {
-  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+const DrawingMdoal = ({visible, onPredict}: Props) => {
+  const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
   const canvasRef = useCanvasRef();
   const [paths, setPaths] = useState<SkPath[]>([]);
   const [loading, setLoading] = useState(false);
   const currentPathRef = useRef<SkPath | null>(null);
-  
+
   const touchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const pathsRef = useRef<SkPath[]>([]);
@@ -45,20 +45,19 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
   const modelLoadedRef = useRef(false);
 
   // 영역 밖 감지
-  const lastXY = useRef<{ x: number, y: number } | null>(null);
+  const lastXY = useRef<{x: number; y: number} | null>(null);
   const MAX_JUMP = 600; // px 기준: 이 이상 튀면 비정상으로 간주
 
   // TFLite 모델 로드
   useEffect(() => {
     const loadModel = async () => {
       try {
-        const model = await loadTensorflowModel(require('../../assets/my_emnist_model2.tflite'));
+        const model = await loadTensorflowModel(
+          require('../../assets/my_emnist_model2.tflite'),
+        );
         tfliteModelRef.current = model;
         modelLoadedRef.current = true;
-        console.log('TFLite 모델 로드 성공');
-      } catch (error) {
-        console.error('TFLite 모델 로드 실패:', error);
-      }
+      } catch (error) {}
     };
     loadModel();
   }, []);
@@ -76,19 +75,17 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: (evt) => {
-
+      onPanResponderGrant: evt => {
         // 터치 시작 시 타이머 제거 (새로운 터치로 간주)
         if (touchTimeout.current) {
           clearTimeout(touchTimeout.current);
           touchTimeout.current = null;
         }
-        
+
         // path가 없다면 여기서 시작
-        const { locationX, locationY } = evt.nativeEvent;
+        const {locationX, locationY} = evt.nativeEvent;
 
         if (locationY > SCREEN_HEIGHT - 85) {
-          console.log('터치 위치가 그리기 영역 밖입니다');
           return;
         }
 
@@ -96,26 +93,24 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
         path.moveTo(locationX, locationY);
         currentPathRef.current = path;
         setPaths(prev => [...prev, path]);
-        CustomVibration.vibrateCustomSequence('heartbeat_start'); 
-      
+        CustomVibration.vibrateCustomSequence('heartbeat_start');
       },
-      onPanResponderMove: (evt) => {
-        const { locationX, locationY } = evt.nativeEvent;
+      onPanResponderMove: evt => {
+        const {locationX, locationY} = evt.nativeEvent;
 
         if (!currentPathRef.current) return;
-        
+
         if (lastXY.current) {
           const dy = Math.abs(locationY - lastXY.current.y);
           const dx = Math.abs(locationX - lastXY.current.x);
           if (dy > MAX_JUMP || dx > MAX_JUMP) {
-            console.log('⛔️ 좌표 점프 감지됨, 무시:', { dx, dy });
             return;
           }
-        }       
+        }
 
         currentPathRef.current.lineTo(locationX, locationY);
-        lastXY.current = { x: locationX, y: locationY };
-        
+        lastXY.current = {x: locationX, y: locationY};
+
         setPaths(prev => {
           const updated = [...prev];
           updated[updated.length - 1] = currentPathRef.current!;
@@ -126,11 +121,10 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
         if (currentPathRef.current) {
           const finalizedPath = currentPathRef.current.copy();
           setPaths(prev => {
-            const updated =[...prev.  slice(0, -1), finalizedPath];
+            const updated = [...prev.slice(0, -1), finalizedPath];
             pathsRef.current = updated;
             return updated;
           });
-          
         }
         currentPathRef.current = null;
         CustomVibration.vibrateCustomSequence('cancel');
@@ -138,7 +132,7 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
         // 터치 종료 후 1초 후 자동 처리
         startPostTouchTimer();
       },
-    })
+    }),
   ).current;
 
   const startPostTouchTimer = () => {
@@ -172,14 +166,12 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
       // await CameraRoll.saveAsset(rawPath, { type: 'photo', album: 'Digits' });
 
       const imageTensor = await preprocessPathToImage(pathsRef.current);
-      // console.log(Array.from(imageTensor).slice(350, 450).join(', '));
       if (!imageTensor) {
-        Alert.alert("입력 오류", "숫자가 입력되지 않았습니다.");
+        Alert.alert('입력 오류', '숫자가 입력되지 않았습니다.');
         return;
       }
       const predictedNumber = predictNumber(imageTensor);
     } catch (err) {
-      console.error(err);
       Alert.alert('에러 발생', (err as any).message);
     } finally {
       setLoading(false);
@@ -195,28 +187,26 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
 
       let result;
       if (typeof tfliteModelRef.current.run === 'function') {
-      result = await tfliteModelRef.current.run([inputData]);
-      if (Array.isArray(result) && result.length > 0) {
-        
-        const prediction = Object.entries(result[0])
-          .reduce((maxEntry, current) => (current[1] > maxEntry[1] ? current : maxEntry))[0]; // key 반환
-        console.log('예측된 숫자:', prediction);
-        console.log('예측된 결과:', result);
+        result = await tfliteModelRef.current.run([inputData]);
+        if (Array.isArray(result) && result.length > 0) {
+          const prediction = Object.entries(result[0]).reduce(
+            (maxEntry, current) =>
+              current[1] > maxEntry[1] ? current : maxEntry,
+          )[0]; // key 반환
 
-        onPredict(prediction);  // 예측값 전달
-        onClear();  // Path 초기화
-      } else {
-        throw new Error('모델 실행 결과가 예상 형식과 다릅니다');
+          onPredict(prediction); // 예측값 전달
+          onClear(); // Path 초기화
+        } else {
+          throw new Error('모델 실행 결과가 예상 형식과 다릅니다');
+        }
+      } else if (typeof tfliteModelRef.current.runSync === 'function') {
+        result = tfliteModelRef.current.runSync([inputData]);
       }
-    } else if (typeof tfliteModelRef.current.runSync === 'function') {
-      result = tfliteModelRef.current.runSync([inputData]);
-    }
     } catch (modelError) {
-      console.error('[TimerBasedDigitInput] 모델 실행 오류:', modelError);
       return;
-    } 
+    }
   };
-  
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View
@@ -228,12 +218,10 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
           width: SCREEN_WIDTH,
           height: SCREEN_HEIGHT - 85,
           backgroundColor: 'transparent',
-        }}
-      >
+        }}>
         <Canvas
           ref={canvasRef}
-          style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT - 85 }}
-        >
+          style={{width: SCREEN_WIDTH, height: SCREEN_HEIGHT - 85}}>
           {paths.map((p, idx) => (
             <Path
               key={idx}
@@ -249,28 +237,24 @@ const DrawingMdoal = ({ visible, onPredict }: Props) => {
 
         {loading && (
           <ActivityIndicator
-            style={{ position: 'absolute', top: '50%', left: '50%' }}
+            style={{position: 'absolute', top: '50%', left: '50%'}}
             size="large"
           />
         )}
       </View>
 
       <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            alignSelf: 'center',
-            flexDirection: 'row',
-            gap: 16,
-          }}
-        >
-        </View>
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          alignSelf: 'center',
+          flexDirection: 'row',
+          gap: 16,
+        }}></View>
     </Modal>
   );
 };
 
-const styles = StyleSheet.create({
-});
-
+const styles = StyleSheet.create({});
 
 export default DrawingMdoal;

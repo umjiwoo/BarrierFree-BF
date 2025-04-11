@@ -18,15 +18,11 @@ const makeAccounts = async (accountData: AccountCreateParams): Promise<any> => {
     );
 
     if (response.data.result.code === 200) {
-      console.log('계좌 생성 성공: ', response.data.body);
     } else if (response.data.result.code === 2001) {
-      console.log(response.data.result.message);
     } else if (response.data.result.code === 2002) {
-      console.log(response.data.result.message);
     }
     return response.data.body;
   } catch (error) {
-    console.error('계좌 생성 실패:', error);
     return null;
   }
 };
@@ -35,16 +31,12 @@ const makeAccounts = async (accountData: AccountCreateParams): Promise<any> => {
 const getAccounts = async (): Promise<any> => {
   try {
     const response: AxiosResponse = await axiosInstance.get('/api/accounts');
-    console.log('결과 상태 조회 : ', response.data.result.code);
     if (response.data.result.code === 200) {
-      console.log('계좌 조회 성공');
       return response.data.body;
     } else {
-      console.log('계좌 조회 실패');
       return response.data.body;
     }
   } catch (error) {
-    console.error('계좌 조회 실패:', error);
     return null; // 에러 발생 시 빈 배열 반환
   }
 };
@@ -55,13 +47,10 @@ const getHistories = async (id: number): Promise<HistoryItemProps[]> => {
     const response = await axiosInstance.get(`/api/accounts/${id}`);
 
     if (response.data.result.code === 200) {
-      console.log('계좌 상세 내역 조회 성공');
     } else {
-      console.log('계좌 상세 내역 조회 실패');
     }
     return response.data.body;
   } catch (error) {
-    console.error('계좌 내역 조회 실패:', error);
     return [];
   }
 };
@@ -74,16 +63,13 @@ const getAccountLockStatus = async (id: number): Promise<boolean> => {
     );
 
     if (response.data.result.code === 200) {
-      console.log('조회 성공');
       if (response.data.body === 'ACTIVE') {
         return true;
       }
     } else {
-      console.log('조회 실패');
     }
     return false;
   } catch (error) {
-    console.error('계좌 내역 조회 실패:', error);
     return false;
   }
 };
@@ -114,7 +100,6 @@ const postAccountPassword = async (
       };
     }
   } catch (error) {
-    console.error('계좌 비밀번호 조회 실패:', error);
     return {error: '비밀번호 조회 실패', message: error};
   }
 };
