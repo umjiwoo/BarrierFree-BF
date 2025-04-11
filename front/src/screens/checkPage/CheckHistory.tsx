@@ -212,8 +212,8 @@ const CheckHistory = () => {
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={handleLowerLeftTextPress}
-        onLowerRightTextPress={handleLowerRightTextPress}
+        onLowerLeftTextPress={() => handleDefaultPress('이전 내역', undefined, handleLowerLeftTextPress)}
+        onLowerRightTextPress={() => handleDefaultPress('이전 내역', undefined, handleLowerRightTextPress)}
       />
     </View>
   );

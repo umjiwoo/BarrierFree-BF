@@ -64,7 +64,7 @@ const CheckHistoryDetail = () => {
         LowerLeftText={
           <View style={styles.textContainer}>
             <CancelIcon width={100} height={100} />
-            <Text style={styles.text}>이전</Text>
+            <Text style={styles.text}>취소</Text>
           </View>
         }
         LowerRightText={
@@ -74,10 +74,11 @@ const CheckHistoryDetail = () => {
           </View>
         }
         MainText={
+          <View style={styles.welcomeBox}>
           <TouchableOpacity
           // onPress={() => ()}
           >
-            <View style={styles.accountItem}>
+            <View >
             <View style={styles.voiceButton}>
                 <VolumeIcon width={30} height={30} />
                 <Text style={styles.voiceButtonText}>계좌 상세 조회</Text>
@@ -102,6 +103,7 @@ const CheckHistoryDetail = () => {
           </View>
           </View>
         </TouchableOpacity>
+        </View>
 
           // <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
           // <View style={styles.historyContainer}>
@@ -161,8 +163,8 @@ const CheckHistoryDetail = () => {
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
         onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={undefined}
-        onLowerRightTextPress={undefined}
+        onLowerLeftTextPress={() => handleDefaultPress('취소', undefined, handlePressBack)}
+        onLowerRightTextPress={() => handleDefaultPress('확인', undefined, handlePressBack)}
       />
     </View>
   );
@@ -180,7 +182,7 @@ const styles = StyleSheet.create({
     width: '100%',
     // marginVertical: 10,
     // paddingVertical: 36,
-    paddingHorizontal: 24,
+    // paddingHorizontal: 24,
     backgroundColor: '#000',
     justifyContent: 'center',
     // gap: 28,
@@ -264,7 +266,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlignVertical: 'center'
   },
-
+  welcomeBox: {
+    alignItems: 'center',
+    marginVertical: 32,
+  },
 
 
 

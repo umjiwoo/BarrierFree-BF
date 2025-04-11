@@ -46,7 +46,7 @@ const InputAmount: React.FC<Props> = ({ type, selectedAccount }) => {
     } else if (digit === "10") {
       closeModal();
       playTTS('입력 완료');
-      playTTS(amountNumber);
+      // playTTS(Number(amountNumber) + '원');
     } else {
       console.log('digit', digit);
       setAmountNumber(prev => prev + digit);

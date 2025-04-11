@@ -24,6 +24,7 @@ import CreateAccountCheck from '../screens/createAccountPage/CreateAccountCheck'
 import CreateAccountSuccess from '../screens/createAccountPage/CreateAccountSuccess';
 import PayMain from '../screens/payPage/PayMain';
 import PaySuccess from '../screens/payPage/PaySuccess';
+import PayPassword from '../screens/payPage/PayPassword';
 import SettingsMain from '../screens/settingsPage/SettingsMain';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -207,6 +208,14 @@ const RootStack = () => {
           headerShown: false,
         }}
       />
+      {/* <Stack.Screen
+        name="PayPassword"
+        component={PayPassword}
+        options={{
+          title: '결제 비밀번호 입력 페이지',
+          headerShown: false,
+        }}
+      /> */}
       <Stack.Screen
         name="PaySuccess"
         component={PaySuccess}
