@@ -37,6 +37,7 @@ const PaymentScreen = () => {
 
   // 사용자 정보
   const {user} = useUserStore();
+  // console.log('user', user);
 
   // QR 생성
   const createNewQR = async () => {
@@ -62,12 +63,15 @@ const PaymentScreen = () => {
       // // const buyerInfo = response.data;
       // console.log('구매자 정보', buyerInfo);
 
-
       // TODO : 판매자용 페이지 넘어갈 수 있게 react 정적 배포 필요
       // setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&buyerId=${buyerInfo.userId}&buyerName=${buyerInfo.username}`);
       // setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${user.username}&fcmToken=${user.fcmToken}`);
-      setQrValue(`http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${user.username}&userId=${user.id}`);
-  
+      setQrValue(
+        `http://j12a208.p.ssafy.io?expiresAt=${expiration.toISOString()}&userName=${
+          user.username
+        }&userId=${user.id}`,
+      );
+
       // 이렇게 QR 생성 값 넣으면 찍고 바로 넘어가지는 거 확인
       // setQrValue('http://j12a208.p.ssafy.io:8080/api/swagger-ui/index.html');
 
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor: 'white',
-    borderRadius: 20, 
+    borderRadius: 20,
   },
   text: {
     fontSize: 25,

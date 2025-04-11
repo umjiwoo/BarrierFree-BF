@@ -23,6 +23,7 @@ import CreateAccountGoodsDetail from '../screens/createAccountPage/CreateAccount
 import CreateAccountCheck from '../screens/createAccountPage/CreateAccountCheck';
 import CreateAccountSuccess from '../screens/createAccountPage/CreateAccountSuccess';
 import PayMain from '../screens/payPage/PayMain';
+import PaySuccess from '../screens/payPage/PaySuccess';
 import SettingsMain from '../screens/settingsPage/SettingsMain';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -201,6 +202,14 @@ const RootStack = () => {
       <Stack.Screen
         name="AcceptPaymentScreen"
         component={AcceptPaymentScreen}
+        options={{
+          title: '결제 승인 페이지',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PaySuccess"
+        component={PaySuccess}
         options={{
           title: '결제 승인 페이지',
           headerShown: false,

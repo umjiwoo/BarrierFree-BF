@@ -9,19 +9,38 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from './src/navigation/types';
 // import TextScreen from './src/screens/{테스트 해보고 싶은 tsx 경로}'; // TextScreen 경로
 import {initializeFCM} from './src/firebase/messaging';
+
+import {
+  foregroundMessageListener,
+  backgroundMessageOpenedListener,
+} from './src/firebase/messaging';
+import {createNavigationContainerRef} from '@react-navigation/native';
+const navigationRef = createNavigationContainerRef<RootStackParamList>();
+
 // const Stack = createStackNavigator();
 
 export default function App() {
   useEffect(() => {
     initializeFCM();
     initializeTtsListeners(); // 마운트: TTS 설정
+
+    if (navigationRef.isReady()) {
+      foregroundMessageListener(navigationRef);
+      backgroundMessageOpenedListener(navigationRef);
+    }
+
     return () => {
       cleanupTTS(); // 언마운트: TTS 해제
     };
   }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        foregroundMessageListener(navigationRef);
+        backgroundMessageOpenedListener(navigationRef);
+      }}>
       <RootStack />
     </NavigationContainer>
   );
