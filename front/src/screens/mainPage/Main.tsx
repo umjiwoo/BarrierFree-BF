@@ -12,8 +12,6 @@ import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useUserStore} from '../../stores/userStore';
 import {useAccountStore} from '../../stores/accountStore';
-import {getAccounts} from '../../api/axiosAccount';
-import BarrierFree from '../../assets/icons/BarrierFree.svg';
 import ChargeIcon from '../../assets/icons/QR.svg';
 import SettingIcon from '../../assets/icons/Settings2.svg';
 import HistoryIcon from '../../assets/icons/History2.svg';
@@ -21,7 +19,6 @@ import SendIcon from '../../assets/icons/Send2.svg';
 import VolumeIcon from '../../assets/icons/Volume.svg';
 import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
 import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
-import { center } from '@shopify/react-native-skia';
 
 const Main = () => {
   useTTSOnFocus(`
@@ -33,43 +30,8 @@ const Main = () => {
   `);
 
   const {user} = useUserStore();
-  const {accounts} = useAccountStore();
-  const {CustomVibration} = NativeModules;
-  const [lastTap, setLastTap] = useState(0);
-  const tapTimeout = useRef<NodeJS.Timeout | null>(null);
-
-  console.log(user);
-  console.log(accounts);
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const handleDefaultPress = useTapNavigationHandler();
-  // const handleDefaultPress = async (
-  //   page: 'CheckHistory' | 'SendMain' | 'PayMain' | 'SettingsMain',
-  // ) => {
-  //   const now = Date.now();
-  //   const DOUBLE_TAP_DELAY = 300;
-
-  //   if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
-  //     // 더블 탭
-  //     if (tapTimeout.current) {
-  //       clearTimeout(tapTimeout.current);
-  //     }
-  //     CustomVibration.vibrateCustomSequence('double_tick');
-  //     const data = await getAccounts();
-  //     console.log(data);
-  //     navigation.navigate(page);
-  //   } else {
-  //     // 싱글 탭
-  //     CustomVibration.vibrateCustomSequence('tick');
-  //     tapTimeout.current = setTimeout(() => {
-  //       setLastTap(0);
-  //     }, DOUBLE_TAP_DELAY);
-  //   }
-  //   setLastTap(now);
-  // };
-
+ 
   return (
     <SafeAreaView style={styles.container}>
       <DefaultPage
@@ -109,7 +71,6 @@ const Main = () => {
             </View>
             <Text style={styles.welcome}>{user.username} 님,{"\n"} 환영합니다.</Text>
             <Text style={styles.subWelcome}>Barrier Free 금융을{"\n"} 시작합니다.</Text>
-            {/* <BarrierFree width={350} height={100} title="메인페이지" /> */}
           </View>
         }
         // MainText="메인 텍스트 들어갈 자리"

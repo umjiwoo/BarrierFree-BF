@@ -19,7 +19,6 @@ const MyAccountDetail: React.FC<MyAccountDetailProps> = ({
 
   const handleCreateAccount = () => {
     navigation.navigate('CreateAccount');
-    console.log('계좌 생성');
   };
 
   const renderItem = ({item}: {item: AccountItemProps}) => {
@@ -98,7 +97,6 @@ const MyAccountDetail: React.FC<MyAccountDetailProps> = ({
 const styles = StyleSheet.create({
   accountBoxContainer: {
     width: '100%',
-    // height: '100%',
     marginVertical: 10,
     flex: 1,
   },
@@ -143,10 +141,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    // paddingHorizontal: CONTAINER_PADDING, // 컨테이너에 패딩 추가
   },
   item: {
-    // width: ITEM_WIDTH, // 아이템 너비 적용
     width: '100%',
     height: '100%',
     padding: 30,

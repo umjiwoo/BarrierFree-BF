@@ -4,7 +4,6 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import DefaultPage from '../../components/utils/DefaultPage';
 import {useHandlePress} from '../../components/utils/handlePress';
-import CheckCircle from '../../assets/icons/CheckCircle.svg';
 import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
@@ -21,7 +20,6 @@ const SendSuccess = () => {
 
   const handleCheckHistory = () => {
     navigation.navigate('CheckHistory');
-    console.log('내역 조회 버튼 클릭');
   };
 
   useTTSOnFocus(`
@@ -80,9 +78,6 @@ export default SendSuccess;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingHorizontal: 20,
-    // paddingBottom: 20,
-    // marginTop: 50,
     backgroundColor: '#ffffff',
   },
   titleContainer: {
@@ -93,14 +88,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
-    // gap: 50,
-    // borderWidth: 1,
   },
   titleTextContainer: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    // alignItems: 'center',
     gap: 10,
   },
   titleText: {

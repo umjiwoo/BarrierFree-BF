@@ -27,12 +27,10 @@ const SendMain = () => {
 
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
-    console.log('직접 입력 버튼 클릭');
   };
 
   const handleRecentAccount = () => {
     navigation.navigate('SendRecentAccount');
-    console.log('최근 보낸 계좌 버튼 클릭');
   };
 
   return (
@@ -69,7 +67,6 @@ const SendMain = () => {
               <Text style={styles.voiceButtonText}>송금 하기</Text>
             </View>
             <Text style={styles.welcome}>송금할 계좌를{"\n"} 입력해주세요.</Text>
-            {/* <Text style={styles.subWelcome}>Barrier Free 금융을{"\n"} 시작합니다.</Text> */}
           </View>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}

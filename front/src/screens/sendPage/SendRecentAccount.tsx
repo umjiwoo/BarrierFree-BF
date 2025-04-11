@@ -35,40 +35,11 @@ const SendFavoriteAccount = () => {
     const fetchRecentAccounts = async () => {
       const recentAccounts = await getTransactionsHistory();
       setAccountData(recentAccounts);
-      console.log('최근 보낸 계좌 조회 성공: ', recentAccounts);
     };
     fetchRecentAccounts();
   }, []);
 
-  // 더미 데이터
-  // const accountData = [
-  //   {
-  //     receiverAccount: '1190101022222222',
-  //     receiverAccountId: 1,
-  //     receiverName: '엄지우',
-  //     transactionDate: '2025-04-06T12:47:10',
-  //   },
-  //   {
-  //     receiverAccount: '1190101022222222',
-  //     receiverAccountId: 1,
-  //     receiverName: '엄지우',
-  //     transactionDate: '2025-04-06T12:47:10',
-  //   },
-  //   {
-  //     receiverAccount: '1190101022222222',
-  //     receiverAccountId: 1,
-  //     receiverName: '엄지우',
-  //     transactionDate: '2025-04-06T12:47:10',
-  //   },
-  // ];
-
-  // setAccountData(exampleAccountData);
   const [selectedAccount, setSelectedAccount] = useState<any>(accountData[0]);
-
-  // const handleSelectAccount = (account: any) => {
-  //   setSelectedAccount(account);
-  //   console.log('Selected account:', account);
-  // };
 
   // 캐러셀
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,15 +48,12 @@ const SendFavoriteAccount = () => {
   const handleSelectAccount = (account: any) => {
     const message = [
       `${account.receiverName}`,
-      // `${account.accountBank}`,
       `${account.receiverAccount}`,
       `${account.transactionDate}`,
       `송금`,
     ].join('\n\n');
 
     setSelectedAccount(account);
-    console.log('Selected account:', account);
-    console.log(message);
     handleDefaultPress(message);
   };
 
@@ -95,7 +63,6 @@ const SendFavoriteAccount = () => {
 
       const message = [
         `${currentItem.receiverName}`,
-        // `${currentItem.accountBank}`,
         `${currentItem.receiverAccount.split('').join(' ')}`,
         `$${dateInfo.date} ${dateInfo.time}에`,
         `송금한 계좌입니다.`,
@@ -108,16 +75,13 @@ const SendFavoriteAccount = () => {
 
   const handleSendMoney = () => {
     if (selectedAccount) {
-      console.log('selectedAccount: ', selectedAccount);
       navigation.navigate('ReceivingAccountScreen', {selectedAccount});
     } else {
-      console.log('계좌를 선택해주세요');
     }
   };
 
   const handleDirectInput = () => {
     navigation.navigate('SendInputPage', {type: 'directOtherAccount'});
-    console.log('직접 입력 버튼 클릭');
   };
 
   const carouselRef = useRef<any>(null);
@@ -242,7 +206,6 @@ const styles = StyleSheet.create({
   },
   welcomeBox: {
     alignItems: 'center',
-    // marginVertical: 32,
   },
 });
 

@@ -1,12 +1,8 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import {RootStackParamList} from '../../navigation/types';
 import DefaultPage from '../../components/utils/DefaultPage2';
 import ArrowLeft from '../../assets/icons/ArrowLeft.svg';
 import Home from '../../assets/icons/Home.svg';
-import ArrowRight from '../../assets/icons/ArrowRight.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import {useHandlePress} from '../../components/utils/handlePress';
@@ -16,8 +12,6 @@ import PaymentMainScreen from '../../components/qrPage/PaymentMainScreen';
 import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const PayMain = () => {
-  // const navigation =
-  //   useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useTTSOnFocus(`
       결제 페이지입니다.

@@ -2,12 +2,7 @@ import React, {useEffect} from 'react';
 import RootStack from './src/navigation/RootStack';
 import {NavigationContainer} from '@react-navigation/native';
 import {initializeTtsListeners, cleanupTTS} from './src/components/utils/tts'; // TTS
-
-// import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-// import {createStackNavigator} from '@react-navigation/stack';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from './src/navigation/types';
-// import TextScreen from './src/screens/{테스트 해보고 싶은 tsx 경로}'; // TextScreen 경로
 import {initializeFCM} from './src/firebase/messaging';
 
 import {
@@ -16,8 +11,6 @@ import {
 } from './src/firebase/messaging';
 import {createNavigationContainerRef} from '@react-navigation/native';
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
-
-// const Stack = createStackNavigator();
 
 export default function App() {
   useEffect(() => {

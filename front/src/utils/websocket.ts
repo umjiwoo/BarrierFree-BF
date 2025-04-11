@@ -64,13 +64,7 @@ export const connectWebSocket = (
 
     if (message) {
       console.log('결제 승인 성공:', message);
-      // return message.body.transactionWebSocketId;
-      // TODO 결제 성공 페이지로 이동
     }
-
-    // if (message.type === 'transaction') {
-    //   onTransaction(message.payload);  // { accountNumber, amount }
-    // }
   };
 
   socket.onerror = err => {
