@@ -8,11 +8,10 @@ import {RootStackParamList} from '../../navigation/types';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {useAccountStore} from '../../stores/accountStore';
 import CheckIcon from '../../assets/icons/Check.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 
 const CreateAccountSuccess = () => {
-
   const {handlePressBack, handlePressHome} = useHandlePress();
   const route =
     useRoute<RouteProp<RootStackParamList, 'CreateAccountSuccess'>>();
@@ -23,35 +22,35 @@ const CreateAccountSuccess = () => {
   useTTSOnFocus(`
     통장 개설이 완료되었습니다.
     ${goods.name}, 계좌 번호는 ${accounts.accountNo}입니다.
-  `)
+  `);
 
   return (
     <View style={styles.container}>
       <DefaultPage
-       UpperLeftText={
-        <View style={styles.textContainer}>
-          <ArrowLeftIcon width={100} height={100} />
-          <Text style={styles.text}>이전</Text>
-        </View>
-      }
-      UpperRightText={
-        <View style={styles.textContainer}>
-          <HomeIcon width={100} height={100} />
-          <Text style={styles.text}>메인</Text>
-        </View>
-      }
-      LowerLeftText={
-        <View style={styles.textContainer}>
-          <CancelIcon width={100} height={100} />
-          <Text style={styles.text}>취소</Text>
-        </View>
-      }
-      LowerRightText={
-        <View style={styles.textContainer}>
-          <CheckIcon width={100} height={100} />
-          <Text style={styles.text}>확인</Text>
-        </View>
-      }
+        UpperLeftText={
+          <View style={styles.textContainer}>
+            <ArrowLeftIcon width={100} height={100} />
+            <Text style={styles.text}>이전</Text>
+          </View>
+        }
+        UpperRightText={
+          <View style={styles.textContainer}>
+            <HomeIcon width={100} height={100} />
+            <Text style={styles.text}>메인</Text>
+          </View>
+        }
+        LowerLeftText={
+          <View style={styles.textContainer}>
+            <CancelIcon width={100} height={100} />
+            <Text style={styles.text}>취소</Text>
+          </View>
+        }
+        LowerRightText={
+          <View style={styles.textContainer}>
+            <CheckIcon width={100} height={100} />
+            <Text style={styles.text}>확인</Text>
+          </View>
+        }
         MainText={
           <View style={styles.goodsContainer}>
             <Text style={styles.title}>통장 개설 완료</Text>
@@ -96,7 +95,6 @@ const styles = StyleSheet.create({
   },
   goodsDescriptionContainer: {
     flexDirection: 'column',
-    // justifyContent: 'space-between',
     gap: 10,
     marginTop: 30,
   },
@@ -106,12 +104,10 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   goodsDescription: {
-    // paddingTop: 50,
     fontSize: 30,
     color: 'white',
   },
   goodSuccess: {
-    // color: 'green',
     fontSize: 35,
     marginTop: 10,
     color: 'white',

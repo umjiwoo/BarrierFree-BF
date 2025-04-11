@@ -16,8 +16,8 @@ import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import {useUserStore} from '../../stores/userStore';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {closeWebSocket, connectWebSocket} from '../../utils/websocket';
 import {postSendMoney} from '../../api/axiosTransaction';
 
@@ -43,10 +43,7 @@ const ReceivingConfirmScreen: React.FC = () => {
       },
       selectedAccount.receiverAccount,
       (id: string) => {
-        console.log('Received transactionWebSocketId:', id);
         setTransactionId(id);
-        console.log('transactionId:', id);
-        // navigation.navigate('SendSuccess');
       },
       wsNavigation,
     );
@@ -54,10 +51,6 @@ const ReceivingConfirmScreen: React.FC = () => {
       closeWebSocket();
     };
   }, [money, selectedAccount.receiverAccount, wsNavigation]);
-
-  // setTimeout(() => {
-  //   closeWebSocket();
-  // }, 1000);
 
   useTTSOnFocus(`
     ${selectedAccount.receiverName}님에게 ${money}원을 송금하시겠습니까?
@@ -67,7 +60,6 @@ const ReceivingConfirmScreen: React.FC = () => {
 
   const handleSend = async () => {
     try {
-      console.log('송금하기 버튼 클릭');
       const response = await postSendMoney(
         user.id,
         selectedAccount.receiverAccountId,
@@ -76,12 +68,9 @@ const ReceivingConfirmScreen: React.FC = () => {
         String(transactionId),
         accountPassword,
       );
-      console.log('송금하기 응답:', response);
       if (response.result.code === 200) {
-        console.log('송금하기 성공:', response.result.message);
         navigation.navigate('SendSuccess');
       } else {
-        console.log('송금하기 실패');
         Alert.alert('송금에 실패했습니다.');
       }
     } catch (error) {
@@ -128,10 +117,18 @@ const ReceivingConfirmScreen: React.FC = () => {
             <Text style={styles.confirmText}>송금하시겠습니까?</Text>
           </View>
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onLowerRightTextPress={() => handleDefaultPress('송금하기', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('송금하기', undefined, handleSend)
+        }
       />
     </View>
   );
@@ -140,18 +137,12 @@ const ReceivingConfirmScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: '100%',
-    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 20,
-    // marginTop: 50,
   },
   confirmText: {
     fontSize: 40,
     fontWeight: 'bold',
-    // marginTop: 20,
     marginBottom: 30,
     textAlign: 'center',
     color: '#fff',

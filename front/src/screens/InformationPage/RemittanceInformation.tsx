@@ -16,8 +16,8 @@ import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
 import {useUserStore} from '../../stores/userStore';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 
 const ReceivingInformationScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -43,7 +43,6 @@ const ReceivingInformationScreen: React.FC = () => {
       money: money,
       receiverAccountId: receiverAccountId,
     });
-    console.log('송금하기 버튼 클릭');
   };
 
   return (
@@ -84,10 +83,18 @@ const ReceivingInformationScreen: React.FC = () => {
             />
           </View>
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onLowerRightTextPress={() => handleDefaultPress('송금하기', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('송금하기', undefined, handleSend)
+        }
       />
     </View>
   );
@@ -96,12 +103,8 @@ const ReceivingInformationScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 20,
-    // marginTop: 50,
   },
   mainText: {
     fontSize: 35,
@@ -114,7 +117,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     paddingVertical: 20,
-    // justifyContent: 'center',
   },
   textContainer: {
     display: 'flex',

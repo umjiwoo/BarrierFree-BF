@@ -9,18 +9,17 @@ import {RootStackParamList} from '../../navigation/types';
 import {useHandlePress} from '../../components/utils/handlePress';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
-import { useTTSOnFocus } from '../../components/utils/useTTSOnFocus';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTTSOnFocus} from '../../components/utils/useTTSOnFocus';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import VolumeIcon from '../../assets/icons/Volume.svg';
 
 const CreateAccountGoodsDetail = () => {
-
   useTTSOnFocus(`
     계좌 개설 상세 안내 페이지입니다.
     약관 내용을 들으시려면 화면 가운데를 한 번 눌러주세요.
     왼쪽 아래에는 돌아가기 버튼, 오른쪽 아래에는 선택 버튼이 있습니다.
     왼쪽 위에는 이전 버튼, 오른쪽 위에는 홈 버튼이 있습니다.
-  `)
+  `);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -33,8 +32,6 @@ const CreateAccountGoodsDetail = () => {
   const handleLowerRightTextPress = () => {
     navigation.navigate('CreateAccountCheck', {goods: goods});
   };
-
-  console.log('goods', goods);
 
   const termsData = require('../../assets/details/terms_summary_full.json');
 
@@ -77,43 +74,43 @@ const CreateAccountGoodsDetail = () => {
           </View>
         }
         MainText={
-          <ScrollView
-            >
-          <Pressable onPress={() => handleDefaultPress(fullMessage, undefined)}>
-            {/* <Text style={styles.goodsName}>{goods.name}</Text>
-            <Text style={styles.goodsDescription}>
-              {goods.description.약관}
-            </Text> */}
+          <ScrollView>
+            <Pressable
+              onPress={() => handleDefaultPress(fullMessage, undefined)}>
               <View style={styles.voiceButton}>
                 <VolumeIcon width={30} height={30} />
                 <Text style={styles.voiceButtonText}>계좌 개설</Text>
               </View>
-            <Text style={styles.goodsName}>{goods.name}</Text>
-            <Text style={styles.goodsDescription}>
-              {
-                require('../../assets/details/terms_summary_full.json')
-                  .content[0].content
-              }
-            </Text>
-            {require('../../assets/details/terms_summary_full.json').content[0].subContent.map(
-              (item: any, index: number) => (
-                <View key={index} style={styles.subContentContainer}>
-                  <Text style={styles.subContentTitle}>{item.description}</Text>
-                  <Text style={styles.subContentText}>
-                    {Array.isArray(item.content)
-                      ? item.content.join('\n')
-                      : item.content}
-                  </Text>
-                </View>
-              ),
-            )}
-          </Pressable>
+              <Text style={styles.goodsName}>{goods.name}</Text>
+              <Text style={styles.goodsDescription}>
+                {
+                  require('../../assets/details/terms_summary_full.json')
+                    .content[0].content
+                }
+              </Text>
+              {require('../../assets/details/terms_summary_full.json').content[0].subContent.map(
+                (item: any, index: number) => (
+                  <View key={index} style={styles.subContentContainer}>
+                    <Text style={styles.subContentTitle}>
+                      {item.description}
+                    </Text>
+                    <Text style={styles.subContentText}>
+                      {Array.isArray(item.content)
+                        ? item.content.join('\n')
+                        : item.content}
+                    </Text>
+                  </View>
+                ),
+              )}
+            </Pressable>
           </ScrollView>
         }
         onUpperLeftTextPress={() => handleDefaultPress('이전', ['back'])}
         onUpperRightTextPress={() => handleDefaultPress('홈', ['Main'])}
         onLowerLeftTextPress={() => handleDefaultPress('이전', ['back'])}
-        onLowerRightTextPress={() => handleDefaultPress('계좌 개설', undefined, handleLowerRightTextPress)}
+        onLowerRightTextPress={() =>
+          handleDefaultPress('계좌 개설', undefined, handleLowerRightTextPress)
+        }
       />
     </View>
   );
@@ -136,12 +133,12 @@ const styles = StyleSheet.create({
   goodsName: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#fff'
+    color: '#fff',
   },
   goodsDescription: {
     paddingTop: 20,
     fontSize: 30,
-    color: '#fff'
+    color: '#fff',
   },
   subContentContainer: {
     marginTop: 20,
@@ -151,12 +148,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#fff'
+    color: '#fff',
   },
   subContentText: {
     fontSize: 20,
     lineHeight: 30,
-    color: '#fff'
+    color: '#fff',
   },
   textContainer: {
     display: 'flex',
@@ -179,12 +176,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   voiceButtonText: {
     color: '#fff',
     fontSize: 25,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
 });
 

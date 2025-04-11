@@ -25,7 +25,6 @@ const CreateAccountGoods = ({
   onSelect,
   onSnapToItem,
 }: CreateAccountGoodsProps) => {
-  console.log('data', data);
   return (
     <View style={styles.container}>
       <Carousel
@@ -39,50 +38,33 @@ const CreateAccountGoods = ({
             <TouchableOpacity
               onPress={() => onSelect(item)}
               style={styles.accountItem}>
-            <View style={{ width: '100%' }}>
-              <View style={styles.voiceButton}>
-                <VolumeIcon width={30} height={30} />
-                <Text style={styles.voiceButtonText}>계좌 개설</Text>
-              </View>
-              <Text style={styles.title}>{item.name}</Text>
-              <View style={styles.descriptionContainer}>
-                <View style={styles.descriptionItemContainer}>
-                  <Text style={styles.descriptionTitle}>상품개요</Text>
-                  <Text style={styles.descriptionContent}>
-                    {item.description.상품개요}
-                  </Text>
+              <View style={{width: '100%'}}>
+                <View style={styles.voiceButton}>
+                  <VolumeIcon width={30} height={30} />
+                  <Text style={styles.voiceButtonText}>계좌 개설</Text>
                 </View>
-                {/* <View style={styles.descriptionItemContainer}>
-                  <Text style={styles.descriptionTitle}>가입대상</Text>
-                  <Text style={styles.descriptionContent}>
-                    {item.description.가입대상}
-                  </Text>
-                </View> */}
-                <View style={styles.descriptionItemContainer}>
-                  <Text style={styles.descriptionTitle}>상품특징</Text>
-                  <Text style={styles.descriptionContent}>
-                    {item.description.상품특징}
-                  </Text>
+                <Text style={styles.title}>{item.name}</Text>
+                <View style={styles.descriptionContainer}>
+                  <View style={styles.descriptionItemContainer}>
+                    <Text style={styles.descriptionTitle}>상품개요</Text>
+                    <Text style={styles.descriptionContent}>
+                      {item.description.상품개요}
+                    </Text>
+                  </View>
+
+                  <View style={styles.descriptionItemContainer}>
+                    <Text style={styles.descriptionTitle}>상품특징</Text>
+                    <Text style={styles.descriptionContent}>
+                      {item.description.상품특징}
+                    </Text>
+                  </View>
+                  <View style={styles.descriptionItemContainer}>
+                    <Text style={styles.descriptionTitle}>예금과목</Text>
+                    <Text style={styles.descriptionContent}>
+                      {item.description.예금과목}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.descriptionItemContainer}>
-                  <Text style={styles.descriptionTitle}>예금과목</Text>
-                  <Text style={styles.descriptionContent}>
-                    {item.description.예금과목}
-                  </Text>
-                </View>
-                {/* <View style={styles.descriptionItemContainer}>
-                  <Text style={styles.descriptionTitle}>저축방법</Text>
-                  <Text style={styles.descriptionContent}>
-                    {item.description.저축방법}
-                  </Text>
-                </View> */}
-                {/* <View style={styles.descriptionItemContainer}>
-                  <Text style={styles.descriptionTitle}>거래한도</Text>
-                  <Text style={styles.descriptionContent}>
-                    {item.description.거래한도}
-                  </Text>
-                </View> */}
-              </View>
               </View>
             </TouchableOpacity>
           );
@@ -104,8 +86,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingVertical: 20,
-    // paddingRight: 20,
-    // paddingLeft: 20,
     borderRadius: 10,
   },
   title: {
@@ -168,7 +148,6 @@ const styles = StyleSheet.create({
     color: '#B6010E',
   },
   voiceButton: {
-    // marginTop: 20,
     marginBottom: 20,
     backgroundColor: '#333',
     paddingVertical: 12,
@@ -177,12 +156,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   voiceButtonText: {
     color: '#fff',
     fontSize: 25,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
 });
 

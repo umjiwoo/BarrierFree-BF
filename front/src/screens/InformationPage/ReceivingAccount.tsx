@@ -16,7 +16,7 @@ import ArrowLeftIcon from '../../assets/icons/ArrowLeft.svg';
 import HomeIcon from '../../assets/icons/Home.svg';
 import CancelIcon from '../../assets/icons/Cancel.svg';
 import CheckIcon from '../../assets/icons/Check.svg';
-import { useTapNavigationHandler } from '../../components/utils/useTapNavigationHandler ';
+import {useTapNavigationHandler} from '../../components/utils/useTapNavigationHandler ';
 import {postCheckAccount} from '../../api/axiosTransaction';
 import {useAccountStore} from '../../stores/accountStore';
 import VolumeIcon from '../../assets/icons/Volume.svg';
@@ -28,21 +28,17 @@ const ReceivingAccountScreen: React.FC = () => {
   const route =
     useRoute<RouteProp<RootStackParamList, 'ReceivingAccountScreen'>>();
   const accountInfo = route.params?.selectedAccount;
-  console.log('accountInfo: ', accountInfo);
 
   const {accounts} = useAccountStore();
   const [checkAccount, setCheckAccount] = useState<any>(null);
-  console.log('accounts: ', accounts);
 
   useEffect(() => {
     const fetchCheckAccounts = async () => {
       const checkAccounts = await postCheckAccount();
       // setAccountData(checkAccounts);
       if (checkAccounts.length === 0) {
-        console.log('계좌 조회 실패');
       } else {
         setCheckAccount(checkAccounts);
-        console.log('계좌 조회 성공: ', checkAccounts);
       }
     };
     fetchCheckAccounts();
@@ -56,8 +52,6 @@ const ReceivingAccountScreen: React.FC = () => {
   `);
 
   const handleSend = () => {
-    console.log('송금하기 버튼 클릭');
-    // Alert.alert('송금하기 버튼 클릭됨!');
     navigation.navigate('SendInputPage', {
       type: 'money',
       selectedAccount: accountInfo,
@@ -100,55 +94,23 @@ const ReceivingAccountScreen: React.FC = () => {
             </View>
             <Text style={styles.mainText}>받는 사람 정보를 확인하세요.</Text>
             <DetailBox
-                receiverName={accountInfo.receiverName}
-                receiverAccount={accountInfo.receiverAccount}
+              receiverName={accountInfo.receiverName}
+              receiverAccount={accountInfo.receiverAccount}
             />
           </TouchableOpacity>
-
-          // <TouchableOpacity
-          // onPress={() => ()}
-          // >
-          //   <View style={styles.accountItem}>
-          //   <View style={styles.voiceButton}>
-          //       <VolumeIcon width={30} height={30} />
-          //       <Text style={styles.voiceButtonText}>송금 하기</Text>
-          //   </View>
-          // {/* 날짜 */}
-          // <View style={styles.dateContainer}>
-          //   <Text style={styles.date}>{date}</Text>
-          //   <Text style={styles.time}>{time}</Text>
-          // </View>
-  
-          // {/* 거래 이름 */}
-          // <Text style={styles.name}>{item.transactionName}</Text>
-  
-          // {/* 거래 금액 */}
-          // <View style={styles.bankContainer}>
-          //   <Text style={[styles.bankType, isWithdrawal ? styles.withdrawalBg : styles.depositBg]}>
-          //     {typeLabel}
-          //   </Text>
-          //   <Text style={[styles.amount, isWithdrawal ? styles.withdrawal : styles.deposit]}>
-          //     {item.transactionAmount.toLocaleString()} 원
-          //   </Text>
-          // </View>
-          // </View>
-          //   {/* <View style={styles.voiceButton}>
-                // <VolumeIcon width={30} height={30} />
-                // <Text style={styles.voiceButtonText}>음성 안내 듣기</Text>
-            // </View> */}
-        // </TouchableOpacity>
-          // <View style={styles.mainTextContainer}>
-          //   <Text style={styles.mainText}>받는 사람 정보를 확인하세요.</Text>
-          //   <DetailBox
-          //     receiverName={accountInfo.receiverName}
-          //     receiverAccount={accountInfo.receiverAccount}
-          //   />
-          // </View>
         }
-        onUpperLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onUpperRightTextPress={() => handleDefaultPress('홈', undefined, handlePressHome)}
-        onLowerLeftTextPress={() => handleDefaultPress('이전', undefined, handlePressBack)}
-        onLowerRightTextPress={() => handleDefaultPress('송금하기', undefined, handleSend)}
+        onUpperLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onUpperRightTextPress={() =>
+          handleDefaultPress('홈', undefined, handlePressHome)
+        }
+        onLowerLeftTextPress={() =>
+          handleDefaultPress('이전', undefined, handlePressBack)
+        }
+        onLowerRightTextPress={() =>
+          handleDefaultPress('송금하기', undefined, handleSend)
+        }
       />
     </View>
   );
@@ -157,12 +119,8 @@ const ReceivingAccountScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 20,
-    // marginTop: 50,
   },
   buttonContainer: {
     width: '100%',
@@ -193,12 +151,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   mainTextContainer: {
-    // flex: 1,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     paddingVertical: 20,
-    // justifyContent: 'center',
   },
   textContainer: {
     display: 'flex',
@@ -214,12 +170,9 @@ const styles = StyleSheet.create({
 
   accountItem: {
     width: '100%',
-    // marginVertical: 10,
-    // paddingVertical: 36,
     paddingHorizontal: 24,
     backgroundColor: '#000',
     justifyContent: 'center',
-    // gap: 28,
   },
   dateContainer: {
     gap: 8,
@@ -255,7 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#DC3545', // 기본은 출금 색상
     color: '#fff',
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
   amount: {
     fontSize: 40,
@@ -264,10 +217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
     color: '#fff',
-    textAlignVertical: 'center'
-    // fontSize: 40,
-    // fontWeight: 'bold',
-    // color: '#fff',
+    textAlignVertical: 'center',
   },
   withdrawalBg: {
     backgroundColor: '#DC3545',
@@ -284,7 +234,6 @@ const styles = StyleSheet.create({
     color: '#34C759',
   },
   voiceButton: {
-    // marginTop: 20,
     marginBottom: 32,
     backgroundColor: '#333',
     paddingVertical: 12,
@@ -293,12 +242,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    alignSelf: 'center', 
+    alignSelf: 'center',
   },
   voiceButtonText: {
     color: '#fff',
     fontSize: 25,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
 
   welcomeBox: {
